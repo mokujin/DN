@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DN
+﻿namespace DN.LevelGeneration
 {
-    public class LevelGenerator
+    public partial class LevelGenerator
     {
         public LevelGenerator()
         {

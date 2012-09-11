@@ -25,7 +25,6 @@ namespace DN
         }
         protected override void OnUpdateFrame(FrameEventArgs e)
         {
-
             base.OnUpdateFrame(e);
         }
         protected override void OnRenderFrame(FrameEventArgs e)
