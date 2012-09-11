@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,14 +9,36 @@ namespace DN
 {
     public class GameWorld
     {
-        private byte[,] _map;
-        private int _width, _height;
+        public readonly int Width;
+        public readonly int Height;
+
+        public readonly TileMap TileMap;
 
         public GameWorld(int width, int height)
         {
-            _width = width;
-            _height = height;
-            _map = new byte[_width, _height];
+            Width = width;
+            Height = height;
+            TileMap = new TileMap(Width, Height);
+        }
+
+        public void Update(float dt)
+        {
+
+        }
+
+        public void Draw(float dt)
+        {
+
+        }
+
+        public bool InRange(int x, int y)
+        {
+            return x >= 0 && x < Width && y >= 0 && y < Height;
+        }
+
+        public bool InRange(Point cell)
+        {
+            return cell.X >= 0 && cell.X < Width && cell.Y >= 0 && cell.Y < Height;
         }
     }
 }

@@ -12,6 +12,8 @@ namespace DN
 {
     public class Game:GameWindow
     {
+        private GameWorld gameWorld;
+
         public Game()
             : base(640, 480, GraphicsMode.Default, "Devil's nightmare")
         {
@@ -20,19 +22,21 @@ namespace DN
         protected override void OnLoad(EventArgs e)
         {
             GL.ClearColor(Color4.White);
+            gameWorld = new GameWorld(10, 10);
             base.OnLoad(e);
 
         }
         protected override void OnUpdateFrame(FrameEventArgs e)
         {
+            gameWorld.Update((float)e.Time);
             base.OnUpdateFrame(e);
         }
         protected override void OnRenderFrame(FrameEventArgs e)
         {
             GL.Clear(ClearBufferMask.ColorBufferBit);
-            SpriteBatch.Instance.Begin();
-            SpriteBatch.Instance.FillEllipse(new System.Drawing.PointF(15, 15), 10, 12, Color4.Black, 8);
-            SpriteBatch.Instance.End();
+
+            gameWorld.Draw((float) e.Time);
+
             SwapBuffers();
             base.OnRenderFrame(e);
         }

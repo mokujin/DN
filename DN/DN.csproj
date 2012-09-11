@@ -48,6 +48,7 @@
   <ItemGroup>
     <Compile Include="Game.cs" />
     <Compile Include="GameWorld.cs" />
+    <Compile Include="TileMap.cs" />
     <Compile Include="LevelGeneration\Miner.cs" />
     <Compile Include="LevelGeneration\LevelGenerator.cs" />
     <Compile Include="Program.cs" />
