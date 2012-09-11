@@ -8,6 +8,8 @@ using Blueberry;
 using Blueberry.Graphics;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
+using System.IO;
+using System.Drawing;
 namespace DN
 {
     public class Game:GameWindow
@@ -17,11 +19,14 @@ namespace DN
         public Game()
             : base(640, 480, GraphicsMode.Default, "Devil's nightmare")
         {
- 
+            GraphicsDevice.Instance.Initialize(640, 480); // i seeked this problem along whole hour x__x
         }
+
         protected override void OnLoad(EventArgs e)
         {
-            GL.ClearColor(Color4.White);
+            GL.ClearColor(Color4.Black);
+
+            CM.I.LoadTexture("wall_tile", Path.Combine("Content", "Textures", "wall_tile.png"));
             gameWorld = new GameWorld(10, 10);
             base.OnLoad(e);
 
@@ -36,6 +41,10 @@ namespace DN
             GL.Clear(ClearBufferMask.ColorBufferBit);
 
             gameWorld.Draw((float) e.Time);
+
+            SpriteBatch.Instance.Begin();
+            SpriteBatch.Instance.DrawTexture(CM.I.tex("wall_tile"), 50,50, 32, 32, Rectangle.Empty, Color.White);
+            SpriteBatch.Instance.End();
 
             SwapBuffers();
             base.OnRenderFrame(e);

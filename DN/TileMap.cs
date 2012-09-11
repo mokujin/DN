@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Blueberry;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -7,10 +8,10 @@ using System.Threading.Tasks;
 
 namespace DN
 {
-    public enum CellType
+    public enum CellType:byte
     {
-        Free,
-        Wall
+        Free = 0,
+        Wall = 1
     }
 
     public class TileMap
@@ -28,8 +29,18 @@ namespace DN
 
         public bool IsFree(Point p)
         {
-            return _map[p.X, p.Y] != CellType.Wall;
+            return _map[p.X, p.Y] != CellType.Wall; // strange logic when we have CellType.Free
         }
 
+        public void FillRandom()
+        {
+            for (int i = 0; i < _width; i++)
+            {
+                for (int j = 0; j < _height; j++)
+                {
+                    _map[i, j] = (CellType)RandomTool.RandByte(2);
+                }
+            }
+        }
     }
 }

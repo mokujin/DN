@@ -28,8 +28,14 @@ namespace DN
 
         public void Draw(float dt)
         {
+            RenderTiles(dt);
+        }
+
+        private void RenderTiles(float dt)
+        {
 
         }
+
 
         public bool InRange(int x, int y)
         {
