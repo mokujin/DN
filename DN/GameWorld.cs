@@ -11,7 +11,7 @@ namespace DN
         private byte[,] _map;
         private int _width, _height;
 
-        public void GameWorld(int width, int height)
+        public GameWorld(int width, int height)
         {
             _width = width;
             _height = height;
