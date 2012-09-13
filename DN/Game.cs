@@ -22,7 +22,7 @@ namespace DN
         protected override void OnLoad(EventArgs e)
         {
             GL.ClearColor(Color4.White);
-            gameWorld = new GameWorld(10, 10);
+            gameWorld = new GameWorld(30, 30);
             base.OnLoad(e);
 
         }

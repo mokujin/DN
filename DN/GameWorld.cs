@@ -4,7 +4,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using DN.LevelGeneration;
 namespace DN
 {
     public class GameWorld
@@ -19,6 +19,10 @@ namespace DN
             Width = width;
             Height = height;
             TileMap = new TileMap(Width, Height);
+            LevelGenerator lg = new LevelGenerator();
+            lg.Generate(this);
+         //   TileMap.PrintDebug();
+
         }
 
         public void Update(float dt)

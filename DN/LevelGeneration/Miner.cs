@@ -8,65 +8,140 @@ using Blueberry;
 
 namespace DN.LevelGeneration
 {
-    public partial class LevelGenerator
+    internal class Miner
     {
-        private class Miner
+        public Point Cell
         {
-            private Point _cell;
-            private Point _direction;
-            private byte _steps = 0;
+            get { return _cell; }
+        }
 
-            private readonly byte[,] _map;
-            private readonly int _mapWidth;
-            private readonly int _mapHeight;
+        private byte[,] _exploredMap;
 
-            public Miner(byte[,] map, int x, int y)
+        private Point _cell;
+        private Point _direction;
+        private byte _steps;
+
+        private readonly LevelGenerator _levelGenerator;
+
+        public Miner(LevelGenerator levelGenerator, int x, int y)
+        {
+            _cell.X = x;
+            _cell.Y = y;
+            _levelGenerator = levelGenerator; 
+
+            _exploredMap = new byte[levelGenerator.TileMap.Width, levelGenerator.TileMap.Height];
+            _exploredMap[_cell.X, _cell.Y] = 1;
+        }
+
+        public void Step()
+        {
+            _direction = GetDirection();
+            var nextPosition = new Point(_cell.X + _direction.X,
+                                         _cell.Y + _direction.Y);
+
+          //  if (IsPossibleToMove(nextPosition))
             {
-                _cell.X = x;
-                _cell.Y = y;
+                MoveInDirection();
+                CheckBounds();
+                _levelGenerator.ResourseMap.GatherResourses(this);
+                if(_levelGenerator.TileMap[_cell.X, _cell.Y] != CellType.Ladder)
+                    _levelGenerator.TileMap[_cell.X, _cell.Y] = CellType.Free;
 
-                _map = map;
-                _mapWidth = _map.GetLength(0);
-                _mapHeight = _map.GetLength(1);
-            }
-
-            public void Step()
-            {
-                if (_steps > 0)
+                if (_direction.Y != 0)
                 {
-                    var nextPosition = new Point(_cell.X + _direction.X,
-                                                 _cell.Y + _direction.Y);
-                    if (InRange(nextPosition))
-                    {
-
-                    }
-                }
-                else
-                {
-                    _direction = GetRandomDirection();
-                    _steps = RandomTool.RandByte(2, 5);
+                    BuildLadder();
                 }
             }
+        }
 
-            /// <returns>returns non diagonal direction</returns>
-            private Point GetRandomDirection()
-            {
-                var a = RandomTool.RandBool() ? RandomTool.RandSign() : 0;
-                var b = a == 0 ? 0 : RandomTool.RandSign();
-                return new Point(a, b);
-            }
+        private void MoveInDirection()
+        {
+            _cell.X += _direction.X;
+            _cell.Y += _direction.Y;
+            _exploredMap[_cell.X, _cell.Y] += 1;
+            _exploredMap[_cell.X, _cell.Y] *= 4;
+            //Console.WriteLine(_cell);
+        //    Console.Clear();
+         //   _levelGenerator.TileMap.PrintDebug();
+          //  Console.WriteLine();
+         //   _levelGenerator.ResourseMap.PrintDebug();
+         //   Console.SetCursorPosition(_cell.X, _cell.Y + 1);
+        //    Console.Write("X");
+           // Console.ReadKey(true);
+        }
 
-            private bool IsPossibleToMove(Point p)
-            {
-                if (_map[p.X, p.Y + 1] == 0) return false;
+        private void BuildLadder()
+        {
+            _levelGenerator.TileMap[_cell.X, _cell.Y] = CellType.Ladder;
+        }
 
-                return false;
-            }
 
-            bool InRange(Point p)
-            {
-                return p.X >= 0 && p.X < _mapWidth && p.Y >= 0 && p.Y < _mapHeight;
-            }
+        /// <returns>returns non diagonal direction</returns>
+        private Point GetDirection()
+        {
+            var res = new int[4];
+            var p = new Point[4];
+
+            res[0] = GetCellPrice(0, -1);
+            p[0] = new Point(0, -1);
+
+            res[1] = GetCellPrice(0,1);
+            p[1] = new Point(0, 1);
+
+            res[2] = GetCellPrice(-1, 0);
+            p[2] = new Point(-1, 0);
+
+            res[3] = GetCellPrice(1, 0);
+            p[3] = new Point(1, 0);
+
+            int max = 0;
+            if (res[0] == res[1] && res[0] == res[2] && res[0] == res[3])
+                max = RandomTool.RandByte(0, 3);
+            else
+            for (int i = 0; i < 4; i++)
+                if(res[i] != Int32.MinValue)
+                    if (res[i] > res[max])
+                        max = i;
+
+
+
+            return p[max];
+        }
+
+        private int GetCellPrice(int offsetX, int offsetY)
+        {
+            var p = new Point(_cell.X + offsetX, _cell.Y + offsetY);
+
+            if (p.Y <= 0)
+                return Int32.MaxValue;
+
+            if(_levelGenerator.TileMap.InRange(new Point(p.X, p.Y + 1)))
+                if(offsetY == 0)
+                    if (_levelGenerator.TileMap.IsFree(new Point(p.X, p.Y + 1)))
+                        return Int32.MinValue;
+            if (!_levelGenerator.TileMap.InRange(p))
+                return Int32.MinValue;
+
+
+            return (byte)_levelGenerator.ResourseMap[p.X, p.Y] - _exploredMap[p.X, p.Y];
+        }
+
+        private void CheckBounds()
+        {
+            if (_cell.X < 0)
+                _cell.X = 0;
+            if (_cell.X > _levelGenerator.TileMap.Width)
+                _cell.X = _levelGenerator.TileMap.Width;
+            if (Cell.Y > _levelGenerator.TileMap.Height)
+                _cell.Y = _levelGenerator.TileMap.Height;
+        }
+        private bool IsPossibleToMove(Point p)
+        {
+            if (!_levelGenerator.TileMap.InRange(p)) return false;
+            if (!_levelGenerator.TileMap.InRange(new Point(p.X, p.Y))) return false;
+            if (_levelGenerator.TileMap.IsFree(new Point(p.X, p.Y))) return false;
+
+            return true;
         }
     }
 }
