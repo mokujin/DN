@@ -47,6 +47,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ContentManager.cs" />
+    <Compile Include="Creatures\Creature.cs" />
+    <Compile Include="Creatures\Hero.cs" />
     <Compile Include="Game.cs" />
     <Compile Include="GameWorld.cs" />
     <Compile Include="TileMap.cs" />
@@ -66,11 +68,16 @@
       <Project>{0f82d590-bc4f-4d17-b8c5-6e18ea86c126}</Project>
       <Name>BlueberryEngine</Name>
     </ProjectReference>
+    <ProjectReference Include="..\GamepadExtension\GamepadExtension.csproj">
+      <Project>{396d4e0e-830a-4d66-ae20-f5c7737a8dcb}</Project>
+      <Name>GamepadExtension</Name>
+    </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <Folder Include="Creatures\" />
-  </ItemGroup>
-  <ItemGroup>
+    <Content Include="Content\Textures\hero_tile.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\Textures\wall_tile.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

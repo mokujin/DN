@@ -433,16 +433,16 @@ namespace Blueberry.Graphics
         #endregion Locking / unlocking
 
         #region Statics
-
+        
         static public TextureMagFilter DefaultMagFilter = TextureMagFilter.Linear;
         static public TextureMinFilter DefaultMinFilter = TextureMinFilter.Linear;
-
-        //static public TextureMagFilter DefaultMagFilter = TextureMagFilter.Nearest;
-        //static public TextureMinFilter DefaultMinFilter = TextureMinFilter.Nearest;
-
+        /*
+        static public TextureMagFilter DefaultMagFilter = TextureMagFilter.Nearest;
+        static public TextureMinFilter DefaultMinFilter = TextureMinFilter.Nearest;
+        */
         static public Color DefaultBorderColor = Color.Black;
-        static public TextureWrapMode DefaultHorizontalWrapFilter = TextureWrapMode.ClampToEdge;
-        static public TextureWrapMode DefaultVerticalWrapFilter = TextureWrapMode.ClampToEdge;
+        static public TextureWrapMode DefaultHorizontalWrapFilter = TextureWrapMode.Repeat;//.ClampToEdge;
+        static public TextureWrapMode DefaultVerticalWrapFilter = TextureWrapMode.Repeat;//ClampToEdge;
 
         public static bool CheckTextureSize(Size size)
         {

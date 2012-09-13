@@ -5,6 +5,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlueberryEngine", "..\Blueb
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DN", "DN.csproj", "{7EDEEB31-18E4-4288-9482-DFD726BF7CF5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GamepadExtension", "..\GamepadExtension\GamepadExtension.csproj", "{396D4E0E-830A-4D66-AE20-F5C7737A8DCB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -19,6 +21,10 @@ Global
 		{7EDEEB31-18E4-4288-9482-DFD726BF7CF5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7EDEEB31-18E4-4288-9482-DFD726BF7CF5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7EDEEB31-18E4-4288-9482-DFD726BF7CF5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{396D4E0E-830A-4D66-AE20-F5C7737A8DCB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{396D4E0E-830A-4D66-AE20-F5C7737A8DCB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{396D4E0E-830A-4D66-AE20-F5C7737A8DCB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{396D4E0E-830A-4D66-AE20-F5C7737A8DCB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

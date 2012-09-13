@@ -81,7 +81,6 @@
     <Compile Include="QuadTreeNode.cs" />
     <Compile Include="RandomTool.cs" />
     <Compile Include="SceneManagement\Actor.cs" />
-    <Compile Include="SceneManagement\Animation.cs" />
     <Compile Include="Atlas.cs" />
     <Compile Include="SceneManagement\IActor.cs" />
     <Compile Include="SceneManagement\IBoundedActor.cs" />

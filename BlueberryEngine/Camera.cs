@@ -245,7 +245,7 @@ namespace Blueberry
         {
             if (_smooth)
             {
-                this._position = Vector2.Lerp(_position, _nextPosition, (float)(_moveSpeed * elapsed));
+                _position = Vector2.Lerp(_position, _nextPosition, (float)(_moveSpeed * elapsed));
                 this._scale = MathUtils.Lerp(_scale, _nextScale, (float)(_moveSpeed * elapsed));
                 this._rotation = MathUtils.Lerp(_rotation, _nextRotation, (float)(_moveSpeed * elapsed));
             }
