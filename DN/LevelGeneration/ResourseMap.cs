@@ -32,7 +32,7 @@ namespace DN.LevelGeneration
             _height = height;
             _map = new Resourse[width, height];
             Generate();
-            PrintDebug();
+          //  PrintDebug();
         }
 
         private void Generate()
