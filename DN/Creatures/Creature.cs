@@ -108,6 +108,8 @@ namespace DN.Creatures
 
         public virtual void Update(float dt)
         {
+            if (dt >= 0.1f) return; // duct tape xD sometimes dt is extremly big, so that cause movement lag
+
             if(!OnGround())
                 _speed.Y += _world.g * dt * 10;
             Vector2 shift = _speed * dt;

@@ -49,7 +49,7 @@ namespace DN
                 p = new Point(RandomTool.RandInt(0, Width), RandomTool.RandInt(0, Height));
                 if(TileMap.IsFree(p))
                 {
-                    hero.Position = new OpenTK.Vector2(p.X * 64+32, p.Y * 64+32);
+                    hero.Position = new OpenTK.Vector2((p.X * 64)+32, (p.Y * 64)+32);
                     break;
                 }
             }

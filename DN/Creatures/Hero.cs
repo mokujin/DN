@@ -48,9 +48,9 @@ namespace DN.Creatures
         {
             base.Update(dt);
             if (Game.g_Gamepad.DPad.Left)
-                Move(-300 * dt, 0);
+                Move(-250 * dt, 0);
             if (Game.g_Gamepad.DPad.Right)
-                Move(300 * dt, 0);
+                Move(250 * dt, 0);
             
         }
     }
