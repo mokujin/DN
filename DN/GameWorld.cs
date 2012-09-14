@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using OpenTK.Input;
 using DN.Creatures;
+using DN.LevelGeneration;
 
 namespace DN
 {
@@ -27,10 +28,16 @@ namespace DN
             Width = width;
             Height = height;
             TileMap = new TileMap(Width, Height);
+
             camera = new Camera(Game.g_screenSize, new Point(Game.g_screenSize.Width / 2, Game.g_screenSize.Height / 2), true);
             camera.MoveSpeed = 7;
             
             TileMap.FillRandom(); 
+
+            LevelGenerator lg = new LevelGenerator();
+            lg.Generate(this);
+         //   TileMap.PrintDebug();
+
         }
 
         public void InsertHero()

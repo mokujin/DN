@@ -12,20 +12,36 @@ namespace DN
     public enum CellType:byte
     {
         Free = 0,
-        Wall = 1
+        Wall = 1,
+        Ladder = 2
+
     }
 
     public class TileMap
     {
         private CellType[,] _map;
-        private readonly int _width;
-        private readonly int _height;
+
+        public CellType this[int i, int j]
+        {
+            get { return _map[i, j]; }
+            set { _map[i, j] = value; }
+        }
+
+        public readonly int Width;
+        public readonly int Height;
 
         public TileMap(int width, int height)
         {
-            _width = width;
-            _height = height;
-            _map = new CellType[_width, _height];
+            Width = width;
+            Height = height;
+            _map = new CellType[Width, Height];
+        }
+        
+        public void FillWith(CellType cellType)
+        {
+            for (var i = 0; i < Width; i++)
+                for (var j = 0; j < Height; j++)
+                    _map[i, j] = cellType;
         }
 
         public Rectangle GetRect(int x, int y)
@@ -61,13 +77,30 @@ namespace DN
             }
         }
 
+
         public void FillRandom()
         {
-            for (int i = 0; i < _width; i++)
+            for (int i = 0; i < Width; i++)
             {
-                for (int j = 0; j < _height; j++)
+                for (int j = 0; j < Height; j++)
                 {
                     _map[i, j] = (CellType)RandomTool.RandByte(2);
+                }
+            }
+        }
+        public bool InRange(Point cell)
+        {
+            return cell.X >= 0 && cell.X < Width && cell.Y >= 0 && cell.Y < Height;
+        }
+
+        public void PrintDebug()
+        {
+            for (int j = 0; j < Height; j++)
+            {
+                Console.WriteLine();
+                for (int i = 0; i < Width; i++)
+                {
+                    Console.Write((byte)_map[i,j]);
                 }
             }
         }

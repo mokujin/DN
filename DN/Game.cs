@@ -34,6 +34,7 @@ namespace DN
 
         protected override void OnLoad(EventArgs e)
         {
+
             g_Keyboard = Keyboard;
             g_Mouse = Mouse;
             g_Gamepad = new GamepadState(GamepadIndex.One);
@@ -44,6 +45,7 @@ namespace DN
             CM.I.LoadTexture("hero_tile", Path.Combine("Content", "Textures", "hero_tile.png"));
             gameWorld = new GameWorld(30, 30);
             gameWorld.InsertHero();
+
             base.OnLoad(e);
 
         }
