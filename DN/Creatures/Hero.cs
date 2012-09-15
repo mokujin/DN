@@ -31,7 +31,7 @@ namespace DN.Creatures
             {
                 if (_onGround || _onStairs)
                 {
-                    _speed.Y = -420;
+                    _speed.Y = -820;
                 }
             }
         }

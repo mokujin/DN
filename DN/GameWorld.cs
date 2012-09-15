@@ -82,7 +82,15 @@ namespace DN
 
         private void RenderTiles(float dt)
         {
-            TileMap.Draw(new Rectangle(0, 0, Width, Height));
+            Rectangle rect = camera.BoundingRectangle;
+            rect.X /= 64;
+            rect.Y /= 64;
+            rect.Width /= 64;
+            rect.Height /= 64;
+            rect.Width+=2;
+            rect.Height+=2;
+
+            TileMap.Draw(rect);
         }
 
 

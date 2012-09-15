@@ -142,6 +142,7 @@ namespace DN.Creatures
         public virtual void Update(float dt)
         {
             if (dt >= 0.1f) return; // duct tape xD sometimes dt is extremly big, so that cause movement lag
+                                    //lol
 
             if (CheckStairs())
             {

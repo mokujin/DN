@@ -64,9 +64,9 @@ namespace DN
         public void Draw(Rectangle region)
         {
             Size ts = CM.I.tex("wall_tile").Size;
-            for (int i = region.Left; i < region.Right; i++)
+            for (int i = Math.Max(0, region.Left); i < Math.Min(region.Right, Width); i++)
             {
-                for (int j = region.Top; j < region.Bottom; j++)
+                for (int j = Math.Max(0, region.Top); j < Math.Min(region.Bottom, Height); j++)
                 {
                     switch(_map[i,j])
                     {

@@ -72,7 +72,7 @@ namespace DN.LevelGeneration
 
         private void BuildLadder()
         {
-            _levelGenerator.TileMap[_cell.X, _cell.Y] = CellType.Ladder;
+            _levelGenerator.TileMap[_cell.X, _cell.Y] = CellType.Free;
         }
 
 
