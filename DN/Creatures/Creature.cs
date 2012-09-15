@@ -31,6 +31,8 @@ namespace DN.Creatures
         public int Top { get { return Bounds.Top; } set { _position.Y = value + _size.Height / 2; } }
         public int Bottom { get { return Bounds.Bottom; } set { _position.Y = value - _size.Height / 2; } }
         protected Vector2 _speed; // for gravity and jumps
+        protected bool _onStairs;
+        protected bool _onGround;
 
         public Creature(GameWorld world)
         {
@@ -47,6 +49,24 @@ namespace DN.Creatures
                 for (int j = Math.Max(0, range.Top); j < Math.Min(range.Bottom, _world.Height); j++)
                 {
                     if (!_world.TileMap.IsFree(new Point(i, j)))
+                        if (_world.TileMap.GetRect(i, j).IntersectsWith(bsh))
+                        {
+                            return true;
+                        }
+                }
+            }
+            return false;
+        }
+        public bool CollideWith(Vector2 shift, CellType type)
+        {
+            Point tile = new Point((int)((Position.X + shift.X) / 64), (int)((Position.Y + shift.Y) / 64));
+            Rectangle bsh = GetBoundsWithShift(shift);
+            Rectangle range = new Rectangle(tile.X - 2, tile.Y - 2, tile.X + 2, tile.Y + 2);
+            for (int i = Math.Max(0, range.Left); i < Math.Min(range.Right, _world.Width); i++)
+            {
+                for (int j = Math.Max(0, range.Top); j < Math.Min(range.Bottom, _world.Height); j++)
+                {
+                    if (_world.TileMap[i, j] == type)
                         if (_world.TileMap.GetRect(i, j).IntersectsWith(bsh))
                         {
                             return true;
@@ -106,14 +126,57 @@ namespace DN.Creatures
             if (!fy) _position.Y += shift.Y;
         }
 
+        public bool CheckStairs()
+        {
+            Point cur = new Point((int)((_position.X) / 64), (int)((_position.Y) / 64)); // current cell
+            return _world.TileMap[cur.X, cur.Y] == CellType.Ladder;
+             
+        }
+
+
+        public event Action StandOnStairs;
+        public event Action StandOutStairs;
+        public event Action StandOnGround;
+        public event Action StandOutGround;
+
         public virtual void Update(float dt)
         {
             if (dt >= 0.1f) return; // duct tape xD sometimes dt is extremly big, so that cause movement lag
 
-            if(!OnGround())
+            if (CheckStairs())
+            {
+                if (!_onStairs && StandOnStairs != null)
+                    StandOnStairs();
+                _onStairs = true;
+            }
+            else
+            {
+                if (_onStairs && StandOutStairs != null)
+                    StandOutStairs();
+                _onStairs = false;
+            }
+            if (CheckGround())
+            {
+                if (!_onGround && StandOnGround != null)
+                    StandOnGround();
+                _onGround = true;
+            }
+            else
+            {
+                if (_onGround && StandOutGround != null)
+                    StandOutGround();
+                _onGround = false;
+            }
+
+
+            if (!_onGround && !_onStairs)
                 _speed.Y += _world.g * dt * 10;
+            if (_onStairs && _speed.Y < 0)
+                _speed.Y = Math.Min(0, _speed.Y + _world.g * dt * 10);
+            //else
+            //    _speed.Y = 0;
             Vector2 shift = _speed * dt;
-            if (!Collide(shift) && shift != Vector2.Zero)
+            if (!CollideWith(shift, CellType.Wall) && shift != Vector2.Zero)
             {
                 Position += shift;
             }
@@ -122,9 +185,10 @@ namespace DN.Creatures
                 _speed = Vector2.Zero;
                 MoveToContact(shift);
             }
+
         }
 
-        public bool OnGround()
+        public bool CheckGround()
         {
             Point cur = new Point((int)((_position.X) / 64), (int)((_position.Y) / 64)); // current cell
             Rectangle range = new Rectangle(cur.X - 2, cur.Y - 2, 4, 4); // range of cells to test on collision
@@ -133,7 +197,7 @@ namespace DN.Creatures
                 for (int j = Math.Max(0, range.Top); j < Math.Min(range.Bottom, _world.Height); j++)
                 {
                     Rectangle test = _world.TileMap.GetRect(i, j); // just get rectangle of each tile
-                    if (!_world.TileMap.IsFree(new Point(i, j)))
+                    if (_world.TileMap[i, j] == CellType.Wall)
                     {
                         if (Bounds.Bottom == test.Top && Bounds.Left < test.Right && Bounds.Left > test.Left - _size.Width)
                             return true;

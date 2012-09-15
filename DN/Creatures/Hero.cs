@@ -17,15 +17,23 @@ namespace DN.Creatures
         {
             Game.g_Gamepad.OnButtonPress+=g_Gamepad_OnButtonPress;
             _size = new Size(48, 48);
+            StandOnStairs += Hero_StandOnStairs;
+        }
+
+        void Hero_StandOnStairs()
+        {
+            _speed.Y = 0;
         }
 
         private void g_Gamepad_OnButtonPress(object sender, GamepadExtension.GamepadButtons e)
         {
-            if(e.HasFlag(GamepadExtension.GamepadButtons.A))
-                if (OnGround())
+            if (e.HasFlag(GamepadExtension.GamepadButtons.A))
+            {
+                if (_onGround || _onStairs)
                 {
                     _speed.Y = -420;
                 }
+            }
         }
         public override void Draw(float dt)
         {
@@ -36,7 +44,7 @@ namespace DN.Creatures
         }
         void Move(float dx, float dy)
         {
-            if (!Collide(new Vector2(dx, dy)))
+            if (!CollideWith(new Vector2(dx, dy), CellType.Wall))
             {
                 _position.X += dx;
                 _position.Y += dy;
@@ -51,7 +59,13 @@ namespace DN.Creatures
                 Move(-250 * dt, 0);
             if (Game.g_Gamepad.DPad.Right)
                 Move(250 * dt, 0);
-            
+            if (_onStairs)
+            {
+                if (Game.g_Gamepad.DPad.Up)
+                    Move(0, -250 * dt);
+                if (Game.g_Gamepad.DPad.Down)
+                    Move(0, 250 * dt);
+            }
         }
     }
 }

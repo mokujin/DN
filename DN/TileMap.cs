@@ -77,9 +77,10 @@ namespace DN
                             SpriteBatch.Instance.DrawTexture(CM.I.tex("stair_tile"), i * ts.Width, j * ts.Height, ts.Width, ts.Height, Rectangle.Empty, Color.White, 0, 0, 0);
                             break;
                     }
+                    /*
                     if (_map[i, j] != CellType.Free)
                         SpriteBatch.Instance.OutlineRectangle(i * ts.Width, j * ts.Height, ts.Width, ts.Height, Color.Gray,1,0,0,0); // debug fraw
-                        
+                      */  
                 }
             }
         }
