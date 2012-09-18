@@ -129,7 +129,7 @@ namespace DN.Creatures
         public bool CheckStairs()
         {
             Point cur = new Point((int)((_position.X) / 64), (int)((_position.Y) / 64)); // current cell
-            return _world.TileMap[cur.X, cur.Y] == CellType.Ladder;
+            return _world.TileMap[cur.X, cur.Y] == CellType.Ladder || _world.TileMap[cur.X, cur.Y] == CellType.VRope;
              
         }
 
@@ -142,6 +142,7 @@ namespace DN.Creatures
         public virtual void Update(float dt)
         {
             if (dt >= 0.1f) return; // duct tape xD sometimes dt is extremly big, so that cause movement lag
+                                    //lol
 
             if (CheckStairs())
             {
