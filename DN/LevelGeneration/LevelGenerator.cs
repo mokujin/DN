@@ -7,10 +7,14 @@ namespace DN.LevelGeneration
 {
     public partial class LevelGenerator
     {
+        public int RoomCount;
+        public int RoomsMaxWidth;
+        public int RoomsMaxHeight;
+
         internal TileMap TileMap;
         internal ResourseMap ResourseMap;
         private List<Miner> _miners;
-       
+
 
 
         public LevelGenerator()
@@ -30,21 +34,22 @@ namespace DN.LevelGeneration
 
 
             _miners.Add(new Miner(this, TileMap.Width / 2, TileMap.Height -1));
-            //_miners.Add(new Miner(this, TileMap.Width / 2, (TileMap.Height/2) - 1));
+            _miners.Add(new Miner(this, TileMap.Width / 2, (TileMap.Height/2) - 1));
             UpdateMiners();
 
-            Point p = GetFreeCell();
-            Adventurer adv = new Adventurer(this, p.X, p.Y);
+            for (int i = 0; i < RoomCount; i++)
+            {
+                AddRoom();
+            }
+
+            var p = GetFreeCell();
+            var adv = new Adventurer(this, p.X, p.Y);
             _miners.Add(adv);
 
             UpdateMiners();
 
-            PolishMap();
 
             ClearJunk();
-
-            TileMap.PrintDebug();
-            Console.ReadKey();
         }
 
         private void UpdateMiners()
@@ -63,6 +68,27 @@ namespace DN.LevelGeneration
             }
         }
 
+        private void AddRoom()
+        {
+            int x, y, width, height;
+            width = RandomTool.RandInt(4, RoomsMaxWidth);
+            height = RandomTool.RandInt(4, RoomsMaxHeight);
+
+            do
+            {
+                x = RandomTool.RandInt(2, TileMap.Width - width);
+                y = RandomTool.RandInt(2, TileMap.Height - height);
+            } while (TileMap[x, y] == CellType.Wall);
+
+            for (int i = x; i < x + width; i++)
+            {
+                for (int j = y; j < y + height; j++)
+                {
+                    TileMap[i,j] = CellType.Free;
+                }
+            }
+        }
+
         private void ClearJunk()
         {
             for (int i = 0; i < TileMap.Width; i++)
@@ -74,6 +100,7 @@ namespace DN.LevelGeneration
                         int length = LadderLength(i, j);
                         if (length == 1)
                         {
+                            if(TileMap[i,j - 1] != CellType.Wall)
                             TileMap[i, j] = CellType.Free;
                         }
                     }
@@ -108,6 +135,7 @@ namespace DN.LevelGeneration
 
         private void PolishMap()
         {
+            //wtf
             for (int i = 1; i < TileMap.Width - 1; i++)
             {
                 for (int j = 1; j < TileMap.Height - 1; j++)

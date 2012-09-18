@@ -1,4 +1,4 @@
-﻿#define D8
+﻿#define D7
 
 using System;
 using System.Collections.Generic;
@@ -78,19 +78,30 @@ namespace DN.LevelGeneration
 
                 if (_cell.X == nextPoint.X && _cell.Y == nextPoint.Y)
                 {
-                    _neededPoints[_cell.X, _cell.Y] = 0;
+                    CellWasReached(_cell);
                     _pathFinished = true;
                 }
                 _path.RemoveAt(0);
             }
 #if D
             Console.Clear();
-            //PrintDebug();
+            PrintDebug();
             _levelGenerator.TileMap.PrintDebug();
-            Console.SetCursorPosition(_cell.X,1+ _cell.Y);
+            Console.SetCursorPosition(_cell.X, 1 + _cell.Y);
             Console.Write("X");
             Console.ReadKey();
 #endif
+        }
+
+        private void CellWasReached(Point cell)
+        {
+            //for (int i = -1; i <= 1; i++)
+                ///for (int j = -1; j <= 1; j++)
+            _neededPoints[cell.X, cell.Y] = 0;
+            _neededPoints[cell.X - 1, cell.Y] = 0;
+            _neededPoints[cell.X + 1, cell.Y] = 0;
+            _neededPoints[cell.X, cell.Y - 1] = 0;
+            _neededPoints[cell.X, cell.Y + 1] = 0;
         }
 
         private bool NothingLeftToSearch()
@@ -128,10 +139,10 @@ namespace DN.LevelGeneration
         {
             for (int i = 1; i < _levelGenerator.TileMap.Width - 1; i++)
                 for (int j = 1; j < _levelGenerator.TileMap.Height - 1; j++)
-                    if (_levelGenerator.TileMap[i, j] == CellType.Wall &&
-                       _levelGenerator.TileMap[i, j - 1] == CellType.Free)
+                    if (_levelGenerator.TileMap[i, j] == CellType.Free &&
+                       _levelGenerator.TileMap[i, j + 1] == CellType.Wall)
                     {
-                        _neededPoints[i, j - 1] = 1;
+                        _neededPoints[i, j] = 1;
                     }
         }
         public void PrintDebug()
@@ -141,7 +152,7 @@ namespace DN.LevelGeneration
                 Console.WriteLine();
                 for (int i = 0; i < _levelGenerator.TileMap.Width; i++)
                 {
-                    Console.Write((byte)_neededPoints[i, j]);
+                    Console.Write(_neededPoints[i, j]);
                 }
             }
         }

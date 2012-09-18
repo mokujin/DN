@@ -19,7 +19,6 @@ namespace DN.LevelGeneration
 
         protected Point _cell;
         protected Point _direction;
-        protected byte _steps;
 
         protected readonly LevelGenerator _levelGenerator;
 
@@ -36,21 +35,22 @@ namespace DN.LevelGeneration
         public virtual void Step()
         {
             _direction = GetDirection();
-            var nextPosition = new Point(_cell.X + _direction.X,
-                                         _cell.Y + _direction.Y);
+            MoveInDirection();
+            CheckBounds();
 
-          //  if (IsPossibleToMove(nextPosition))
+            _levelGenerator.ResourseMap.GatherResourses(this);
+            _levelGenerator.TileMap[_cell.X, _cell.Y] = CellType.Free;
+            if (false)
+            if(_cell.X != 0 && _cell.Y != 0 && _cell.Y <1500 && _cell.X < 1500)
             {
-                MoveInDirection();
-                CheckBounds();
-                _levelGenerator.ResourseMap.GatherResourses(this);
-                if(_levelGenerator.TileMap[_cell.X, _cell.Y] != CellType.Ladder)
-                    _levelGenerator.TileMap[_cell.X, _cell.Y] = CellType.Free;
-
-                if (_direction.Y != 0)
-                {
-                        BuildLadder();
-                }
+                _levelGenerator.TileMap[_cell.X - 1, _cell.Y] = CellType.Free;
+                _levelGenerator.TileMap[_cell.X + 1, _cell.Y] = CellType.Free;
+                _levelGenerator.TileMap[_cell.X, _cell.Y - 1] = CellType.Free;
+                _levelGenerator.TileMap[_cell.X, _cell.Y] = CellType.Free;
+                _levelGenerator.TileMap[_cell.X - 1, _cell.Y + 1] = CellType.Free;
+                _levelGenerator.TileMap[_cell.X - 1, _cell.Y - 1] = CellType.Free;
+                _levelGenerator.TileMap[_cell.X + 1, _cell.Y + 1] = CellType.Free;
+                _levelGenerator.TileMap[_cell.X + 1, _cell.Y - 1] = CellType.Free;
             }
         }
 
@@ -60,22 +60,7 @@ namespace DN.LevelGeneration
             _cell.Y += _direction.Y;
             _exploredMap[_cell.X, _cell.Y] += 1;
             _exploredMap[_cell.X, _cell.Y] *= 4;
-            //Console.WriteLine(_cell);
-        //    Console.Clear();
-         //   _levelGenerator.TileMap.Pr/intDebug();
-          //  Console.WriteLine();
-         //   _levelGenerator.ResourseMap.PrintDebug();
-         //   Console.SetCursorPosition(_cell.X, _cell.Y + 1);
-        //    Console.Write("X");
-           // Console.ReadKey(true);
         }
-
-        private void BuildLadder()
-        {
-            //if(_levelGenerator.TileMap[_cell.X,Math.Min(_levelGenerator.TileMap.Height - 1, _cell.Y + 1)] != CellType.Ladder)
-            //_levelGenerator.TileMap[_cell.X, _cell.Y] = CellType.Ladder;
-        }
-
 
         /// <returns>returns non diagonal direction</returns>
         private Point GetDirection()
@@ -115,13 +100,12 @@ namespace DN.LevelGeneration
 
             if (p.Y <= 0)
                 return Int32.MaxValue;
-
+            if (!_levelGenerator.TileMap.InRange(p))
+                return Int32.MinValue;
             if(_levelGenerator.TileMap.InRange(new Point(p.X, p.Y + 1)))
                 if(offsetY == 0)
                     if (_levelGenerator.TileMap.IsFree(new Point(p.X, p.Y + 1)))
                         return Int32.MinValue;
-            if (!_levelGenerator.TileMap.InRange(p))
-                return Int32.MinValue;
             if (p.X <= 1 || p.X >= _levelGenerator.TileMap.Width - 1 || p.Y >= _levelGenerator.TileMap.Height - 1)
                 return Int32.MinValue;
 
@@ -136,14 +120,6 @@ namespace DN.LevelGeneration
                 _cell.X = _levelGenerator.TileMap.Width;
             if (Cell.Y > _levelGenerator.TileMap.Height)
                 _cell.Y = _levelGenerator.TileMap.Height;
-        }
-        private bool IsPossibleToMove(Point p)
-        {
-            if (!_levelGenerator.TileMap.InRange(p)) return false;
-            if (!_levelGenerator.TileMap.InRange(new Point(p.X, p.Y))) return false;
-            if (_levelGenerator.TileMap.IsFree(new Point(p.X, p.Y))) return false;
-
-            return true;
         }
     }
 }

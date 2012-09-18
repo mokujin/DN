@@ -35,6 +35,9 @@ namespace DN
             TileMap.FillRandom(); 
 
             LevelGenerator lg = new LevelGenerator();
+            lg.RoomsMaxWidth = 15;
+            lg.RoomsMaxHeight = 5;
+            lg.RoomCount = 40;
             lg.Generate(this);
          //   TileMap.PrintDebug();
 

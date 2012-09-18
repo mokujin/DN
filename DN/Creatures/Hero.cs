@@ -8,14 +8,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Blueberry;
+using OpenTK.Input;
 
 namespace DN.Creatures
 {
     public class Hero:Creature
     {
+        private float _dt = 0;
+
         public Hero(GameWorld world):base(world)
         {
             Game.g_Gamepad.OnButtonPress+=g_Gamepad_OnButtonPress;
+            Game.g_Keyboard.KeyRepeat = true;
             _size = new Size(48, 48);
             StandOnStairs += Hero_StandOnStairs;
         }
@@ -29,12 +33,12 @@ namespace DN.Creatures
         {
             if (e.HasFlag(GamepadExtension.GamepadButtons.A))
             {
-                if (_onGround || _onStairs)
-                {
-                    _speed.Y = -420;
-                }
+                Jump();
             }
         }
+
+
+
         public override void Draw(float dt)
         {
             SpriteBatch.Instance.DrawTexture(CM.I.tex("hero_tile"), Position, Rectangle.Empty, Color4.White);
@@ -55,16 +59,30 @@ namespace DN.Creatures
         public override void Update(float dt)
         {
             base.Update(dt);
-            if (Game.g_Gamepad.DPad.Left)
+            _dt = dt;
+            if (Game.g_Gamepad.DPad.Left || Game.g_Keyboard[Key.Left])
                 Move(-250 * dt, 0);
-            if (Game.g_Gamepad.DPad.Right)
+            if (Game.g_Gamepad.DPad.Right || Game.g_Keyboard[Key.Right])
                 Move(250 * dt, 0);
             if (_onStairs)
             {
-                if (Game.g_Gamepad.DPad.Up)
+                if (Game.g_Gamepad.DPad.Up || Game.g_Keyboard[Key.Up])
                     Move(0, -250 * dt);
-                if (Game.g_Gamepad.DPad.Down)
+                if (Game.g_Gamepad.DPad.Down || Game.g_Keyboard[Key.Down])
                     Move(0, 250 * dt);
+            }
+            //else
+            {
+                if(Game.g_Keyboard[Key.Up])
+                    Jump();
+            }
+        }
+
+        private void Jump()
+        {
+            if (_onGround || _onStairs)
+            {
+                _speed.Y = -420;
             }
         }
     }
