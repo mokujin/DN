@@ -9,8 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>DN</RootNamespace>
     <AssemblyName>DN</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -51,6 +52,11 @@
     <Compile Include="Creatures\Hero.cs" />
     <Compile Include="Game.cs" />
     <Compile Include="GameWorld.cs" />
+    <Compile Include="LevelGeneration\Adventurer.cs" />
+    <Compile Include="LevelGeneration\AStar\AStar.cs" />
+    <Compile Include="LevelGeneration\AStar\BinaryHeap.cs" />
+    <Compile Include="LevelGeneration\AStar\Path.cs" />
+    <Compile Include="LevelGeneration\AStar\WayPoint.cs" />
     <Compile Include="LevelGeneration\ResourseMap.cs" />
     <Compile Include="TileMap.cs" />
     <Compile Include="LevelGeneration\Miner.cs" />

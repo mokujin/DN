@@ -44,7 +44,7 @@ namespace DN
             CM.I.LoadTexture("wall_tile", Path.Combine("Content", "Textures", "wall_tile.png"));
             CM.I.LoadTexture("hero_tile", Path.Combine("Content", "Textures", "hero_tile.png"));
             CM.I.LoadTexture("stair_tile", Path.Combine("Content", "Textures", "stair_tile.png"));
-            gameWorld = new GameWorld(30, 30);
+            gameWorld = new GameWorld(200,200);
             gameWorld.InsertHero();
 
             base.OnLoad(e);
