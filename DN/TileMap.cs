@@ -13,7 +13,8 @@ namespace DN
     {
         Free = 0,
         Wall = 1,
-        Ladder = 2
+        Ladder = 2,
+        VRope = 3
 
     }
 

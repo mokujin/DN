@@ -15,13 +15,13 @@ namespace DN.LevelGeneration
             get { return _cell; }
         }
 
-        private byte[,] _exploredMap;
+        protected byte[,] _exploredMap;
 
-        private Point _cell;
-        private Point _direction;
-        private byte _steps;
+        protected Point _cell;
+        protected Point _direction;
+        protected byte _steps;
 
-        private readonly LevelGenerator _levelGenerator;
+        protected readonly LevelGenerator _levelGenerator;
 
         public Miner(LevelGenerator levelGenerator, int x, int y)
         {
@@ -33,7 +33,7 @@ namespace DN.LevelGeneration
             _exploredMap[_cell.X, _cell.Y] = 1;
         }
 
-        public void Step()
+        public virtual void Step()
         {
             _direction = GetDirection();
             var nextPosition = new Point(_cell.X + _direction.X,
@@ -49,7 +49,7 @@ namespace DN.LevelGeneration
 
                 if (_direction.Y != 0)
                 {
-                    BuildLadder();
+                        BuildLadder();
                 }
             }
         }
@@ -62,7 +62,7 @@ namespace DN.LevelGeneration
             _exploredMap[_cell.X, _cell.Y] *= 4;
             //Console.WriteLine(_cell);
         //    Console.Clear();
-         //   _levelGenerator.TileMap.PrintDebug();
+         //   _levelGenerator.TileMap.Pr/intDebug();
           //  Console.WriteLine();
          //   _levelGenerator.ResourseMap.PrintDebug();
          //   Console.SetCursorPosition(_cell.X, _cell.Y + 1);
@@ -72,7 +72,8 @@ namespace DN.LevelGeneration
 
         private void BuildLadder()
         {
-            _levelGenerator.TileMap[_cell.X, _cell.Y] = CellType.Free;
+            //if(_levelGenerator.TileMap[_cell.X,Math.Min(_levelGenerator.TileMap.Height - 1, _cell.Y + 1)] != CellType.Ladder)
+            //_levelGenerator.TileMap[_cell.X, _cell.Y] = CellType.Ladder;
         }
 
 
@@ -121,7 +122,8 @@ namespace DN.LevelGeneration
                         return Int32.MinValue;
             if (!_levelGenerator.TileMap.InRange(p))
                 return Int32.MinValue;
-
+            if (p.X <= 1 || p.X >= _levelGenerator.TileMap.Width - 1 || p.Y >= _levelGenerator.TileMap.Height - 1)
+                return Int32.MinValue;
 
             return (byte)_levelGenerator.ResourseMap[p.X, p.Y] - _exploredMap[p.X, p.Y];
         }
