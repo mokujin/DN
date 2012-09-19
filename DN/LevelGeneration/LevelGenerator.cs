@@ -5,7 +5,7 @@ using Blueberry;
 
 namespace DN.LevelGeneration
 {
-    public partial class LevelGenerator
+    public class LevelGenerator
     {
         public int RoomCount;
         public int RoomsMaxWidth;
@@ -16,33 +16,24 @@ namespace DN.LevelGeneration
         private List<Miner> _miners;
 
 
-
         public LevelGenerator()
         {
-
             _miners = new List<Miner>();
         }
 
         public void Generate(GameWorld gameWorld)
         {
-
             TileMap = gameWorld.TileMap;
 
             ResourseMap = new ResourseMap(TileMap.Width, TileMap.Height);
             TileMap.FillWith(CellType.Wall);
-
-
 
             _miners.Add(new Miner(this, TileMap.Width / 2, TileMap.Height -1));
             _miners.Add(new Miner(this, TileMap.Width / 2, (TileMap.Height/2) - 1));
             UpdateMiners();
 
             for (int i = 0; i < RoomCount; i++)
-            {
                 AddRoom();
-            }
-
-            
 
             var p = GetFreeCell();
             var adv = new Adventurer(this, p.X, p.Y);

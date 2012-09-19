@@ -1,4 +1,5 @@
 ﻿using Blueberry.Graphics;
+using DN.GameObjects.Weapons;
 using OpenTK;
 using OpenTK.Graphics;
 using System;
@@ -24,6 +25,11 @@ namespace DN.GameObjects.Creatures
             Game.g_Keyboard.KeyRepeat = true;
             Size = new Size(48, 48);
             StandOnStairs += Hero_StandOnStairs;
+            _weapon = new Sword(gameWorld, this)
+                          {
+                              AttackSpeed = 15,
+                              TimeToFinishAttack = 0.5f
+                          };
         }
 
         void Hero_StandOnStairs()
@@ -71,9 +77,15 @@ namespace DN.GameObjects.Creatures
         private void UpdateControlls(float dt)
         {
             if (LeftKeyPressed())
-                Move(-250 * dt, 0);
+            {
+                Move(-250*dt, 0);
+                Direction = MovementDirection.Left;
+            }
             if (RightKeyPressed())
-                Move(250 * dt, 0);
+            {
+                Move(250*dt, 0);
+                Direction = MovementDirection.Right;
+            }
 
             if (_weapon != null)
                 if (AttackKeyPressed())

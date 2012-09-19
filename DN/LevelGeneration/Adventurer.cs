@@ -31,9 +31,6 @@ namespace DN.LevelGeneration
             _ladderPoints = new byte[_levelGenerator.TileMap.Width,
                                      _levelGenerator.TileMap.Height];
             DetermineNeededPoints();
-#if D
-            PrintDebug();
-#endif
         }
 
         public override void Step()

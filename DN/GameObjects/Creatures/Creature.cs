@@ -11,15 +11,28 @@ using Blueberry;
 
 namespace DN.GameObjects.Creatures
 {
+    public enum MovementDirection:sbyte
+    {
+        Left = -1,
+        Right = 1
+    }
+
     public abstract class Creature:GameObject
     {
         protected Vector2 Speed; // for gravity and jumps
         protected bool OnStairs;
         protected bool OnGround;
+        public MovementDirection Direction
+        {
+            get;
+            protected set;
+        }
+
 
         public Creature(GameWorld gameWorld)
             :base(gameWorld)
         {
+            Direction = MovementDirection.Right;
         }
 
         public bool Collide(Vector2 shift)

@@ -8,6 +8,11 @@ namespace DN.GameObjects.Weapons
 {
     public abstract class Weapon:GameObject
     {
+        public bool Attacking
+        {
+            get { return AttackStarted; }
+        }
+
         private float _elapsed;
         
         protected Creature Creature; // creature which using this weapon
@@ -16,7 +21,7 @@ namespace DN.GameObjects.Weapons
 
         protected bool CanAttack
         {
-            get{return _elapsed >= AttackSpeed;}
+            get{return _elapsed >= AttackSpeed && !AttackStarted;}
         }
 
         public float AttackSpeed;
@@ -26,6 +31,7 @@ namespace DN.GameObjects.Weapons
             :base(gameWorld)
         {
             Creature = creature;
+
         }
 
         public override void Update(float dt)

@@ -69,6 +69,7 @@ namespace DN.GameObjects
         public GameObject(GameWorld gameWorld)
         {
             this._world = gameWorld;
+            this._world.AddObject(this);
         }
         public abstract void Update(float dt);
         public abstract void Draw(float dt);

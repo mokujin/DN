@@ -22,7 +22,7 @@ namespace DN
         public readonly TileMap TileMap;
 
         Camera camera;
-        Hero hero = null;
+        Hero hero;
         public float g = 120f; // gravity acceleration;
 
         private List<GameObject> _gameObjects;
@@ -43,10 +43,12 @@ namespace DN
             camera = new Camera(Game.g_screenSize, new Point(Game.g_screenSize.Width / 2, Game.g_screenSize.Height / 2), true);
             camera.MoveSpeed = 7;
             
-            LevelGenerator lg = new LevelGenerator();
-            lg.RoomsMaxWidth = 3;
-            lg.RoomsMaxHeight = 5;
-            lg.RoomCount = 2;
+            var lg = new LevelGenerator
+                         {
+                             RoomsMaxWidth = 3,
+                             RoomsMaxHeight = 5,
+                             RoomCount = 2
+                         };
             lg.Generate(this);
         }
 
@@ -77,19 +79,12 @@ namespace DN
 
         public void Update(float dt)
         {
-            float shift = dt * 200;
-            if (Game.g_Keyboard[Key.Left])
-                camera.Move(-shift, 0);
-            if (Game.g_Keyboard[Key.Right])
-                camera.Move(shift, 0);
-            if (Game.g_Keyboard[Key.Up])
-                camera.Move(0, -shift);
-            if (Game.g_Keyboard[Key.Down])
-                camera.Move(0, shift);
             camera.MoveTo(hero.Position);
-            hero.Update(dt);
-            camera.Update(dt);
 
+            foreach (var gameObject in _gameObjects)
+                gameObject.Update(dt);
+
+            camera.Update(dt);
             UpdateObjectsEnqueues();
         }
 
@@ -97,6 +92,7 @@ namespace DN
         {
             while (_addNewObjectsQueue.Count > 0)
                 _gameObjects.Add(_addNewObjectsQueue.Dequeue());
+
             while (_deleteObjectsQueue.Count > 0)
                 _gameObjects.Remove(_deleteObjectsQueue.Dequeue());
         }
@@ -105,7 +101,8 @@ namespace DN
         {
             SpriteBatch.Instance.Begin(camera.GetViewMatrix());
             RenderTiles(dt);
-            hero.Draw(dt);
+            foreach (var gameObject in _gameObjects)
+                gameObject.Draw(dt);
             SpriteBatch.Instance.End();
         }
 

@@ -44,6 +44,7 @@ namespace DN
             CM.I.LoadTexture("wall_tile", Path.Combine("Content", "Textures", "wall_tile.png"));
             CM.I.LoadTexture("hero_tile", Path.Combine("Content", "Textures", "hero_tile.png"));
             CM.I.LoadTexture("stair_tile", Path.Combine("Content", "Textures", "stair_tile.png"));
+            CM.I.LoadTexture("sword_sprite", Path.Combine("Content", "Textures", "Weapons", "Sword.png"));
             gameWorld = new GameWorld(20,20);
             gameWorld.InsertHero();
 
