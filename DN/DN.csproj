@@ -48,9 +48,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ContentManager.cs" />
-    <Compile Include="Creatures\Creature.cs" />
-    <Compile Include="Creatures\Hero.cs" />
+    <Compile Include="GameObjects\Creatures\Creature.cs" />
+    <Compile Include="GameObjects\Creatures\Hero.cs" />
     <Compile Include="Game.cs" />
+    <Compile Include="GameObjects\GameObject.cs" />
+    <Compile Include="GameObjects\Weapons\Sword.cs" />
+    <Compile Include="GameObjects\Weapons\Weapon.cs" />
     <Compile Include="GameWorld.cs" />
     <Compile Include="LevelGeneration\Adventurer.cs" />
     <Compile Include="LevelGeneration\AStar\AStar.cs" />

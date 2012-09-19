@@ -7,13 +7,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using OpenTK.Input;
-using DN.Creatures;
+using DN.GameObjects.Creatures;
 using DN.LevelGeneration;
-
+using DN.GameObjects;
 namespace DN
 {
     public class GameWorld
     {
+
+
         public readonly int Width;
         public readonly int Height;
 
@@ -23,24 +25,29 @@ namespace DN
         Hero hero = null;
         public float g = 120f; // gravity acceleration;
 
+        private List<GameObject> _gameObjects;
+        private Queue<GameObject> _addNewObjectsQueue;
+        private Queue<GameObject> _deleteObjectsQueue;
+
+
         public GameWorld(int width, int height)
         {
             Width = width;
             Height = height;
             TileMap = new TileMap(Width, Height);
 
+            _gameObjects = new List<GameObject>();
+            _addNewObjectsQueue = new Queue<GameObject>();
+            _deleteObjectsQueue = new Queue<GameObject>();
+
             camera = new Camera(Game.g_screenSize, new Point(Game.g_screenSize.Width / 2, Game.g_screenSize.Height / 2), true);
             camera.MoveSpeed = 7;
             
-            TileMap.FillRandom(); 
-
             LevelGenerator lg = new LevelGenerator();
-            lg.RoomsMaxWidth = 15;
+            lg.RoomsMaxWidth = 3;
             lg.RoomsMaxHeight = 5;
-            lg.RoomCount = 40;
+            lg.RoomCount = 2;
             lg.Generate(this);
-         //   TileMap.PrintDebug();
-
         }
 
         public void InsertHero()
@@ -59,6 +66,15 @@ namespace DN
             camera.MoveTo(hero.Position);
         }
 
+        public void AddObject(GameObject gameObject)
+        {
+            _addNewObjectsQueue.Enqueue(gameObject);
+        }
+        public void RemoveObject(GameObject gameObject)
+        {
+            _deleteObjectsQueue.Enqueue(gameObject);
+        }
+
         public void Update(float dt)
         {
             float shift = dt * 200;
@@ -73,6 +89,16 @@ namespace DN
             camera.MoveTo(hero.Position);
             hero.Update(dt);
             camera.Update(dt);
+
+            UpdateObjectsEnqueues();
+        }
+
+        private void UpdateObjectsEnqueues()
+        {
+            while (_addNewObjectsQueue.Count > 0)
+                _gameObjects.Add(_addNewObjectsQueue.Dequeue());
+            while (_deleteObjectsQueue.Count > 0)
+                _gameObjects.Remove(_deleteObjectsQueue.Dequeue());
         }
 
         public void Draw(float dt)

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Drawing;
-using DN.Creatures;
+using DN.GameObjects.Creatures;
 
 namespace DN.PathFinding
 {

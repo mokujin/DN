@@ -9,34 +9,17 @@ using System.Text;
 using System.Threading.Tasks;
 using Blueberry;
 
-namespace DN.Creatures
+namespace DN.GameObjects.Creatures
 {
-    public class Creature
+    public abstract class Creature:GameObject
     {
-        protected Vector2 _position; // relative to center
+        protected Vector2 Speed; // for gravity and jumps
+        protected bool OnStairs;
+        protected bool OnGround;
 
-        public Vector2 Position { get { return _position; }  set { _position = value; } }
-        protected GameWorld _world;
-        protected Size _size = new Size(56, 56); // creature size
-        public Rectangle Bounds 
+        public Creature(GameWorld gameWorld)
+            :base(gameWorld)
         {
-            get
-            {
-                Rectangle r = new Rectangle((int)(_position.X - _size.Width / 2), (int)(_position.Y - _size.Height / 2), _size.Width, _size.Height);
-                return r;
-            }
-        }
-        public int Left { get { return Bounds.Left; } set { _position.X = value + _size.Width / 2; } }
-        public int Right { get { return Bounds.Right; } set { _position.X = value - _size.Width / 2; } }
-        public int Top { get { return Bounds.Top; } set { _position.Y = value + _size.Height / 2; } }
-        public int Bottom { get { return Bounds.Bottom; } set { _position.Y = value - _size.Height / 2; } }
-        protected Vector2 _speed; // for gravity and jumps
-        protected bool _onStairs;
-        protected bool _onGround;
-
-        public Creature(GameWorld world)
-        {
-            _world = world;
         }
 
         public bool Collide(Vector2 shift)
@@ -122,13 +105,13 @@ namespace DN.Creatures
                     }
                 }
             }
-            if (!fx) _position.X += shift.X;
-            if (!fy) _position.Y += shift.Y;
+            if (!fx) X += shift.X;
+            if (!fy) Y += shift.Y;
         }
 
         public bool CheckStairs()
         {
-            Point cur = new Point((int)((_position.X) / 64), (int)((_position.Y) / 64)); // current cell
+            Point cur = new Point((int)((X) / 64), (int)((Y) / 64)); // current cell
             return _world.TileMap[cur.X, cur.Y] == CellType.Ladder || _world.TileMap[cur.X, cur.Y] == CellType.VRope;
              
         }
@@ -139,51 +122,51 @@ namespace DN.Creatures
         public event Action StandOnGround;
         public event Action StandOutGround;
 
-        public virtual void Update(float dt)
+        public override void Update(float dt)
         {
             if (dt >= 0.1f) return; // duct tape xD sometimes dt is extremly big, so that cause movement lag
                                     //lol
 
             if (CheckStairs())
             {
-                if (!_onStairs && StandOnStairs != null)
+                if (!OnStairs && StandOnStairs != null)
                     StandOnStairs();
-                _onStairs = true;
+                OnStairs = true;
             }
             else
             {
-                if (_onStairs && StandOutStairs != null)
+                if (OnStairs && StandOutStairs != null)
                     StandOutStairs();
-                _onStairs = false;
+                OnStairs = false;
             }
             if (CheckGround())
             {
-                if (!_onGround && StandOnGround != null)
+                if (!OnGround && StandOnGround != null)
                     StandOnGround();
-                _onGround = true;
+                OnGround = true;
             }
             else
             {
-                if (_onGround && StandOutGround != null)
+                if (OnGround && StandOutGround != null)
                     StandOutGround();
-                _onGround = false;
+                OnGround = false;
             }
 
 
-            if (!_onGround && !_onStairs)
-                _speed.Y += _world.g * dt * 10;
-            if (_onStairs && _speed.Y < 0)
-                _speed.Y = Math.Min(0, _speed.Y + _world.g * dt * 10);
+            if (!OnGround && !OnStairs)
+                Speed.Y += _world.g * dt * 10;
+            if (OnStairs && Speed.Y < 0)
+                Speed.Y = Math.Min(0, Speed.Y + _world.g * dt * 10);
             //else
             //    _speed.Y = 0;
-            Vector2 shift = _speed * dt;
+            Vector2 shift = Speed * dt;
             if (!CollideWith(shift, CellType.Wall) && shift != Vector2.Zero)
             {
                 Position += shift;
             }
-            else if (_speed != Vector2.Zero)
+            else if (Speed != Vector2.Zero)
             {
-                _speed = Vector2.Zero;
+                Speed = Vector2.Zero;
                 MoveToContact(shift);
             }
 
@@ -191,7 +174,7 @@ namespace DN.Creatures
 
         public bool CheckGround()
         {
-            Point cur = new Point((int)((_position.X) / 64), (int)((_position.Y) / 64)); // current cell
+            Point cur = new Point((int)((X) / 64), (int)((Y) / 64)); // current cell
             Rectangle range = new Rectangle(cur.X - 2, cur.Y - 2, 4, 4); // range of cells to test on collision
             for (int i = Math.Max(0, range.Left); i < Math.Min(range.Right, _world.Width); i++)
             {
@@ -200,7 +183,7 @@ namespace DN.Creatures
                     Rectangle test = _world.TileMap.GetRect(i, j); // just get rectangle of each tile
                     if (_world.TileMap[i, j] == CellType.Wall)
                     {
-                        if (Bounds.Bottom == test.Top && Bounds.Left < test.Right && Bounds.Left > test.Left - _size.Width)
+                        if (Bounds.Bottom == test.Top && Bounds.Left < test.Right && Bounds.Left > test.Left - Size.Width)
                             return true;
                     }
                 }
@@ -218,10 +201,6 @@ namespace DN.Creatures
         public Rectangle GetBoundsWithShift(Vector2 shift)
         {
             return GetBoundsWithShift(shift.X, shift.Y);
-        }
-        public virtual void Draw(float dt)
-        {
-            
         }
     }
 }
