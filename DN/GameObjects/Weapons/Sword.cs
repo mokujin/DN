@@ -20,10 +20,7 @@ namespace DN.GameObjects.Weapons
 
         public override void Update(float dt)
         {
-            base.Update(dt);
-
-            Console.Clear();
-            Console.WriteLine(new Vector2(X + _offset * (sbyte)Creature.Direction, Y));            
+            base.Update(dt);       
         }
 
         public override void Draw(float dt)

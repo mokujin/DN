@@ -1,6 +1,4 @@
-﻿#define D7
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -13,9 +11,8 @@ namespace DN.LevelGeneration
 {
     class Adventurer:Miner
     {
-        private byte[,] _ladderPoints;
         private byte[,] _neededPoints;
-        Point nextPoint;
+        Point _nextPoint;
 
         AStar _astar;
         List<Vector2> _path;
@@ -23,12 +20,9 @@ namespace DN.LevelGeneration
 
         public Adventurer(LevelGenerator levelGenerator, int x, int y) : base(levelGenerator, x, y)
         {
-            _astar = new AStar(_levelGenerator.TileMap);
-            _astar.DiagonalMovesAllowed = true;
+            _astar = new AStar(_levelGenerator.TileMap) {DiagonalMovesAllowed = true};
 
             _neededPoints = new byte[_levelGenerator.TileMap.Width,
-                                     _levelGenerator.TileMap.Height];
-            _ladderPoints = new byte[_levelGenerator.TileMap.Width,
                                      _levelGenerator.TileMap.Height];
             DetermineNeededPoints();
         }
@@ -42,12 +36,12 @@ namespace DN.LevelGeneration
             }
             if (_pathFinished)
             {
-                nextPoint = GetGlosestPoint();
+                _nextPoint = GetGlosestPoint();
 
-                _path = _astar.FindPlatformerCellWay(_cell, nextPoint);
+                _path = _astar.FindPlatformerCellWay(_cell, _nextPoint);
 
                 if (_path == null)
-                    _path = _astar.FindCellWay(_cell, nextPoint);
+                    _path = _astar.FindCellWay(_cell, _nextPoint);
                 _pathFinished = false;
             }
             else
@@ -76,21 +70,13 @@ namespace DN.LevelGeneration
                         _levelGenerator.TileMap[_cell.X, _cell.Y] = CellType.Ladder;
                 }
 
-                if (_cell.X == nextPoint.X && _cell.Y == nextPoint.Y)
+                if (_cell.X == _nextPoint.X && _cell.Y == _nextPoint.Y)
                 {
                     CellWasReached(_cell);
                     _pathFinished = true;
                 }
                 _path.RemoveAt(0);
             }
-#if D
-            Console.Clear();
-            PrintDebug();
-            _levelGenerator.TileMap.PrintDebug();
-            Console.SetCursorPosition(_cell.X, 1 + _cell.Y);
-            Console.Write("X");
-            Console.ReadKey();
-#endif
         }
 
         private void CellWasReached(Point cell)

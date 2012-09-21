@@ -24,7 +24,7 @@ namespace DN.GameObjects.Creatures
             Game.g_Gamepad.OnButtonPress += g_Gamepad_OnButtonPress;
             Game.g_Keyboard.KeyRepeat = true;
             Size = new Size(48, 48);
-            StandOnStairs += Hero_StandOnStairs;
+            StandOnStairs += HeroStandOnStairs;
 
             _currentWeapon = new Sword(gameWorld, this)
                           {
@@ -33,7 +33,7 @@ namespace DN.GameObjects.Creatures
                           };
         }
 
-        void Hero_StandOnStairs()
+        void HeroStandOnStairs()
         {
             Speed.Y = 0;
         }

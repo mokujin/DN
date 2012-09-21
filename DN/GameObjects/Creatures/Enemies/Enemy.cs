@@ -1,14 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
+using Blueberry.Graphics;
 using DN.GameObjects.Creatures.Enemies.Behaviours;
-
+using Blueberry;
 
 namespace DN.GameObjects.Creatures.Enemies
 {
     public class Enemy:Creature
     {
+        public string Sprite;
         IBehaviour _behaviour;
 
         public Enemy(GameWorld gameWorld, IBehaviour behaviour = null)
@@ -30,6 +33,8 @@ namespace DN.GameObjects.Creatures.Enemies
 
         public override void Draw(float dt)
         {
+            if(Sprite != null)
+                SpriteBatch.Instance.DrawTexture(CM.I.tex(Sprite), Position, Color.White);
         }
     }
 }

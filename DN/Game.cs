@@ -34,23 +34,28 @@ namespace DN
 
         protected override void OnLoad(EventArgs e)
         {
-
             g_Keyboard = Keyboard;
             g_Mouse = Mouse;
             g_Gamepad = new GamepadState(GamepadIndex.One);
       
             GL.ClearColor(Color4.Black);
 
-            CM.I.LoadTexture("wall_tile", Path.Combine("Content", "Textures", "wall_tile.png"));
-            CM.I.LoadTexture("hero_tile", Path.Combine("Content", "Textures", "hero_tile.png"));
-            CM.I.LoadTexture("stair_tile", Path.Combine("Content", "Textures", "stair_tile.png"));
-            CM.I.LoadTexture("sword_sprite", Path.Combine("Content", "Textures", "Weapons", "Sword.png"));
-            gameWorld = new GameWorld(20,20);
-           // gameWorld.InsertHero();
+            LoadTextures();
+            gameWorld = new GameWorld(15,15);
 
             base.OnLoad(e);
 
         }
+
+        private void LoadTextures()
+        {
+            CM.I.LoadTexture("wall_tile", Path.Combine("Content", "Textures", "wall_tile.png"));
+            CM.I.LoadTexture("hero_tile", Path.Combine("Content", "Textures", "hero_tile.png"));
+            CM.I.LoadTexture("stair_tile", Path.Combine("Content", "Textures", "stair_tile.png"));
+            CM.I.LoadTexture("sword_sprite", Path.Combine("Content", "Textures", "Weapons", "Sword.png"));
+            CM.I.LoadTexture("bat_sprite", Path.Combine("Content", "Textures", "Enemies", "Bat.png"));
+        }
+
         protected override void OnUpdateFrame(FrameEventArgs e)
         {
             g_Gamepad.Update();

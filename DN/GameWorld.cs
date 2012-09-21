@@ -58,9 +58,9 @@ namespace DN
             lg.Generate(this);
 
             InsertHero();
-            //Creature bat = EnemiesFabric.CreateEnemy(this, EnemyType.Bat);
-            //bat.Cell = GetRandomPoint();
-            //AddObject(bat);
+            Creature bat = EnemiesFabric.CreateEnemy(this, EnemyType.Bat);
+            bat.Cell = GetRandomPoint();
+            AddObject(bat);
         }
 
         public void InsertHero()
