@@ -36,22 +36,9 @@ namespace DN.LevelGeneration
         {
             _direction = GetDirection();
             MoveInDirection();
-            CheckBounds();
 
             _levelGenerator.ResourseMap.GatherResourses(this);
             _levelGenerator.TileMap[_cell.X, _cell.Y] = CellType.Free;
-            if (false)
-            if(_cell.X != 0 && _cell.Y != 0 && _cell.Y <1500 && _cell.X < 1500)
-            {
-                _levelGenerator.TileMap[_cell.X - 1, _cell.Y] = CellType.Free;
-                _levelGenerator.TileMap[_cell.X + 1, _cell.Y] = CellType.Free;
-                _levelGenerator.TileMap[_cell.X, _cell.Y - 1] = CellType.Free;
-                _levelGenerator.TileMap[_cell.X, _cell.Y] = CellType.Free;
-                _levelGenerator.TileMap[_cell.X - 1, _cell.Y + 1] = CellType.Free;
-                _levelGenerator.TileMap[_cell.X - 1, _cell.Y - 1] = CellType.Free;
-                _levelGenerator.TileMap[_cell.X + 1, _cell.Y + 1] = CellType.Free;
-                _levelGenerator.TileMap[_cell.X + 1, _cell.Y - 1] = CellType.Free;
-            }
         }
 
         private void MoveInDirection()
@@ -88,9 +75,6 @@ namespace DN.LevelGeneration
                 if(res[i] != Int32.MinValue)
                     if (res[i] > res[max])
                         max = i;
-
-
-
             return p[max];
         }
 
@@ -100,26 +84,19 @@ namespace DN.LevelGeneration
 
             if (p.Y <= 0)
                 return Int32.MaxValue;
+
             if (!_levelGenerator.TileMap.InRange(p))
                 return Int32.MinValue;
+
             if(_levelGenerator.TileMap.InRange(new Point(p.X, p.Y + 1)))
                 if(offsetY == 0)
                     if (_levelGenerator.TileMap.IsFree(new Point(p.X, p.Y + 1)))
                         return Int32.MinValue;
+
             if (p.X <= 1 || p.X >= _levelGenerator.TileMap.Width - 1 || p.Y >= _levelGenerator.TileMap.Height - 1)
                 return Int32.MinValue;
 
             return (byte)_levelGenerator.ResourseMap[p.X, p.Y] - _exploredMap[p.X, p.Y];
-        }
-
-        private void CheckBounds()
-        {
-            if (_cell.X < 0)
-                _cell.X = 0;
-            if (_cell.X > _levelGenerator.TileMap.Width)
-                _cell.X = _levelGenerator.TileMap.Width;
-            if (Cell.Y > _levelGenerator.TileMap.Height)
-                _cell.Y = _levelGenerator.TileMap.Height;
         }
     }
 }

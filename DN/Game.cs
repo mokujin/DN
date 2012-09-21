@@ -38,14 +38,15 @@ namespace DN
             g_Keyboard = Keyboard;
             g_Mouse = Mouse;
             g_Gamepad = new GamepadState(GamepadIndex.One);
-
+      
             GL.ClearColor(Color4.Black);
 
             CM.I.LoadTexture("wall_tile", Path.Combine("Content", "Textures", "wall_tile.png"));
             CM.I.LoadTexture("hero_tile", Path.Combine("Content", "Textures", "hero_tile.png"));
             CM.I.LoadTexture("stair_tile", Path.Combine("Content", "Textures", "stair_tile.png"));
-            gameWorld = new GameWorld(200,200);
-            gameWorld.InsertHero();
+            CM.I.LoadTexture("sword_sprite", Path.Combine("Content", "Textures", "Weapons", "Sword.png"));
+            gameWorld = new GameWorld(20,20);
+           // gameWorld.InsertHero();
 
             base.OnLoad(e);
 
@@ -61,10 +62,10 @@ namespace DN
             GL.Clear(ClearBufferMask.ColorBufferBit);
             
             gameWorld.Draw((float) e.Time);
-            SpriteBatch.Instance.End();
 
             SwapBuffers();
             base.OnRenderFrame(e);
+
         }
     }
 }

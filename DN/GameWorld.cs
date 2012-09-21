@@ -7,21 +7,34 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using OpenTK.Input;
-using DN.Creatures;
+using DN.GameObjects.Creatures;
 using DN.LevelGeneration;
-
+using DN.GameObjects;
+using OpenTK;
+using DN.GameObjects.Creatures.Enemies;
 namespace DN
 {
     public class GameWorld
     {
-        public readonly int Width;
-        public readonly int Height;
 
-        public readonly TileMap TileMap;
 
-        Camera camera;
-        Hero hero = null;
+        public int Width{get; private set;}
+        public int Height{get; private set;}
+        public TileMap TileMap { get; private set; }
+
+        public Hero Hero
+        {
+            get;
+            private set;
+        }
+
         public float g = 120f; // gravity acceleration;
+
+        private List<GameObject> _gameObjects;
+        private Queue<GameObject> _addNewObjectsQueue;
+        private Queue<GameObject> _deleteObjectsQueue;
+
+        private Camera camera;
 
         public GameWorld(int width, int height)
         {
@@ -29,57 +42,92 @@ namespace DN
             Height = height;
             TileMap = new TileMap(Width, Height);
 
+            _gameObjects = new List<GameObject>();
+            _addNewObjectsQueue = new Queue<GameObject>();
+            _deleteObjectsQueue = new Queue<GameObject>();
+
             camera = new Camera(Game.g_screenSize, new Point(Game.g_screenSize.Width / 2, Game.g_screenSize.Height / 2), true);
             camera.MoveSpeed = 7;
             
-            TileMap.FillRandom(); 
-
-            LevelGenerator lg = new LevelGenerator();
-            lg.RoomsMaxWidth = 15;
-            lg.RoomsMaxHeight = 5;
-            lg.RoomCount = 40;
+            var lg = new LevelGenerator
+                         {
+                             RoomsMaxWidth = 3,
+                             RoomsMaxHeight = 5,
+                             RoomCount = 2
+                         };
             lg.Generate(this);
-         //   TileMap.PrintDebug();
 
+            InsertHero();
+            //Creature bat = EnemiesFabric.CreateEnemy(this, EnemyType.Bat);
+            //bat.Cell = GetRandomPoint();
+            //AddObject(bat);
         }
 
         public void InsertHero()
         {
-            hero = new Hero(this);
+            Hero = new Hero(this);
+            Point p = GetRandomPoint();
+            Hero.Position = new OpenTK.Vector2((p.X * 64)+32, (p.Y * 64)+32);
+            camera.MoveTo(Hero.Position);
+        }
+        public Point GetRandomPoint()
+        {
             Point p;
-            while(true)
+            do
             {
                 p = new Point(RandomTool.RandInt(0, Width), RandomTool.RandInt(0, Height));
-                if(TileMap.IsFree(p))
-                {
-                    hero.Position = new OpenTK.Vector2((p.X * 64)+32, (p.Y * 64)+32);
-                    break;
-                }
-            }
-            camera.MoveTo(hero.Position);
+            } while (!TileMap.IsFree(p));
+
+            return p;
+        }
+
+        public void AddObject(GameObject gameObject)
+        {
+            _addNewObjectsQueue.Enqueue(gameObject);
+        }
+        public void RemoveObject(GameObject gameObject)
+        {
+            _deleteObjectsQueue.Enqueue(gameObject);
+        }
+
+        public float DistanceToObject(GameObject g1, GameObject g2)
+        { 
+            return (float)(Math.Pow(g1.X - g2.X,2) + Math.Pow(g1.Y - g2.Y,2));;
+        }
+        public Vector2 DirectionToObject(GameObject g1, GameObject g2)
+        {
+            float angle = (float)Math.Atan2(g1.X - g2.X, g1.Y - g2.Y);
+            return new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle));  
         }
 
         public void Update(float dt)
         {
-            float shift = dt * 200;
-            if (Game.g_Keyboard[Key.Left])
-                camera.Move(-shift, 0);
-            if (Game.g_Keyboard[Key.Right])
-                camera.Move(shift, 0);
-            if (Game.g_Keyboard[Key.Up])
-                camera.Move(0, -shift);
-            if (Game.g_Keyboard[Key.Down])
-                camera.Move(0, shift);
-            camera.MoveTo(hero.Position);
-            hero.Update(dt);
+            camera.MoveTo(Hero.Position);
+
+            foreach (var gameObject in _gameObjects)
+                gameObject.Update(dt);
+
             camera.Update(dt);
+            UpdateObjectsEnqueues();
+        }
+
+        private void UpdateObjectsEnqueues()
+        {
+            while (_addNewObjectsQueue.Count > 0)
+                _gameObjects.Add(_addNewObjectsQueue.Dequeue());
+
+            while (_deleteObjectsQueue.Count > 0)
+                _gameObjects.Remove(_deleteObjectsQueue.Dequeue());
         }
 
         public void Draw(float dt)
         {
             SpriteBatch.Instance.Begin(camera.GetViewMatrix());
+
             RenderTiles(dt);
-            hero.Draw(dt);
+            foreach (var gameObject in _gameObjects)
+                gameObject.Draw(dt);
+
             SpriteBatch.Instance.End();
         }
 

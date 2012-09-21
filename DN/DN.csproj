@@ -48,15 +48,23 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ContentManager.cs" />
-    <Compile Include="Creatures\Creature.cs" />
-    <Compile Include="Creatures\Hero.cs" />
+    <Compile Include="GameObjects\Creatures\Creature.cs" />
+    <Compile Include="GameObjects\Creatures\Enemies\Behaviours\BatBehaviour.cs" />
+    <Compile Include="GameObjects\Creatures\Enemies\Behaviours\IBehaviour.cs" />
+    <Compile Include="GameObjects\Creatures\Enemies\EnemiesFabric.cs" />
+    <Compile Include="GameObjects\Creatures\Enemies\Enemy.cs" />
+    <Compile Include="GameObjects\Creatures\Hero.cs" />
     <Compile Include="Game.cs" />
+    <Compile Include="GameObjects\GameObject.cs" />
+    <Compile Include="GameObjects\Weapons\Sword.cs" />
+    <Compile Include="GameObjects\Weapons\Weapon.cs" />
     <Compile Include="GameWorld.cs" />
     <Compile Include="LevelGeneration\Adventurer.cs" />
-    <Compile Include="LevelGeneration\AStar\AStar.cs" />
-    <Compile Include="LevelGeneration\AStar\BinaryHeap.cs" />
-    <Compile Include="LevelGeneration\AStar\Path.cs" />
-    <Compile Include="LevelGeneration\AStar\WayPoint.cs" />
+    <Compile Include="LineOfSight.cs" />
+    <Compile Include="PathFinding\AStar.cs" />
+    <Compile Include="PathFinding\BinaryHeap.cs" />
+    <Compile Include="PathFinding\Path.cs" />
+    <Compile Include="PathFinding\WayPoint.cs" />
     <Compile Include="LevelGeneration\ResourseMap.cs" />
     <Compile Include="TileMap.cs" />
     <Compile Include="LevelGeneration\Miner.cs" />
@@ -89,6 +97,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Textures\wall_tile.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Textures\Weapons\Sword.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
