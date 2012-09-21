@@ -46,7 +46,7 @@ namespace DN
             CM.I.LoadTexture("stair_tile", Path.Combine("Content", "Textures", "stair_tile.png"));
             CM.I.LoadTexture("sword_sprite", Path.Combine("Content", "Textures", "Weapons", "Sword.png"));
             gameWorld = new GameWorld(20,20);
-            gameWorld.InsertHero();
+           // gameWorld.InsertHero();
 
             base.OnLoad(e);
 
@@ -62,7 +62,6 @@ namespace DN
             GL.Clear(ClearBufferMask.ColorBufferBit);
             
             gameWorld.Draw((float) e.Time);
-            SpriteBatch.Instance.End();
 
             SwapBuffers();
             base.OnRenderFrame(e);

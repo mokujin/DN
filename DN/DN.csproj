@@ -49,6 +49,10 @@
   <ItemGroup>
     <Compile Include="ContentManager.cs" />
     <Compile Include="GameObjects\Creatures\Creature.cs" />
+    <Compile Include="GameObjects\Creatures\Enemies\Behaviours\BatBehaviour.cs" />
+    <Compile Include="GameObjects\Creatures\Enemies\Behaviours\IBehaviour.cs" />
+    <Compile Include="GameObjects\Creatures\Enemies\EnemiesFabric.cs" />
+    <Compile Include="GameObjects\Creatures\Enemies\Enemy.cs" />
     <Compile Include="GameObjects\Creatures\Hero.cs" />
     <Compile Include="Game.cs" />
     <Compile Include="GameObjects\GameObject.cs" />
@@ -56,6 +60,7 @@
     <Compile Include="GameObjects\Weapons\Weapon.cs" />
     <Compile Include="GameWorld.cs" />
     <Compile Include="LevelGeneration\Adventurer.cs" />
+    <Compile Include="LineOfSight.cs" />
     <Compile Include="PathFinding\AStar.cs" />
     <Compile Include="PathFinding\BinaryHeap.cs" />
     <Compile Include="PathFinding\Path.cs" />

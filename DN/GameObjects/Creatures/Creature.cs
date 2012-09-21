@@ -19,6 +19,8 @@ namespace DN.GameObjects.Creatures
 
     public abstract class Creature:GameObject
     {
+        public bool GravityAffected = true;
+
         protected Vector2 Speed; // for gravity and jumps
         protected bool OnStairs;
         protected bool OnGround;
@@ -35,6 +37,21 @@ namespace DN.GameObjects.Creatures
             Direction = MovementDirection.Right;
         }
 
+        public void Move(Vector2 direction, float speed)
+        {
+            Move(direction.X * speed, direction.Y * speed);
+        }
+
+        public void Move(float dx, float dy)
+        {
+            if (!CollideWith(new Vector2(dx, dy), CellType.Wall))
+            {
+                X += dx;
+                Y += dy;
+            }
+            else MoveToContact(new Vector2(dx, dy));
+        }
+        
         public bool Collide(Vector2 shift)
         {
             Point tile = new Point((int)((Position.X + shift.X) / 64), (int)((Position.Y + shift.Y) / 64));
@@ -165,13 +182,12 @@ namespace DN.GameObjects.Creatures
                 OnGround = false;
             }
 
-
-            if (!OnGround && !OnStairs)
-                Speed.Y += _world.g * dt * 10;
-            if (OnStairs && Speed.Y < 0)
-                Speed.Y = Math.Min(0, Speed.Y + _world.g * dt * 10);
-            //else
-            //    _speed.Y = 0;
+            if(GravityAffected)
+                if (!OnGround && !OnStairs)
+                    Speed.Y += _world.g * dt * 10;
+                if (OnStairs && Speed.Y < 0)
+                    Speed.Y = Math.Min(0, Speed.Y + _world.g * dt * 10);
+            
             Vector2 shift = Speed * dt;
             if (!CollideWith(shift, CellType.Wall) && shift != Vector2.Zero)
             {

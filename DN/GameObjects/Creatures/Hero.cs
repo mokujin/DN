@@ -1,5 +1,4 @@
 ﻿using Blueberry.Graphics;
-using DN.GameObjects.Weapons;
 using OpenTK;
 using OpenTK.Graphics;
 using System;
@@ -10,12 +9,13 @@ using System.Text;
 using System.Threading.Tasks;
 using Blueberry;
 using OpenTK.Input;
+using DN.GameObjects.Weapons;
 
 namespace DN.GameObjects.Creatures
 {
     public class Hero:Creature
     {
-        private Weapons.Weapon _weapon;
+        private Weapon _currentWeapon;
 
         private float _dt = 0;
 
@@ -25,10 +25,11 @@ namespace DN.GameObjects.Creatures
             Game.g_Keyboard.KeyRepeat = true;
             Size = new Size(48, 48);
             StandOnStairs += Hero_StandOnStairs;
-            _weapon = new Sword(gameWorld, this)
+
+            _currentWeapon = new Sword(gameWorld, this)
                           {
-                              AttackSpeed = 15,
-                              TimeToFinishAttack = 0.5f
+                              AttackSpeed = 0.3f,
+                              TimeToFinishAttack = 0.2f
                           };
         }
 
@@ -52,15 +53,7 @@ namespace DN.GameObjects.Creatures
             SpriteBatch.Instance.DrawTexture(CM.I.tex("hero_tile"), Position, Rectangle.Empty, Color4.White);
             SpriteBatch.Instance.OutlineRectangle(Bounds, Color.White); // debug draw
         }
-        void Move(float dx, float dy)
-        {
-            if (!CollideWith(new Vector2(dx, dy), CellType.Wall))
-            {
-                X += dx;
-                Y += dy;
-            }
-            else MoveToContact(new Vector2( dx, dy));
-        }
+        
 
         public override void Update(float dt)
         {
@@ -68,8 +61,8 @@ namespace DN.GameObjects.Creatures
 
             _dt = dt;
 
-            if(_weapon != null)
-                _weapon.Update(dt);
+            if(_currentWeapon != null)
+                _currentWeapon.Update(dt);
             
             UpdateControlls(dt);
         }
@@ -87,9 +80,9 @@ namespace DN.GameObjects.Creatures
                 Direction = MovementDirection.Right;
             }
 
-            if (_weapon != null)
+            if (_currentWeapon != null)
                 if (AttackKeyPressed())
-                    _weapon.StartAttack();
+                    _currentWeapon.StartAttack();
 
             if (OnStairs)
             {

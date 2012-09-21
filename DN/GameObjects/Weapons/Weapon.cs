@@ -13,7 +13,7 @@ namespace DN.GameObjects.Weapons
             get { return AttackStarted; }
         }
 
-        private float _elapsed;
+        protected float _elapsed;
         
         protected Creature Creature; // creature which using this weapon
 
@@ -24,13 +24,27 @@ namespace DN.GameObjects.Weapons
             get{return _elapsed >= AttackSpeed && !AttackStarted;}
         }
 
-        public float AttackSpeed;
+
+        private float _attackSpeed;
+        public float AttackSpeed
+        {
+            get 
+            {
+                return _attackSpeed; 
+            }
+            set
+            {
+                _attackSpeed = value;
+                _elapsed = value;
+            }
+        }
         public float TimeToFinishAttack;
 
         public Weapon(GameWorld gameWorld, Creature creature)
             :base(gameWorld)
         {
             Creature = creature;
+            _elapsed = AttackSpeed;
 
         }
 
@@ -57,6 +71,7 @@ namespace DN.GameObjects.Weapons
             if (_elapsed >= TimeToFinishAttack)
             {
                 _elapsed = 0;
+                AttackStarted = false;
                 FinishAttack();
             }
         }

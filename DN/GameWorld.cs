@@ -10,25 +10,31 @@ using OpenTK.Input;
 using DN.GameObjects.Creatures;
 using DN.LevelGeneration;
 using DN.GameObjects;
+using OpenTK;
+using DN.GameObjects.Creatures.Enemies;
 namespace DN
 {
     public class GameWorld
     {
 
 
-        public readonly int Width;
-        public readonly int Height;
+        public int Width{get; private set;}
+        public int Height{get; private set;}
+        public TileMap TileMap { get; private set; }
 
-        public readonly TileMap TileMap;
+        public Hero Hero
+        {
+            get;
+            private set;
+        }
 
-        Camera camera;
-        Hero hero;
         public float g = 120f; // gravity acceleration;
 
         private List<GameObject> _gameObjects;
         private Queue<GameObject> _addNewObjectsQueue;
         private Queue<GameObject> _deleteObjectsQueue;
 
+        private Camera camera;
 
         public GameWorld(int width, int height)
         {
@@ -50,22 +56,29 @@ namespace DN
                              RoomCount = 2
                          };
             lg.Generate(this);
+
+            InsertHero();
+            //Creature bat = EnemiesFabric.CreateEnemy(this, EnemyType.Bat);
+            //bat.Cell = GetRandomPoint();
+            //AddObject(bat);
         }
 
         public void InsertHero()
         {
-            hero = new Hero(this);
+            Hero = new Hero(this);
+            Point p = GetRandomPoint();
+            Hero.Position = new OpenTK.Vector2((p.X * 64)+32, (p.Y * 64)+32);
+            camera.MoveTo(Hero.Position);
+        }
+        public Point GetRandomPoint()
+        {
             Point p;
-            while(true)
+            do
             {
                 p = new Point(RandomTool.RandInt(0, Width), RandomTool.RandInt(0, Height));
-                if(TileMap.IsFree(p))
-                {
-                    hero.Position = new OpenTK.Vector2((p.X * 64)+32, (p.Y * 64)+32);
-                    break;
-                }
-            }
-            camera.MoveTo(hero.Position);
+            } while (!TileMap.IsFree(p));
+
+            return p;
         }
 
         public void AddObject(GameObject gameObject)
@@ -77,9 +90,19 @@ namespace DN
             _deleteObjectsQueue.Enqueue(gameObject);
         }
 
+        public float DistanceToObject(GameObject g1, GameObject g2)
+        { 
+            return (float)(Math.Pow(g1.X - g2.X,2) + Math.Pow(g1.Y - g2.Y,2));;
+        }
+        public Vector2 DirectionToObject(GameObject g1, GameObject g2)
+        {
+            float angle = (float)Math.Atan2(g1.X - g2.X, g1.Y - g2.Y);
+            return new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle));  
+        }
+
         public void Update(float dt)
         {
-            camera.MoveTo(hero.Position);
+            camera.MoveTo(Hero.Position);
 
             foreach (var gameObject in _gameObjects)
                 gameObject.Update(dt);
@@ -100,9 +123,11 @@ namespace DN
         public void Draw(float dt)
         {
             SpriteBatch.Instance.Begin(camera.GetViewMatrix());
+
             RenderTiles(dt);
             foreach (var gameObject in _gameObjects)
                 gameObject.Draw(dt);
+
             SpriteBatch.Instance.End();
         }
 
