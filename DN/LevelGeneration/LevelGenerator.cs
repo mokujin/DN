@@ -23,25 +23,33 @@ namespace DN.LevelGeneration
 
         public void Generate(GameWorld gameWorld)
         {
-            TileMap = gameWorld.TileMap;
+            restart:
+            try
+            {
+                TileMap = gameWorld.TileMap;
 
-            ResourseMap = new ResourseMap(TileMap.Width, TileMap.Height);
-            TileMap.FillWith(CellType.Wall);
+                ResourseMap = new ResourseMap(TileMap.Width, TileMap.Height);
+                TileMap.FillWith(CellType.Wall);
 
-            _miners.Add(new Miner(this, TileMap.Width / 2, TileMap.Height -1));
-            _miners.Add(new Miner(this, TileMap.Width / 2, (TileMap.Height/2) - 1));
-            UpdateMiners();
+                _miners.Add(new Miner(this, TileMap.Width / 2, TileMap.Height - 1));
+                _miners.Add(new Miner(this, TileMap.Width / 2, (TileMap.Height / 2) - 1));
+                UpdateMiners();
 
-            for (int i = 0; i < RoomCount; i++)
-                AddRoom();
+                for (int i = 0; i < RoomCount; i++)
+                    AddRoom();
 
-            var p = GetFreeCell();
-            var adv = new Adventurer(this, p.X, p.Y);
-            _miners.Add(adv);
+                var p = GetFreeCell();
+                var adv = new Adventurer(this, p.X, p.Y);
+                _miners.Add(adv);
 
-            UpdateMiners();
+                UpdateMiners();
 
-            ClearJunk();
+                ClearJunk();
+            }
+            catch (Exception)
+            {
+                goto restart;
+            }
         }
 
         private void UpdateMiners()
