@@ -27,6 +27,7 @@ namespace DN.LevelGeneration
             try
             {
                 TileMap = gameWorld.TileMap;
+                _miners.Clear();
 
                 ResourseMap = new ResourseMap(TileMap.Width, TileMap.Height);
                 TileMap.FillWith(CellType.Wall);
@@ -48,6 +49,7 @@ namespace DN.LevelGeneration
             }
             catch (Exception)
             {
+                Console.WriteLine("generation");
                 goto restart;
             }
         }
