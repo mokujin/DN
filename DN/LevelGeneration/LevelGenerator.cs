@@ -5,7 +5,7 @@ using Blueberry;
 
 namespace DN.LevelGeneration
 {
-    public partial class LevelGenerator
+    public class LevelGenerator
     {
         public int RoomCount;
         public int RoomsMaxWidth;
@@ -16,38 +16,30 @@ namespace DN.LevelGeneration
         private List<Miner> _miners;
 
 
-
         public LevelGenerator()
         {
-
             _miners = new List<Miner>();
         }
 
         public void Generate(GameWorld gameWorld)
         {
-
             TileMap = gameWorld.TileMap;
 
             ResourseMap = new ResourseMap(TileMap.Width, TileMap.Height);
             TileMap.FillWith(CellType.Wall);
-
-
 
             _miners.Add(new Miner(this, TileMap.Width / 2, TileMap.Height -1));
             _miners.Add(new Miner(this, TileMap.Width / 2, (TileMap.Height/2) - 1));
             UpdateMiners();
 
             for (int i = 0; i < RoomCount; i++)
-            {
                 AddRoom();
-            }
 
             var p = GetFreeCell();
             var adv = new Adventurer(this, p.X, p.Y);
             _miners.Add(adv);
 
             UpdateMiners();
-
 
             ClearJunk();
         }
@@ -71,8 +63,8 @@ namespace DN.LevelGeneration
         private void AddRoom()
         {
             int x, y, width, height;
-            width = RandomTool.RandInt(4, RoomsMaxWidth);
-            height = RandomTool.RandInt(4, RoomsMaxHeight);
+            width = RandomTool.RandInt(0, RoomsMaxWidth);
+            height = RandomTool.RandInt(0, RoomsMaxHeight);
 
             do
             {
@@ -81,12 +73,8 @@ namespace DN.LevelGeneration
             } while (TileMap[x, y] == CellType.Wall);
 
             for (int i = x; i < x + width; i++)
-            {
                 for (int j = y; j < y + height; j++)
-                {
                     TileMap[i,j] = CellType.Free;
-                }
-            }
         }
 
         private void ClearJunk()
@@ -101,7 +89,7 @@ namespace DN.LevelGeneration
                         if (length == 1)
                         {
                             if(TileMap[i,j - 1] != CellType.Wall)
-                            TileMap[i, j] = CellType.Free;
+                                TileMap[i, j] = CellType.Free;
                         }
                     }
                 }
@@ -111,11 +99,9 @@ namespace DN.LevelGeneration
         {
             int length = 0;
 
-            while (TileMap[x, ++y] == CellType.Ladder){}
+            while (TileMap[x, ++y] == CellType.Ladder);
             while (TileMap[x, --y] == CellType.Ladder)
-            {
                 length++;
-            }
 
             return length;
         }
@@ -130,25 +116,6 @@ namespace DN.LevelGeneration
 
                 if (TileMap[p.X, p.Y] == CellType.Free && TileMap[p.X, p.Y + 1] == CellType.Wall)
                     return p;
-            }
-        }
-
-        private void PolishMap()
-        {
-            //wtf
-            for (int i = 1; i < TileMap.Width - 1; i++)
-            {
-                for (int j = 1; j < TileMap.Height - 1; j++)
-                {
-                    if(TileMap[i,j] == CellType.Ladder)
-                    {
-                        if(TileMap[i, j + 1] == CellType.Wall ||
-                           TileMap[i, j - 1] == CellType.Wall)
-                        {
-                            //TileMap[i, j] = CellType.Free;
-                        }
-                    }
-                }
             }
         }
     }

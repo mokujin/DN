@@ -78,28 +78,17 @@ namespace DN
                             SpriteBatch.Instance.DrawTexture(CM.I.tex("stair_tile"), i * ts.Width, j * ts.Height, ts.Width, ts.Height, Rectangle.Empty, Color.White, 0, 0, 0);
                             break;
                     }
-                    /*
-                    if (_map[i, j] != CellType.Free)
-                        SpriteBatch.Instance.OutlineRectangle(i * ts.Width, j * ts.Height, ts.Width, ts.Height, Color.Gray,1,0,0,0); // debug fraw
-                      */  
                 }
             }
         }
 
-
-        public void FillRandom()
-        {
-            for (int i = 0; i < Width; i++)
-            {
-                for (int j = 0; j < Height; j++)
-                {
-                    _map[i, j] = (CellType)RandomTool.RandByte(2);
-                }
-            }
-        }
         public bool InRange(Point cell)
         {
-            return cell.X >= 0 && cell.X < Width && cell.Y >= 0 && cell.Y < Height;
+            return InRange(cell.X, cell.Y);
+        }
+        public bool InRange(int x, int y)
+        {
+            return x >= 0 && x < Width && y >= 0 && y < Height;
         }
 
         public void PrintDebug()

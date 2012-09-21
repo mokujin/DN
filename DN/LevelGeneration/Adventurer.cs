@@ -24,15 +24,13 @@ namespace DN.LevelGeneration
         public Adventurer(LevelGenerator levelGenerator, int x, int y) : base(levelGenerator, x, y)
         {
             _astar = new AStar(_levelGenerator.TileMap);
+            _astar.DiagonalMovesAllowed = true;
 
             _neededPoints = new byte[_levelGenerator.TileMap.Width,
                                      _levelGenerator.TileMap.Height];
             _ladderPoints = new byte[_levelGenerator.TileMap.Width,
                                      _levelGenerator.TileMap.Height];
             DetermineNeededPoints();
-#if D
-            PrintDebug();
-#endif
         }
 
         public override void Step()
@@ -45,8 +43,11 @@ namespace DN.LevelGeneration
             if (_pathFinished)
             {
                 nextPoint = GetGlosestPoint();
-                _path = _astar.FindCellWay(_cell, nextPoint);
-                //_path.RemoveAt(0);
+
+                _path = _astar.FindPlatformerCellWay(_cell, nextPoint);
+
+                if (_path == null)
+                    _path = _astar.FindCellWay(_cell, nextPoint);
                 _pathFinished = false;
             }
             else
@@ -54,26 +55,25 @@ namespace DN.LevelGeneration
                 Point direction = new Point((int)_path[0].X - _cell.X,
                                             (int)_path[0].Y - _cell.Y);
 
-                if (direction.X == -1 || direction.X == 1)
+
+                if(direction.X != 0 && direction.Y != 0)
+                {
+                    _cell.X += direction.X;
+                    _cell.Y += direction.Y;
+                }
+                else if (direction.X != 0)
                 {
                     _cell.X += direction.X;
 
-
-
                     if (_levelGenerator.TileMap[_cell.X, _cell.Y + 1] != CellType.Wall)
-                    {
                         _levelGenerator.TileMap[_cell.X, _cell.Y] = CellType.VRope;
-                        //_levelGenerator.TileMap[_cell.X, _cell.Y - direction.Y] = CellType.VRope;
-                    }
                 }
-                else if (direction.Y == -1 || direction.Y == 1)
+                else if (direction.Y != 0)
                 {
                     _cell.Y += direction.Y;
+
                     if (_levelGenerator.TileMap[_cell.X, _cell.Y] != CellType.Wall)
-                    {
                         _levelGenerator.TileMap[_cell.X, _cell.Y] = CellType.Ladder;
-                       // _levelGenerator.TileMap[_cell.X, _cell.Y - direction.Y] = CellType.Ladder;
-                    }
                 }
 
                 if (_cell.X == nextPoint.X && _cell.Y == nextPoint.Y)
@@ -95,8 +95,6 @@ namespace DN.LevelGeneration
 
         private void CellWasReached(Point cell)
         {
-            //for (int i = -1; i <= 1; i++)
-                ///for (int j = -1; j <= 1; j++)
             _neededPoints[cell.X, cell.Y] = 0;
             _neededPoints[cell.X - 1, cell.Y] = 0;
             _neededPoints[cell.X + 1, cell.Y] = 0;
@@ -151,9 +149,7 @@ namespace DN.LevelGeneration
             {
                 Console.WriteLine();
                 for (int i = 0; i < _levelGenerator.TileMap.Width; i++)
-                {
                     Console.Write(_neededPoints[i, j]);
-                }
             }
         }
     }
