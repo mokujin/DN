@@ -48,6 +48,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ContentManager.cs" />
+    <Compile Include="Effects\DustParticle.cs" />
+    <Compile Include="Effects\DustPointEmitter.cs" />
+    <Compile Include="Effects\Particle.cs" />
+    <Compile Include="Effects\Emitter.cs" />
     <Compile Include="GameObjects\Creatures\Creature.cs" />
     <Compile Include="GameObjects\Creatures\Enemies\Behaviours\BatBehaviour.cs" />
     <Compile Include="GameObjects\Creatures\Enemies\Behaviours\IBehaviour.cs" />

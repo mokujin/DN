@@ -54,6 +54,7 @@
     <Compile Include="Animation.cs" />
     <Compile Include="ArrayTimSort.cs" />
     <Compile Include="Camera.cs" />
+    <Compile Include="ColourRange.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="Geometry\Circle.cs" />
     <Compile Include="Geometry\ConvexPolygon.cs" />
@@ -83,6 +84,7 @@
     <Compile Include="QuadTree.cs" />
     <Compile Include="QuadTreeNode.cs" />
     <Compile Include="RandomTool.cs" />
+    <Compile Include="Range.cs" />
     <Compile Include="SceneManagement\Actor.cs" />
     <Compile Include="Atlas.cs" />
     <Compile Include="SceneManagement\IActor.cs" />

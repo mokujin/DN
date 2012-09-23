@@ -1,0 +1,26 @@
+﻿using Blueberry;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace DN.Effects
+{
+    class DustParticle : Particle
+    {
+        public char letter;
+        public DustParticle()
+        {
+            letter = char.ConvertFromUtf32(RandomTool.RandByte())[0];
+        }
+        public override void Update(float dt)
+        {
+            Colour.A = 1- this.Age;
+            Rotation += this.Age * dt;
+            Velocity.X -= dt;
+            Velocity.Y -= dt;
+            Scale += dt/2;
+            base.Update(dt);
+        }
+    }
+}

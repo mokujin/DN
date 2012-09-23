@@ -13,7 +13,19 @@ namespace Blueberry
         {
             return v1.X * v2.Y - v1.Y * v2.X;
         }
-
+        public static void RotateVector2(ref Vector2 vec, float angle)
+        {
+            float x = (float)(vec.X * Math.Cos(angle) - vec.Y * Math.Sign(angle));
+            float y = (float)(vec.Y * Math.Cos(angle) - vec.X * Math.Sin(angle));
+            vec.X = x;
+            vec.Y = y;
+        }
+        public static Vector2 RotateVector2(Vector2 vec, float angle)
+        {
+            float x = (float)(vec.X * Math.Cos(angle) - vec.Y * Math.Sign(angle));
+            float y = (float)(vec.Y * Math.Cos(angle) - vec.X * Math.Sin(angle));
+            return new Vector2(x,y);
+        }
         public static Vector2 FromPolar(float length, float angle)
         {
             Vector2 v;

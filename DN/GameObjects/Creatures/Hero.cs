@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Blueberry;
 using OpenTK.Input;
 using DN.GameObjects.Weapons;
+using DN.Effects;
 
 namespace DN.GameObjects.Creatures
 {
@@ -18,6 +19,8 @@ namespace DN.GameObjects.Creatures
         private Weapon _currentWeapon;
 
         private float _dt = 0;
+
+        DustPointEmitter dustEffect;
 
         public Hero(GameWorld gameWorld):base(gameWorld)
         {
@@ -31,6 +34,8 @@ namespace DN.GameObjects.Creatures
                               AttackSpeed = 0.3f,
                               TimeToFinishAttack = 0.2f
                           };
+            dustEffect = new DustPointEmitter(Position, Vector2.UnitX, 0.5f);
+            dustEffect.Initialise(60, 1);
         }
 
         void HeroStandOnStairs()
@@ -52,6 +57,7 @@ namespace DN.GameObjects.Creatures
         {
             SpriteBatch.Instance.DrawTexture(CM.I.tex("hero_tile"), Position, Rectangle.Empty, Color4.White);
             SpriteBatch.Instance.OutlineRectangle(Bounds, Color.White); // debug draw
+            dustEffect.Draw(dt);
         }
         
 
@@ -65,6 +71,10 @@ namespace DN.GameObjects.Creatures
                 _currentWeapon.Update(dt);
             
             UpdateControlls(dt);
+
+            dustEffect.Position = new Vector2(Position.X, Bounds.Bottom);
+            dustEffect.Update(dt);
+            
         }
 
         private void UpdateControlls(float dt)
@@ -73,11 +83,16 @@ namespace DN.GameObjects.Creatures
             {
                 Move(-250*dt, 0);
                 Direction = MovementDirection.Left;
+                dustEffect.Direction = MathUtils.RotateVector2(Vector2.UnitX, 0.5f);
+                dustEffect.Trigger(dt);
             }
             if (RightKeyPressed())
             {
                 Move(250*dt, 0);
                 Direction = MovementDirection.Right;
+                dustEffect.Direction = MathUtils.RotateVector2(Vector2.UnitX, 0.5f);
+                dustEffect.Direction = new Vector2(-dustEffect.Direction.X, dustEffect.Direction.Y);
+                dustEffect.Trigger(dt);
             }
 
             if (_currentWeapon != null)
