@@ -24,7 +24,7 @@ namespace DN.GameObjects.Creatures.Enemies
                         Creature = enemy, Hero = gameWorld.Hero, GameWorld = gameWorld
                     });
                     enemy.GravityAffected = false;
-                    enemy.Size = new Size(48, 48);
+                    enemy.Size = new Size(20, 16);
                     enemy.Sprite = "bat_sprite";
                     break;
             }

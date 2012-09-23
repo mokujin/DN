@@ -92,12 +92,12 @@ namespace DN
 
         public float DistanceToObject(GameObject g1, GameObject g2)
         { 
-            return (float)(Math.Pow(g1.X - g2.X,2) + Math.Pow(g1.Y - g2.Y,2));;
+            return (float)Math.Sqrt(Math.Pow(g1.X - g2.X,2) + Math.Pow(g1.Y - g2.Y,2));;
         }
         public Vector2 DirectionToObject(GameObject g1, GameObject g2)
         {
-            float angle = (float)Math.Atan2(g1.X - g2.X, g1.Y - g2.Y);
-            return new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle));  
+            float angle = (float)Math.Atan2(g1.Y - g2.Y, g1.X - g2.X);
+            return new Vector2(-(float)Math.Cos(angle), -(float)Math.Sin(angle));  
         }
 
         public void Update(float dt)
