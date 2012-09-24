@@ -25,6 +25,7 @@ namespace DN.GameObjects.Creatures
         public Hero(GameWorld gameWorld):base(gameWorld)
         {
             Game.g_Gamepad.OnButtonPress += g_Gamepad_OnButtonPress;
+            Game.g_Keyboard.KeyDown += g_Keyboard_KeyDown;
             Game.g_Keyboard.KeyRepeat = true;
             Size = new Size(48, 48);
             StandOnStairs += HeroStandOnStairs;
@@ -36,6 +37,14 @@ namespace DN.GameObjects.Creatures
                           };
             dustEffect = new DustPointEmitter(Position, Vector2.UnitX, 0.5f);
             dustEffect.Initialise(60, 1);
+        }
+
+        void g_Keyboard_KeyDown(object sender, KeyboardKeyEventArgs e)
+        {
+            if (e.Key == Key.Space)
+            {
+                Jump();
+            }
         }
 
         void HeroStandOnStairs()
@@ -83,16 +92,22 @@ namespace DN.GameObjects.Creatures
             {
                 Move(-250*dt, 0);
                 Direction = MovementDirection.Left;
-                dustEffect.Direction = MathUtils.RotateVector2(Vector2.UnitX, 0.5f);
-                dustEffect.Trigger(dt);
+                if (OnGround)
+                {
+                    dustEffect.Direction = MathUtils.RotateVector2(Vector2.UnitX, 0.5f);
+                    dustEffect.Trigger(dt);
+                }
             }
             if (RightKeyPressed())
             {
                 Move(250*dt, 0);
                 Direction = MovementDirection.Right;
-                dustEffect.Direction = MathUtils.RotateVector2(Vector2.UnitX, 0.5f);
-                dustEffect.Direction = new Vector2(-dustEffect.Direction.X, dustEffect.Direction.Y);
-                dustEffect.Trigger(dt);
+                if (OnGround)
+                {
+                    dustEffect.Direction = MathUtils.RotateVector2(Vector2.UnitX, 0.5f);
+                    dustEffect.Direction = new Vector2(-dustEffect.Direction.X, dustEffect.Direction.Y);
+                    dustEffect.Trigger(dt);
+                }
             }
 
             if (_currentWeapon != null)
@@ -106,8 +121,8 @@ namespace DN.GameObjects.Creatures
                 if (DownKeyPressed())
                     Move(0, 250 * dt);
             }
-            if (JumpKeyPressed())
-                Jump();
+            //if (JumpKeyPressed())
+            //    Jump();
         }
 
         private static bool JumpKeyPressed()

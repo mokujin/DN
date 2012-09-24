@@ -43,6 +43,8 @@ namespace DN
             LoadTextures();
             gameWorld = new GameWorld(15,15);
 
+            Keyboard.KeyRepeat = false;
+
             base.OnLoad(e);
 
         }

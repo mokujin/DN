@@ -188,6 +188,7 @@ namespace Blueberry
 
         public Vector2 ToWorld(Vector2 screenPoint, float parallax = 1)
         {
+            /*
             Vector2 shift = new Vector2(_origin.X * scrWidth, _origin.Y * scrHeight);
 
             screenPoint.X -= shift.X;
@@ -201,11 +202,14 @@ namespace Blueberry
 
             screenPoint.X += _position.X * parallax;
             screenPoint.Y += _position.Y * parallax;
-            return screenPoint;
+             */
+            return screenPoint.Transform(Matrix4.Invert(GetViewMatrix(parallax)));
+            //return screenPoint;
         }
 
         public Vector2 ToScreen(Vector2 worldPoint, float parallax = 1)
         {
+            /*
             Vector2 shift = new Vector2(_origin.X * scrWidth, _origin.Y * scrHeight);
 
             worldPoint.X -= _position.X * parallax;
@@ -218,7 +222,9 @@ namespace Blueberry
 
             worldPoint.X += shift.X;
             worldPoint.Y += shift.Y;
-            return worldPoint;
+            */
+            return worldPoint.Transform(GetViewMatrix(parallax));
+            //return worldPoint;
         }
 
         public Point ToScreen(Point worldPoint, float parallax = 1)

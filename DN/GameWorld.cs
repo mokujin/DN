@@ -12,6 +12,7 @@ using DN.LevelGeneration;
 using DN.GameObjects;
 using OpenTK;
 using DN.GameObjects.Creatures.Enemies;
+using DN.Effects;
 namespace DN
 {
     public class GameWorld
@@ -35,6 +36,8 @@ namespace DN
         private Queue<GameObject> _deleteObjectsQueue;
 
         private Camera camera;
+        public Camera Camera { get { return camera; } }
+        ParallaxBackground background;
 
         public GameWorld(int width, int height)
         {
@@ -61,6 +64,8 @@ namespace DN
             Creature bat = EnemiesFabric.CreateEnemy(this, EnemyType.Bat);
             bat.Cell = GetRandomPoint();
             AddObject(bat);
+
+            background = new ParallaxBackground(this);
         }
 
         public void InsertHero()
@@ -107,8 +112,14 @@ namespace DN
             foreach (var gameObject in _gameObjects)
                 gameObject.Update(dt);
 
+            if (Game.g_Keyboard[Key.Plus])
+                camera.ScaleOn(0.01f);
+            if (Game.g_Keyboard[Key.Minus])
+                camera.ScaleOn(-0.01f);
+
             camera.Update(dt);
             UpdateObjectsEnqueues();
+            background.Update(dt);
         }
 
         private void UpdateObjectsEnqueues()
@@ -122,6 +133,7 @@ namespace DN
 
         public void Draw(float dt)
         {
+            background.Draw(dt);
             SpriteBatch.Instance.Begin(camera.GetViewMatrix());
 
             RenderTiles(dt);
@@ -140,7 +152,8 @@ namespace DN
             rect.Height /= 64;
             rect.Width+=2;
             rect.Height+=2;
-
+            Console.SetCursorPosition(0,1);
+            Console.Write("tiles in view: {0}   ",rect.Width * rect.Height);
             TileMap.Draw(rect);
         }
 

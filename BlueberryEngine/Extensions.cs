@@ -31,7 +31,12 @@ namespace Blueberry
         {
             return new Vector2(r.X + r.Width / 2, r.Y + r.Height / 2);
         }
-
+        public static Vector2 Transform(this Vector2 v, Matrix4 matrix)
+        {
+            float num1 = (float)((double)v.X * (double)matrix.M11 + (double)v.Y * (double)matrix.M21) + matrix.M41;
+            float num2 = (float)((double)v.X * (double)matrix.M12 + (double)v.Y * (double)matrix.M22) + matrix.M42;
+            return new Vector2(num1,num2);
+        }
         public static bool IntersectsWith(this Rectangle rect, Circle circle)
         {
             float testX = circle.X;

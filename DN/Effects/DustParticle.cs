@@ -15,10 +15,10 @@ namespace DN.Effects
         }
         public override void Update(float dt)
         {
-            Colour.A = 1- this.Age;
+            Colour.A = 1 - this.Age;
             Rotation += this.Age * dt;
-            Velocity.X -= dt;
-            Velocity.Y -= dt;
+            Velocity.X -= dt*3;
+            Velocity.Y -= dt*3;
             Scale += dt/2;
             base.Update(dt);
         }
