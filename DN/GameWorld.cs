@@ -28,7 +28,7 @@ namespace DN
             private set;
         }
 
-        public float G = 10f; // gravity acceleration;
+        public float G = 15f; // gravity acceleration;
         public Vector2 GravityDirection = new Vector2(0, 1);
         private List<GameObject> _gameObjects;
         private Queue<GameObject> _addNewObjectsQueue;

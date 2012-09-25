@@ -24,7 +24,7 @@ namespace DN.GameObjects.Creatures
             Game.g_Gamepad.OnButtonPress += g_Gamepad_OnButtonPress;
             Game.g_Keyboard.KeyRepeat = true;
             Size = new Size(48, 48);
-            MaxVelocity = new Vector2(5,5);
+            MaxVelocity = new Vector2(5,15);
             Friction = 0.1f;
 
             //StandOnStairs += HeroStandOnStairs;
@@ -127,9 +127,9 @@ namespace DN.GameObjects.Creatures
 
         private void Jump()
         {
-            //if (OnGround || OnStairs)
+            if (OnGround)
             {
-                Velocity.Y = -10;
+                Move(new Vector2(0,-1), 7);
             }
         }
     }

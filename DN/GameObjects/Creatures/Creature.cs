@@ -37,7 +37,7 @@ namespace DN.GameObjects.Creatures
 
         public bool OnGround
         {
-            get { return Collisions.Any(p => p.Y == 1); }
+            get { return Collisions.Any(p => p.X == 0 && p.Y == 1); }
         }
 
         public bool OnStairs
@@ -73,9 +73,6 @@ namespace DN.GameObjects.Creatures
 
         public void Move(Vector2 direction, float speed)
         {
-            Direction += direction;
-            Direction.Normalize();
-
             Velocity += direction*speed;
         }
 
@@ -89,15 +86,9 @@ namespace DN.GameObjects.Creatures
 
         private void UpdateParametrs(float dt)
         {
-            if (Collisions.Count > 0)
-            {
-                if (Velocity.X > 0)
-                {
-                    Velocity.X -= Friction;
-                    if (Velocity.X < 0)
-                        Velocity.X = 0;
-                }
-            }
+
+            UpdateFriction();
+
             Velocity += World.GravityDirection * World.G * dt;
 
             Vector2 pos = Position;
@@ -109,6 +100,25 @@ namespace DN.GameObjects.Creatures
             CheckOverSpeed(ref vel.Y, MaxVelocity.Y);
             Velocity = vel;
             Position += Velocity;
+        }
+
+        private void UpdateFriction()
+        {
+            if (Collisions.Count > 0)
+            {
+                if (Velocity.X > 0)
+                {
+                    Velocity.X -= Friction;
+                    if (Velocity.X < 0)
+                        Velocity.X = 0;
+                }
+                else if (Velocity.X < 0)
+                {
+                    Velocity.X += Friction;
+                    if (Velocity.X > 0)
+                        Velocity.X = 0;
+                }
+            }
         }
 
         protected void CheckCollisions(ref Vector2 offset, ref Vector2 position)
@@ -182,7 +192,7 @@ namespace DN.GameObjects.Creatures
                         if (offset.Y > 0)
                         {
                             position.Y = cell.Rectangle.Y - Size.Height/2;
-                            Landed = true;
+                            Collisions.Add(new Vector2(0,1));
                         }
                         else if (offset.Y < 0)
                         {
@@ -299,9 +309,19 @@ namespace DN.GameObjects.Creatures
 
         protected void CheckOverSpeed(ref float velocity, float maxVelocity)
         {
-            if (velocity > maxVelocity)
+            if (velocity > 0)
             {
-                velocity = maxVelocity;
+                if (velocity > maxVelocity)
+                {
+                    velocity = maxVelocity;
+                }
+            }
+            else if(velocity < 0)
+            {
+                if(velocity < -maxVelocity)
+                {
+                    velocity = -maxVelocity;
+                }
             }
         }
       
