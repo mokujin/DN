@@ -1,4 +1,5 @@
 ﻿using Blueberry.Graphics;
+using DN.Effects;
 using OpenTK;
 using OpenTK.Graphics;
 using System;
@@ -10,37 +11,29 @@ using System.Threading.Tasks;
 using Blueberry;
 using OpenTK.Input;
 using DN.GameObjects.Weapons;
-using DN.Effects;
 
 namespace DN.GameObjects.Creatures
 {
     public class Hero:Creature
     {
         private Weapon _currentWeapon;
-
         private float _dt = 0;
-
-        DustPointEmitter dustEffect;
 
         public Hero(GameWorld gameWorld):base(gameWorld)
         {
             Game.g_Gamepad.OnButtonPress += g_Gamepad_OnButtonPress;
             Game.g_Keyboard.KeyRepeat = true;
             Size = new Size(48, 48);
-            StandOnStairs += HeroStandOnStairs;
+            MaxVelocity = new Vector2(5,5);
+            Friction = 0.1f;
+
+            //StandOnStairs += HeroStandOnStairs;
 
             _currentWeapon = new Sword(gameWorld, this)
                           {
                               AttackSpeed = 0.3f,
                               TimeToFinishAttack = 0.2f
                           };
-            dustEffect = new DustPointEmitter(Position, Vector2.UnitX, 0.5f);
-            dustEffect.Initialise(60, 1);
-        }
-
-        void HeroStandOnStairs()
-        {
-            Speed.Y = 0;
         }
 
         private void g_Gamepad_OnButtonPress(object sender, GamepadExtension.GamepadButtons e)
@@ -55,9 +48,12 @@ namespace DN.GameObjects.Creatures
 
         public override void Draw(float dt)
         {
-            SpriteBatch.Instance.DrawTexture(CM.I.tex("hero_tile"), Position, Rectangle.Empty, Color4.White);
+            SpriteBatch.Instance.DrawTexture(CM.I.tex("hero_tile"),Position,
+                                            // new Vector2((float)Math.Round(X),(float)Math.Round(Y)), 
+                                             Rectangle.Empty,
+                                             Color4.White);
+
             SpriteBatch.Instance.OutlineRectangle(Bounds, Color.White); // debug draw
-            dustEffect.Draw(dt);
         }
         
 
@@ -71,28 +67,17 @@ namespace DN.GameObjects.Creatures
                 _currentWeapon.Update(dt);
             
             UpdateControlls(dt);
-
-            dustEffect.Position = new Vector2(Position.X, Bounds.Bottom);
-            dustEffect.Update(dt);
-            
         }
 
         private void UpdateControlls(float dt)
         {
             if (LeftKeyPressed())
             {
-                Move(-250*dt, 0);
-                Direction = MovementDirection.Left;
-                dustEffect.Direction = MathUtils.RotateVector2(Vector2.UnitX, 0.5f);
-                dustEffect.Trigger(dt);
+                Move(new Vector2(-1, 0), 10 * dt);
             }
             if (RightKeyPressed())
             {
-                Move(250*dt, 0);
-                Direction = MovementDirection.Right;
-                dustEffect.Direction = MathUtils.RotateVector2(Vector2.UnitX, 0.5f);
-                dustEffect.Direction = new Vector2(-dustEffect.Direction.X, dustEffect.Direction.Y);
-                dustEffect.Trigger(dt);
+                Move(new Vector2(1, 0), 10 * dt);
             }
 
             if (_currentWeapon != null)
@@ -102,9 +87,9 @@ namespace DN.GameObjects.Creatures
             if (OnStairs)
             {
                 if (UpKeyPressed())
-                    Move(0, -250 * dt);
+                    Move(new Vector2(0, -1), -250 * dt);
                 if (DownKeyPressed())
-                    Move(0, 250 * dt);
+                    Move(new Vector2(0, 1), 250 * dt);
             }
             if (JumpKeyPressed())
                 Jump();
@@ -142,9 +127,9 @@ namespace DN.GameObjects.Creatures
 
         private void Jump()
         {
-            if (OnGround || OnStairs)
+            //if (OnGround || OnStairs)
             {
-                Speed.Y = -420;
+                Velocity.Y = -10;
             }
         }
     }
