@@ -125,22 +125,6 @@ namespace DN.GameObjects.Creatures
         {
             if (IgnoreCollisions) return;
 
-            //List<GameObject> collisionsWithObjectsX = World.GetCollisionsWithObjects(new RectangleF((X + offset.X),
-            //                                                                      Y,
-            //                                                                      Size.Width,
-            //                                                                      Size.Height));
-
-            //List<GameObject> collisionsWithObjectsY = World.GetCollisionsWithObjects(new RectangleF(X,
-            //                                                                     Y + offset.Y,
-            //                                                                     Size.Width,
-            //                                                                     Size.Height));
-
-
-
-            //List<GameObject> commonCollision = new List<GameObject>();
-
-        //    Console.WriteLine(offset);
-
             Collisions.Clear();
 
             if (offset.X != 0)
@@ -221,88 +205,9 @@ namespace DN.GameObjects.Creatures
                     {
                         offset.X = 0;
                         offset.Y = 0;
-                        Console.WriteLine("Weird");
                     }
                 }
             }
-
-            
-
-
-            //if (offset.X != 0 && offset.Y != 0)
-            //{
-            //    //if (!this.Bullet)
-            //    {
-            //        foreach (var item in collisionsWithObjectsX)
-            //        {
-            //            if (item != this)
-            //            {
-            //                //if (item.Solid)
-            //                {
-            //                    offset.X = 0;
-            //                    if (Position.X <= item.X)
-            //                    {
-            //                        Collisions.Add(new Vector2(-1, 0));
-            //                    }
-            //                    else
-            //                    {
-            //                        Collisions.Add(new Vector2(1, 0));
-            //                    }
-            //                }
-            //                commonCollision.Add(item);
-            //            }
-            //        }
-
-            //        foreach (var item in collisionsWithObjectsY)
-            //        {
-            //            if (item != this)
-            //            {
-            //                //if (item.Solid)
-            //                {
-            //                    offset.Y = 0;
-            //                    if (Position.Y <= item.Y)
-            //                    {
-            //                        Collisions.Add(new Vector2(0, -1));
-            //                    }
-            //                    else
-            //                    {
-            //                        Collisions.Add(new Vector2(0, 1));
-            //                    }
-            //                }
-            //                if (!commonCollision.Contains(item))
-            //                    commonCollision.Add(item);
-            //            }
-            //        }
-            //    }
-
-            //    List<GameObject> collisionsAll = World.GetCollisionsWithObjects(new RectangleF((X + offset.X),
-            //                                                                                   Y + offset.Y,
-            //                                                                                   Size.Width,
-            //                                                                                   Size.Height));
-
-            //    foreach (var item in collisionsAll)
-            //    {
-            //        if (item != this)
-            //        {
-            //            //if (item.Solid && !this.Bullet)
-            //            {
-            //                offset.X = 0;
-            //                offset.Y = 0;
-            //                break;
-            //            }
-            //            if (!commonCollision.Contains(item))
-            //                commonCollision.Add(item);
-            //        }
-            //    }
-
-                //if (OnCollision != null)
-                //    for (int index = 0; index < commonCollision.Count; index++)
-                //    {
-                //        var item = commonCollision[index];
-
-                //        OnCollision(item);
-                //    }
-           // }
         }
 
 
