@@ -62,6 +62,21 @@ namespace DN
             return _map[x, y] == CellType.Free;
         }
         
+        public List<Rectangle> GetRectanglesAround(Point p)
+        {
+            List<Rectangle> rects = new List<Rectangle>();
+
+            for (int i = p.X - 1; i <= p.X + 1; i++)
+            {
+                for (int j = p.Y - 1; j <= p.Y + 1; j++)
+                {
+                    rects.Add(GetRect(i, j));
+                }
+            }
+
+            return rects;
+        }
+
         public void Draw(Rectangle region)
         {
             Size ts = CM.I.tex("wall_tile").Size;

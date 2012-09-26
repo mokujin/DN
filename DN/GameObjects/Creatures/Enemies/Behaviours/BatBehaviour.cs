@@ -30,7 +30,7 @@ namespace DN.GameObjects.Creatures.Enemies.Behaviours
                 if (LineOfSight.Get(GameWorld.TileMap, Creature.Cell, Hero.Cell))
                 {
                    Vector2 dir = GameWorld.DirectionToObject(Creature, Hero);
-                   Creature.Move(dir, 1);//TODO: Remove constant!
+                   Creature.Move(dir, 1 * dt);//TODO: Remove constant!
                 }
         }
     }

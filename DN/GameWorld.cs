@@ -29,8 +29,8 @@ namespace DN
             private set;
         }
 
-        public float g = 120f; // gravity acceleration;
-
+        public float G = 15f; // gravity acceleration;
+        public Vector2 GravityDirection = new Vector2(0, 1);
         private List<GameObject> _gameObjects;
         private Queue<GameObject> _addNewObjectsQueue;
         private Queue<GameObject> _deleteObjectsQueue;
@@ -54,25 +54,25 @@ namespace DN
             
             var lg = new LevelGenerator
                          {
-                             RoomsMaxWidth = 3,
-                             RoomsMaxHeight = 5,
-                             RoomCount = 2
+                             RoomsMaxWidth = 10,
+                             RoomsMaxHeight = 15,
+                             RoomCount = 30
                          };
             lg.Generate(this);
 
             InsertHero();
-            Creature bat = EnemiesFabric.CreateEnemy(this, EnemyType.Bat);
-            bat.Cell = GetRandomPoint();
-            AddObject(bat);
 
             background = new ParallaxBackground(this);
+          //  Creature bat = EnemiesFabric.CreateEnemy(this, EnemyType.Bat);
+         //   bat.Cell = GetRandomPoint();
+         //   AddObject(bat);
         }
 
         public void InsertHero()
         {
             Hero = new Hero(this);
             Point p = GetRandomPoint();
-            Hero.Position = new OpenTK.Vector2((p.X * 64)+32, (p.Y * 64)+32);
+            Hero.Position = new Vector2((p.X * 64)+32, (p.Y * 64)+32);
             camera.MoveTo(Hero.Position);
         }
         public Point GetRandomPoint()
@@ -168,6 +168,63 @@ namespace DN
             return cell.X >= 0 && cell.X < Width && cell.Y >= 0 && cell.Y < Height;
         }
 
-        
+
+        internal List<GameObject> GetCollisionsWithObjects(RectangleF rectangle)
+        {
+            return GetCollisionsWithObjects(new Rectangle((int)Math.Round(rectangle.X),
+                                               (int)Math.Round(rectangle.Y),
+                                               (int)Math.Round(rectangle.Width),
+                                               (int)Math.Round(rectangle.Height)));
+        }
+
+        internal List<GameObject> GetCollisionsWithObjects(Rectangle rectangle)
+        {
+            List<GameObject> list = new List<GameObject>();
+            foreach (GameObject gameObject in _gameObjects)
+            {
+                if (gameObject.Bounds.IntersectsWith(rectangle)) list.Add(gameObject);
+            }
+            return list;
+        }
+
+        internal List<CollidedCell> GetCollisionsWithTiles(RectangleF rectangle)
+        {
+            return GetCollisionsWithTiles(new Rectangle((int)Math.Round(rectangle.X),
+                                               (int)Math.Round(rectangle.Y),
+                                               (int)Math.Round(rectangle.Width),
+                                               (int)Math.Round(rectangle.Height)));
+        }
+
+        internal List<CollidedCell> GetCollisionsWithTiles(Rectangle rectangle)
+        {
+
+            var tilesToCheck = TileMap.GetRectanglesAround(new Point(rectangle.X / 64,
+                                                                     rectangle.Y / 64));
+
+            var list = new List<CollidedCell>();
+            foreach (Rectangle rect in tilesToCheck)
+            {
+                if (rect.IntersectsWith(rectangle)) 
+                    list.Add(new CollidedCell(rect, TileMap[rect.X / 64, rect.Y / 64]));
+            }
+            return list;
+        }
+    }
+
+    public class CollidedCell
+    {
+        public Rectangle Rectangle;
+        public CellType CellType;
+
+        /// <summary>
+        /// Determines in which directection object collided this tile
+        /// </summary>
+        public Point Direction;
+
+        public CollidedCell(Rectangle rect, CellType cellType)
+        {
+            CellType = cellType;
+            Rectangle = rect;
+        }
     }
 }

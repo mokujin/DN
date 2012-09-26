@@ -41,7 +41,7 @@ namespace DN
             GL.ClearColor(Color4.Black);
 
             LoadTextures();
-            gameWorld = new GameWorld(15,15);
+            gameWorld = new GameWorld(150,150);
 
             Keyboard.KeyRepeat = false;
 
@@ -60,6 +60,8 @@ namespace DN
 
         protected override void OnUpdateFrame(FrameEventArgs e)
         {
+            if (g_Keyboard[Key.Escape])
+                Exit();
             g_Gamepad.Update();
             gameWorld.Update((float)e.Time);
             base.OnUpdateFrame(e);

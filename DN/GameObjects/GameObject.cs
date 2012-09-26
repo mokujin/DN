@@ -8,7 +8,7 @@ namespace DN.GameObjects
 {
     public abstract class GameObject
     {
-        protected GameWorld _world;
+        protected GameWorld World;
         
 
         private float _x, _y;
@@ -53,23 +53,23 @@ namespace DN.GameObjects
             set { _size.Width = value.Width; _size.Height = value.Height; }
         }
 
-        public Rectangle Bounds
+        public RectangleF Bounds
         {
             get
             {
-                Rectangle r = new Rectangle((int)(X - Size.Width / 2), (int)(Y - Size.Height / 2), Size.Width, Size.Height);
+                var r = new RectangleF((X - Size.Width / 2), (Y - Size.Height / 2), Size.Width, Size.Height);
                 return r;
             }
         }
-        public int Left { get { return Bounds.Left; } set { X = value + Size.Width / 2; } }
-        public int Right { get { return Bounds.Right; } set { X = value - Size.Width / 2; } }
-        public int Top { get { return Bounds.Top; } set { Y = value + Size.Height / 2; } }
-        public int Bottom { get { return Bounds.Bottom; } set { Y = value - Size.Height / 2; } }
+        public float Left { get { return Bounds.Left; } set { X = value + Size.Width / 2; } }
+        public float Right { get { return Bounds.Right; } set { X = value - Size.Width / 2; } }
+        public float Top { get { return Bounds.Top; } set { Y = value + Size.Height / 2; } }
+        public float Bottom { get { return Bounds.Bottom; } set { Y = value - Size.Height / 2; } }
 
         public GameObject(GameWorld gameWorld)
         {
-            this._world = gameWorld;
-            this._world.AddObject(this);
+            this.World = gameWorld;
+            this.World.AddObject(this);
         }
         public abstract void Update(float dt);
         public abstract void Draw(float dt);

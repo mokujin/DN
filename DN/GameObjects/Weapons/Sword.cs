@@ -26,7 +26,7 @@ namespace DN.GameObjects.Weapons
         public override void Draw(float dt)
         {
             SpriteBatch.Instance.DrawTexture(CM.I.tex("sword_sprite"),
-                                             new Vector2(X + _offset * (sbyte)Creature.Direction, Y) ,
+                                             new Vector2(X + _offset * (sbyte)Creature.MovementDirection, Y) ,
                                              Color.White);
         }
 
