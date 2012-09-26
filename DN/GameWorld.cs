@@ -54,18 +54,18 @@ namespace DN
             
             var lg = new LevelGenerator
                          {
-                             RoomsMaxWidth = 10,
-                             RoomsMaxHeight = 15,
-                             RoomCount = 30
+                             RoomsMaxWidth = 2,
+                             RoomsMaxHeight = 5,
+                             RoomCount = 5
                          };
             lg.Generate(this);
 
             InsertHero();
 
             background = new ParallaxBackground(this);
-          //  Creature bat = EnemiesFabric.CreateEnemy(this, EnemyType.Bat);
-         //   bat.Cell = GetRandomPoint();
-         //   AddObject(bat);
+            Creature bat = EnemiesFabric.CreateEnemy(this, EnemyType.Bat);
+            bat.Cell = GetRandomPoint();
+            AddObject(bat);
         }
 
         public void InsertHero()

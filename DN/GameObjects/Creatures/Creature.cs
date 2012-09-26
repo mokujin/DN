@@ -23,19 +23,15 @@ namespace DN.GameObjects.Creatures
         public bool IgnoreCollisions = false;
 
         protected bool Landed = false;
-        protected List<CollidedCell> Collisions; 
-
-        //protected Vector2 Direction;
+        protected List<CollidedCell> Collisions;
 
 
-        protected Vector2 MaxLadderVelocity;
-        protected Vector2 MaxVelocity;
+        public Vector2 MaxLadderVelocity;
+        public Vector2 MaxVelocity;
         protected Vector2 Velocity;
 
-        protected float Friction;
-        protected float LadderFriction;
-        //protected bool OnStairs;
-        //protected bool OnGround;
+        public float Friction;
+        public float LadderFriction;
 
         public bool OnGround
         {
@@ -97,7 +93,8 @@ namespace DN.GameObjects.Creatures
 
             if (!OnStairs)
             {
-                Velocity += World.GravityDirection*World.G*dt;
+                if(GravityAffected)
+                    Velocity += World.GravityDirection*World.G*dt;
                 if (OnGround)
                     UpdateFriction(ref Velocity.X, Friction, dt);
             }

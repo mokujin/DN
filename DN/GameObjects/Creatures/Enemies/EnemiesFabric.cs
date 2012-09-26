@@ -4,6 +4,8 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using DN.GameObjects.Creatures.Enemies.Behaviours;
+using OpenTK;
+
 namespace DN.GameObjects.Creatures.Enemies
 {
     public enum EnemyType
@@ -24,7 +26,10 @@ namespace DN.GameObjects.Creatures.Enemies
                         Creature = enemy, Hero = gameWorld.Hero, GameWorld = gameWorld
                     });
                     enemy.GravityAffected = false;
-                    enemy.Size = new Size(20, 16);
+                    enemy.MaxVelocity = new Vector2(3, 3);
+                    enemy.MaxLadderVelocity = new Vector2(3,3);
+                    
+                    enemy.Size = new Size(16, 16);
                     enemy.Sprite = "bat_sprite";
                     break;
             }
