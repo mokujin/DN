@@ -8,6 +8,8 @@ namespace DN.GameObjects.Creatures.Enemies.Behaviours
 {
     class BatBehaviour:IBehaviour
     {
+        private bool SawPlayer = false;
+
         public Creature Creature
         {
             get;
@@ -26,12 +28,16 @@ namespace DN.GameObjects.Creatures.Enemies.Behaviours
 
         public void Update(float dt)
         {
-            if (GameWorld.DistanceToObject(Creature, Hero) < 500)
-                if (LineOfSight.Get(GameWorld.TileMap, Creature.Cell, Hero.Cell))
-                {
-                   Vector2 dir = GameWorld.DirectionToObject(Creature, Hero);
-                   Creature.Move(dir, 1 * dt);//TODO: Remove constant!
-                }
+            if (!SawPlayer)
+                if (GameWorld.DistanceToObject(Creature, Hero) < 500)
+                    if (LineOfSight.Get(GameWorld.TileMap, Creature.Cell, Hero.Cell))
+                        SawPlayer = true;
+
+            if (SawPlayer)
+            {
+                Vector2 dir = GameWorld.DirectionToObject(Creature, Hero);
+                Creature.Move(dir, 1*dt); //TODO: Remove constant!
+            }
         }
     }
 }

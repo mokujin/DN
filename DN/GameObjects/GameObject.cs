@@ -42,7 +42,7 @@ namespace DN.GameObjects
             }
             set 
             {
-                _x = value.X * 64; _y = value.Y * 64; 
+                _x = value.X * 64 + Size.Width/2; _y = value.Y * 64 + Size.Width/2; 
             }
         }
 

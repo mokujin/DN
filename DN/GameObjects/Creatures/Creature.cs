@@ -22,13 +22,13 @@ namespace DN.GameObjects.Creatures
         public bool GravityAffected = true;
         public bool IgnoreCollisions = false;
 
-        protected bool Landed = false;
         protected List<CollidedCell> Collisions;
 
 
         public Vector2 MaxLadderVelocity;
         public Vector2 MaxVelocity;
-        protected Vector2 Velocity;
+
+        private Vector2 Velocity;
 
         public float Friction;
         public float LadderFriction;
@@ -46,12 +46,6 @@ namespace DN.GameObjects.Creatures
         {
             get { return Collisions.Any(p => p.CellType == CellType.Ladder || p.CellType == CellType.VRope); }
         }
-
-        public Rectangle DrawingBounds
-        {
-            get {return new Rectangle((int)Bounds.X, (int)Bounds.Y, (int)Bounds.Width, (int)Bounds.Height);}
-        }
-
 
         private MovementDirection lastDirection;
         public MovementDirection MovementDirection
@@ -84,8 +78,6 @@ namespace DN.GameObjects.Creatures
         {
             if (dt >= 0.1f) return; // duct tape xD sometimes dt is extremly big, so that cause movement lag
             UpdateParametrs(dt);
-
-
         }
 
         private void UpdateParametrs(float dt)
@@ -104,10 +96,9 @@ namespace DN.GameObjects.Creatures
                 UpdateFriction(ref Velocity.X, LadderFriction, dt);
             }
 
-
             Vector2 pos = Position;
-
             Vector2 vel = Velocity;
+
             if (!OnStairs)
             {
                 CheckOverSpeed(ref vel.X, MaxVelocity.X);
@@ -115,17 +106,14 @@ namespace DN.GameObjects.Creatures
             }
             else
             {
-
                 CheckOverSpeed(ref vel.X, MaxLadderVelocity.X);
                 CheckOverSpeed(ref vel.Y, MaxLadderVelocity.Y);
             }
+
             CheckCollisions(ref vel, ref pos);
-            
             Position = pos;
-
-            
-
             Velocity = vel;
+
             Position += Velocity;
         }
 
