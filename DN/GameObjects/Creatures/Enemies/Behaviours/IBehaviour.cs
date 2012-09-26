@@ -23,6 +23,7 @@ namespace DN.GameObjects.Creatures.Enemies.Behaviours
             set;
         }
 
+        void Initialize();
         void Update(float dt);
     }
 }

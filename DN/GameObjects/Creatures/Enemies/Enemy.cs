@@ -23,6 +23,7 @@ namespace DN.GameObjects.Creatures.Enemies
         public void SetBehaviour(IBehaviour behaviour)
         {
             _behaviour = behaviour;
+            _behaviour.Initialize();
         }
 
         public override void Update(float dt)
