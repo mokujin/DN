@@ -88,9 +88,6 @@ namespace DN.GameObjects.Creatures
             if (_currentWeapon != null)
                 _currentWeapon.Update(dt);
 
-
-
-
             UpdateControlls(dt);
             _dustEffect.Position = new Vector2(Position.X, Bounds.Bottom);
             _dustEffect.Update(dt);

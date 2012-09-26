@@ -25,7 +25,7 @@ namespace DN.GameObjects.Creatures
         protected bool Landed = false;
         protected List<CollidedCell> Collisions; 
 
-        protected Vector2 Direction;
+        //protected Vector2 Direction;
 
 
         protected Vector2 MaxLadderVelocity;
@@ -57,9 +57,19 @@ namespace DN.GameObjects.Creatures
         }
 
 
+        private MovementDirection lastDirection;
         public MovementDirection MovementDirection
         {
-            get { return Direction.X > 0 ? MovementDirection.Right : MovementDirection.Left; }
+            get 
+            {
+                Vector2 direction = Velocity;
+                direction.Normalize();
+                if(!float.IsNaN(direction.X))
+                {
+                    lastDirection = direction.X > 0 ? MovementDirection.Right : MovementDirection.Left;
+                }
+                return lastDirection;
+            }
         }
 
 
