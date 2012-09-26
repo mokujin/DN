@@ -20,7 +20,7 @@ namespace DN.Effects
 
         public DustPointEmitter(Vector2 position, Vector2 direction, float dispersion):base()
         {
-            Position = Position;
+            Position = position;
             Direction = direction;
             Dispersion = dispersion;
             font = new BitmapFont(Path.Combine("Content", "Fonts", "monofur.ttf"), 14);

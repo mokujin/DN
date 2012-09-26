@@ -48,5 +48,7 @@ namespace DN.Effects
         {
 
         }
+        public virtual void Prepare(float dt)
+        { }
     }
 }

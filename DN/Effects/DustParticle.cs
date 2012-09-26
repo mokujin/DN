@@ -11,7 +11,7 @@ namespace DN.Effects
         public char letter;
         public DustParticle()
         {
-            letter = char.ConvertFromUtf32(RandomTool.RandByte())[0];
+            letter = LetterParticle.aviableLetters[RandomTool.RandInt(0, LetterParticle.aviableLetters.Length)];// char.ConvertFromUtf32(RandomTool.RandByte())[0];
         }
         public override void Update(float dt)
         {

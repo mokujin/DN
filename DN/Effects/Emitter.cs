@@ -161,6 +161,7 @@ namespace DN.Effects
                 for (var i = 0; i < releaseCount; i++)
                 {
                     Particle particle = this._particles[currentIndex];
+                    particle.Prepare(dt);
 
                     Vector2 offset, force, position;
 

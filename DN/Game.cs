@@ -20,6 +20,7 @@ namespace DN
         #region GLOBAL
 
         public static Size g_screenSize = new Size(640, 480);
+        public static Rectangle g_screenRect = new Rectangle(0, 0, 640, 480);
         public static KeyboardDevice g_Keyboard;
         public static MouseDevice g_Mouse;
         public static GamepadState g_Gamepad;
@@ -64,6 +65,7 @@ namespace DN
             gameWorld.Update((float)e.Time);
             base.OnUpdateFrame(e);
         }
+        
         protected override void OnRenderFrame(FrameEventArgs e)
         {
             GL.Clear(ClearBufferMask.ColorBufferBit);
