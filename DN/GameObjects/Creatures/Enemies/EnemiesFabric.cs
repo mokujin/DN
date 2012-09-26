@@ -28,7 +28,7 @@ namespace DN.GameObjects.Creatures.Enemies
                     enemy.GravityAffected = false;
                     enemy.MaxVelocity = new Vector2(3, 3);
                     enemy.MaxLadderVelocity = new Vector2(3,3);
-                    
+
                     enemy.Size = new Size(16, 16);
                     enemy.Sprite = "bat_sprite";
                     break;

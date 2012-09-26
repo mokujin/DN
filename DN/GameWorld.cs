@@ -54,8 +54,8 @@ namespace DN
             
             var lg = new LevelGenerator
                          {
-                             RoomsMaxWidth = 2,
-                             RoomsMaxHeight = 5,
+                             RoomsMaxWidth = 5,
+                             RoomsMaxHeight = 7,
                              RoomCount = 5
                          };
             lg.Generate(this);
@@ -65,7 +65,7 @@ namespace DN
             background = new ParallaxBackground(this);
             Creature bat = EnemiesFabric.CreateEnemy(this, EnemyType.Bat);
             bat.Cell = GetRandomPoint();
-            AddObject(bat);
+          //  AddObject(bat);
         }
 
         public void InsertHero()
@@ -168,21 +168,13 @@ namespace DN
             return cell.X >= 0 && cell.X < Width && cell.Y >= 0 && cell.Y < Height;
         }
 
-
-        internal List<GameObject> GetCollisionsWithObjects(RectangleF rectangle)
-        {
-            return GetCollisionsWithObjects(new Rectangle((int)Math.Round(rectangle.X),
-                                               (int)Math.Round(rectangle.Y),
-                                               (int)Math.Round(rectangle.Width),
-                                               (int)Math.Round(rectangle.Height)));
-        }
-
-        internal List<GameObject> GetCollisionsWithObjects(Rectangle rectangle)
+        internal List<GameObject> GetCollisionsWithObjects(GameObject gameObject)
         {
             List<GameObject> list = new List<GameObject>();
-            foreach (GameObject gameObject in _gameObjects)
+            foreach (GameObject gO in _gameObjects)
             {
-                if (gameObject.Bounds.IntersectsWith(rectangle)) list.Add(gameObject);
+                if(gO != gameObject)
+                    if (gO.Bounds.IntersectsWith(gameObject.Bounds)) list.Add(gameObject);
             }
             return list;
         }
