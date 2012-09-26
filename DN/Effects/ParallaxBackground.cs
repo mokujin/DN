@@ -69,7 +69,7 @@ namespace DN.Effects
             {
                 item.Update(dt);
                 if (!particle_bounds.Contains(world.Camera.ToScreen(item.Position, 0.3f)))
-                    item.Position = world.Camera.ToWorld(new Vector2(RandomTool.RandInt(0, Game.g_screenSize.Width), RandomTool.RandInt(-10, 50)), 0.3f);
+                    item.Position = world.Camera.ToWorld(new Vector2(RandomTool.RandInt(0, Game.g_screenSize.Width), RandomTool.RandInt(-50, 350)), 0.3f);
             }
             
             for (int i = 0; i < particlesCount; i++)

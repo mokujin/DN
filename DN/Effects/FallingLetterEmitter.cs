@@ -26,13 +26,13 @@ namespace DN.Effects
             Direction = direction;
             this.triggerInterval = triggerInterval;
             if(font == null)
-                font = new BitmapFont(Path.Combine("Content", "Fonts", "monofur.ttf"), 18);
+                font = new BitmapFont(Path.Combine("Content", "Fonts", "monofur.ttf"), 16);
             
             ReleaseQuantity = 1;
             ReleaseSpeed = 0;
             ReleaseScale = 1;
             ReleaseColour = Color4.Green;
-            ReleaseOpacity = 0.1f;
+            ReleaseOpacity = 0.5f;
         }
         public override void Initialise()
         {
@@ -76,7 +76,7 @@ namespace DN.Effects
                 LetterParticle particle = this._particles[currentIndex] as LetterParticle;
 
                 SpriteBatch.Instance.PrintText(font, particle.letter.ToString(), particle.Position, particle.Colour, particle.Rotation, particle.Scale);
-                SpriteBatch.Instance.PrintText(font, current, Position, RandomTool.RandColor(ReleaseColour),RandomTool.RandFloat( ReleaseRotation),RandomTool.RandFloat( ReleaseScale));
+                SpriteBatch.Instance.PrintText(font, current, Position,new Color4(ReleaseColour.Red.Minimum, ReleaseColour.Green.Maximum, ReleaseColour.Blue.Minimum, ReleaseOpacity.Maximum),RandomTool.RandFloat( ReleaseRotation),RandomTool.RandFloat( ReleaseScale));
                 //SpriteBatch.Instance.FillCircle(particle.Position, 5, Color4.White, 10);
                 currentIndex = (currentIndex + 1) % this.Budget;
             }

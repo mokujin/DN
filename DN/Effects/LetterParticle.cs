@@ -16,7 +16,7 @@ namespace DN.Effects
         public static string aviableLetters = "0123456789abcdefghigklmnopqrstuvwxyz?!@#$%&^*+=~";
         public override void Update(float dt)
         {
-            Colour.A = 1 - this.Age;
+            Colour.A -= dt/10;
             //Rotation += this.Age * dt;
             //Velocity.X -= dt*3;
             //Velocity.Y -= dt*3;
