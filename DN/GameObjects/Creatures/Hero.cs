@@ -25,7 +25,9 @@ namespace DN.GameObjects.Creatures
             Game.g_Keyboard.KeyRepeat = true;
             Size = new Size(48, 48);
             MaxVelocity = new Vector2(5,15);
-            Friction = 0.1f;
+            MaxLadderVelocity = new Vector2(5, 5);
+            LadderFriction = 40f;
+            Friction = 5f;
 
             //StandOnStairs += HeroStandOnStairs;
 
@@ -48,7 +50,8 @@ namespace DN.GameObjects.Creatures
 
         public override void Draw(float dt)
         {
-            SpriteBatch.Instance.DrawTexture(CM.I.tex("hero_tile"),Position,
+            SpriteBatch.Instance.DrawTexture(CM.I.tex("hero_tile"),
+                                             Position,
                                             // new Vector2((float)Math.Round(X),(float)Math.Round(Y)), 
                                              Rectangle.Empty,
                                              Color4.White);
@@ -73,11 +76,11 @@ namespace DN.GameObjects.Creatures
         {
             if (LeftKeyPressed())
             {
-                Move(new Vector2(-1, 0), 10 * dt);
+                Move(new Vector2(-1, 0), 10 * dt * (OnStairs?5:1));
             }
             if (RightKeyPressed())
             {
-                Move(new Vector2(1, 0), 10 * dt);
+                Move(new Vector2(1, 0), 10 * dt * (OnStairs ? 5 : 1));
             }
 
             if (_currentWeapon != null)
@@ -87,9 +90,9 @@ namespace DN.GameObjects.Creatures
             if (OnStairs)
             {
                 if (UpKeyPressed())
-                    Move(new Vector2(0, -1), -250 * dt);
+                    Move(new Vector2(0, -1), 50 * dt);
                 if (DownKeyPressed())
-                    Move(new Vector2(0, 1), 250 * dt);
+                    Move(new Vector2(0, 1), 50 * dt);
             }
             if (JumpKeyPressed())
                 Jump();

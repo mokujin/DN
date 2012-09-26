@@ -203,6 +203,11 @@ namespace DN
         public Rectangle Rectangle;
         public CellType CellType;
 
+        /// <summary>
+        /// Determines in which directection object collided this tile
+        /// </summary>
+        public Point Direction;
+
         public CollidedCell(Rectangle rect, CellType cellType)
         {
             CellType = cellType;

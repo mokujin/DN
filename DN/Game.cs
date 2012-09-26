@@ -58,6 +58,8 @@ namespace DN
 
         protected override void OnUpdateFrame(FrameEventArgs e)
         {
+            if (g_Keyboard[Key.Escape])
+                Exit();
             g_Gamepad.Update();
             gameWorld.Update((float)e.Time);
             base.OnUpdateFrame(e);

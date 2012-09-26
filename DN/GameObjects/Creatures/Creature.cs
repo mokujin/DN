@@ -23,26 +23,32 @@ namespace DN.GameObjects.Creatures
         public bool IgnoreCollisions = false;
 
         protected bool Landed = false;
-        protected List<Vector2> Collisions; 
+        protected List<CollidedCell> Collisions; 
 
         protected Vector2 Direction;
 
+
+        protected Vector2 MaxLadderVelocity;
         protected Vector2 MaxVelocity;
         protected Vector2 Velocity;
 
         protected float Friction;
-
+        protected float LadderFriction;
         //protected bool OnStairs;
         //protected bool OnGround;
 
         public bool OnGround
         {
-            get { return Collisions.Any(p => p.X == 0 && p.Y == 1); }
+            get 
+            {
+                return Collisions.Any(p =>p.CellType == CellType.Wall
+                                          && p.Direction.Y == 1);
+            }
         }
 
         public bool OnStairs
         {
-            get { return false; }
+            get { return Collisions.Any(p => p.CellType == CellType.Ladder || p.CellType == CellType.VRope); }
         }
 
         public Rectangle DrawingBounds
@@ -60,16 +66,8 @@ namespace DN.GameObjects.Creatures
         public Creature(GameWorld gameWorld)
             :base(gameWorld)
         {
-            Collisions = new List<Vector2>();
+            Collisions = new List<CollidedCell>();
         }
-
-    
-
-
-        public event Action StandOnStairs;
-        public event Action StandOutStairs;
-        public event Action StandOnGround;
-        public event Action StandOutGround;
 
         public void Move(Vector2 direction, float speed)
         {
@@ -87,37 +85,56 @@ namespace DN.GameObjects.Creatures
         private void UpdateParametrs(float dt)
         {
 
-            UpdateFriction();
+            if (!OnStairs)
+            {
+                Velocity += World.GravityDirection*World.G*dt;
+                if (OnGround)
+                    UpdateFriction(ref Velocity.X, Friction, dt);
+            }
+            else
+            {
+                UpdateFriction(ref Velocity.Y, LadderFriction, dt);
+                UpdateFriction(ref Velocity.X, LadderFriction, dt);
+            }
 
-            Velocity += World.GravityDirection * World.G * dt;
 
             Vector2 pos = Position;
-            CheckCollisions(ref Velocity, ref pos);
-            Position = pos;
+
             Vector2 vel = Velocity;
+            if (!OnStairs)
+            {
+                CheckOverSpeed(ref vel.X, MaxVelocity.X);
+                CheckOverSpeed(ref vel.Y, MaxVelocity.Y);
+            }
+            else
+            {
+
+                CheckOverSpeed(ref vel.X, MaxLadderVelocity.X);
+                CheckOverSpeed(ref vel.Y, MaxLadderVelocity.Y);
+            }
+            CheckCollisions(ref vel, ref pos);
             
-            CheckOverSpeed(ref vel.X, MaxVelocity.X);
-            CheckOverSpeed(ref vel.Y, MaxVelocity.Y);
+            Position = pos;
+
+            
+
             Velocity = vel;
             Position += Velocity;
         }
 
-        private void UpdateFriction()
+        private void UpdateFriction(ref float vel,float friction, float dt)
         {
-            if (Collisions.Count > 0)
+            if (vel > 0)
             {
-                if (Velocity.X > 0)
-                {
-                    Velocity.X -= Friction;
-                    if (Velocity.X < 0)
-                        Velocity.X = 0;
-                }
-                else if (Velocity.X < 0)
-                {
-                    Velocity.X += Friction;
-                    if (Velocity.X > 0)
-                        Velocity.X = 0;
-                }
+                vel -= friction * dt;
+                if (vel < 0)
+                    vel = 0;
+            }
+            else if (vel < 0)
+            {
+                vel += friction * dt;
+                if (vel > 0)
+                    vel = 0;
             }
         }
 
@@ -126,8 +143,10 @@ namespace DN.GameObjects.Creatures
             if (IgnoreCollisions) return;
 
             Collisions.Clear();
-
-            if (offset.X != 0)
+            List<CollidedCell> tilesX = null;
+            List<CollidedCell> tilesY = null;
+            List<CollidedCell> tiles = null;
+          //  if (offset.X != 0)
             {
                 float oldOffset = offset.X;
                 if (offset.X < 1 && offset.X > 0)
@@ -135,7 +154,7 @@ namespace DN.GameObjects.Creatures
                 if (offset.X > -1 && offset.X < 0)
                     offset.X = -1;
 
-                var tilesX = World.GetCollisionsWithTiles(new RectangleF((Left + offset.X),
+                tilesX = World.GetCollisionsWithTiles(new RectangleF((Left + offset.X),
                                                                          Top,
                                                                          Size.Width,
                                                                          Size.Height));
@@ -144,20 +163,25 @@ namespace DN.GameObjects.Creatures
                 {
                     if (cell.CellType == CellType.Wall)
                     {
-                            if (offset.X > 0)
-                                position.X = cell.Rectangle.X - Size.Width/2;
-                            else if (offset.X < 0)
-                            {
-                                position.X = cell.Rectangle.X + cell.Rectangle.Width + Size.Width/2;
-                            }
-                            offset.X = 0;
+                        if (offset.X > 0)
+                        {
+                            position.X = cell.Rectangle.X - Size.Width/2;
+                            cell.Direction = new Point(1, 0);
+                        }
+                        else if (offset.X < 0)
+                        {
+                            position.X = cell.Rectangle.X + cell.Rectangle.Width + Size.Width / 2;
+                            cell.Direction = new Point(-1, 0);
+                        }
+                        offset.X = 0;
+                        break;
                     }
                 }
                 if (offset.X != 0)
                     offset.X = oldOffset;
             }
 
-            if (offset.Y != 0)
+          //  if (offset.Y != 0)
             {
                 float oldOffset = offset.Y;
                 if (offset.Y < 1 && offset.Y > 0)
@@ -165,7 +189,7 @@ namespace DN.GameObjects.Creatures
                 if (offset.Y > -1 && offset.Y < 0)
                     offset.Y = -1;
 
-                var tilesY = World.GetCollisionsWithTiles(new RectangleF((Left),
+                tilesY = World.GetCollisionsWithTiles(new RectangleF((Left),
                                                                          Top + offset.Y,
                                                                          Size.Width,
                                                                          Size.Height));
@@ -176,16 +200,17 @@ namespace DN.GameObjects.Creatures
                         if (offset.Y > 0)
                         {
                             position.Y = cell.Rectangle.Y - Size.Height/2;
-                            Collisions.Add(new Vector2(0,1));
+                            cell.Direction = new Point(0, 1);
                         }
                         else if (offset.Y < 0)
                         {
                             position.Y = cell.Rectangle.Y + cell.Rectangle.Height + Size.Height / 2;
+                            cell.Direction = new Point(0, -1);
                         }
                         offset.Y = 0;
                         break;
-
                     }
+
                 }
                 if (offset.Y != 0)
                     offset.Y = oldOffset;
@@ -193,12 +218,12 @@ namespace DN.GameObjects.Creatures
 
 
 
-            if(offset.X != 0 && offset.Y !=0)
+            if (offset.X != 0 && offset.Y != 0)
             {
-                var tiles = World.GetCollisionsWithTiles(new RectangleF((Left + offset.X),
-                                                         Top + offset.Y,
-                                                         Size.Width,
-                                                         Size.Height));
+                tiles = World.GetCollisionsWithTiles(new RectangleF((Left + offset.X),
+                                                                        Top + offset.Y,
+                                                                        Size.Width,
+                                                                        Size.Height));
                 foreach (var cell in tiles)
                 {
                     if (cell.CellType == CellType.Wall)
@@ -208,6 +233,12 @@ namespace DN.GameObjects.Creatures
                     }
                 }
             }
+            if(tilesX != null)
+                Collisions.AddRange(tilesX);
+            if (tilesY != null)
+                Collisions.AddRange(tilesY);
+            if (tiles != null)
+                Collisions.AddRange(tiles);
         }
 
 
