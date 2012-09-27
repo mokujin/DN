@@ -36,8 +36,10 @@ namespace DN.LevelGeneration
                 _miners.Add(new Miner(this, TileMap.Width / 2, (TileMap.Height / 2) - 1));
                 UpdateMiners();
 
+                MakeTunnelsWider();
+
                 for (int i = 0; i < RoomCount; i++)
-                    AddRoom();
+                    AddRoomAtRandomPosition();
 
                 var p = GetFreeCell();
                 var adv = new Adventurer(this, p.X, p.Y);
@@ -70,7 +72,41 @@ namespace DN.LevelGeneration
             }
         }
 
-        private void AddRoom()
+        private void MakeTunnelsWider()
+        {
+            byte[,] newMap = new byte[TileMap.Width, TileMap.Height];
+
+            for (int i = 2; i < TileMap.Width - 2; i++)
+            {
+                for (int j = 2; j < TileMap.Height - 2; j++)
+                {
+                    if (FreeCellsAround(i, j) == 2)
+                        newMap[i, j] = 1;
+                }
+            }
+
+            for (int i = 2; i < TileMap.Width - 2; i++)
+            {
+                for (int j = 2; j < TileMap.Height - 2; j++)
+                {
+                    if (newMap[i, j] == 1)
+                        AddRoom(i - 1, j - 1, 2, 2);
+                }
+            }
+        }
+
+        private int FreeCellsAround(int x , int y)
+        {
+            int count = 0;
+
+            for (int i = x - 1; i <= x + 1; i++)
+                for (int j = y - 1; j <= y + 1; j++)
+                    if (TileMap[i, j] == CellType.Free)
+                        count++;
+            return count;
+        }
+
+        private void AddRoomAtRandomPosition()
         {
             int x, y, width, height;
             width = RandomTool.RandInt(0, RoomsMaxWidth);
@@ -81,11 +117,18 @@ namespace DN.LevelGeneration
                 x = RandomTool.RandInt(2, TileMap.Width - width);
                 y = RandomTool.RandInt(2, TileMap.Height - height);
             } while (TileMap[x, y] == CellType.Wall);
+            AddRoom(x, y, width, height);
+        }
+
+        private void AddRoom(int x, int y, int width, int height)
+        {
 
             for (int i = x; i < x + width; i++)
                 for (int j = y; j < y + height; j++)
-                    TileMap[i,j] = CellType.Free;
+                    TileMap[i, j] = CellType.Free;
         }
+
+
 
         private void ClearJunk()
         {

@@ -56,7 +56,7 @@ namespace DN
                          {
                              RoomsMaxWidth = 5,
                              RoomsMaxHeight = 7,
-                             RoomCount = 5
+                             RoomCount = 0
                          };
             lg.Generate(this);
 
@@ -119,7 +119,7 @@ namespace DN
 
             camera.Update(dt);
             UpdateObjectsEnqueues();
-            background.Update(dt);
+           // background.Update(dt);
         }
 
         private void UpdateObjectsEnqueues()
@@ -133,7 +133,7 @@ namespace DN
 
         public void Draw(float dt)
         {
-            background.Draw(dt);
+            //background.Draw(dt);
             SpriteBatch.Instance.Begin(camera.GetViewMatrix());
 
             RenderTiles(dt);
