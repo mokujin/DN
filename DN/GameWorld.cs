@@ -54,9 +54,9 @@ namespace DN
             
             var lg = new LevelGenerator
                          {
-                             RoomsMaxWidth = 5,
-                             RoomsMaxHeight = 7,
-                             RoomCount = 0
+                             RoomsMaxWidth = 10,
+                             RoomsMaxHeight = 15,
+                             RoomCount = 25
                          };
             lg.Generate(this);
 

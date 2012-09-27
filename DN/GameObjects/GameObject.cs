@@ -6,8 +6,14 @@ using OpenTK;
 using System.Drawing;
 namespace DN.GameObjects
 {
+    public delegate void CollisionEventHandler(GameObject sender, GameObject gameObject);
+
     public abstract class GameObject
     {
+        public event CollisionEventHandler CollisionWtihObjects;
+
+        public bool IgnoreCollisions = false;
+
         protected GameWorld World;
         
 
@@ -71,7 +77,37 @@ namespace DN.GameObjects
             this.World = gameWorld;
             this.World.AddObject(this);
         }
-        public abstract void Update(float dt);
+        public virtual void Update(float dt)
+        {
+            Vector2 pos = Position;
+            Vector2 offset = Vector2.Zero;
+
+            CheckCollisions(ref offset,ref pos);
+
+            Position = pos;
+        }
         public abstract void Draw(float dt);
+
+        protected virtual void CheckCollisions(ref Vector2 offset, ref Vector2 position)
+        {
+            if (IgnoreCollisions) return;
+            CheckCollisionsWithObjects(ref offset, ref position);
+        }
+
+
+        private void CheckCollisionsWithObjects(ref Vector2 offset, ref Vector2 position)
+        {
+            //if we will have impassable objects it must be improved
+            //at this point we just will know that we have a collision with particular object
+
+
+            if (CollisionWtihObjects == null) return;
+
+            List<GameObject> collidedGameObjects = World.GetCollisionsWithObjects(this);
+
+            foreach (var gameObject in collidedGameObjects)
+                CollisionWtihObjects(this, gameObject);
+        }
+
     }
 }

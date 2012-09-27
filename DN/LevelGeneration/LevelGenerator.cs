@@ -37,7 +37,7 @@ namespace DN.LevelGeneration
                 UpdateMiners();
 
                 MakeTunnelsWider();
-
+                RemoveAloneCells();
                 for (int i = 0; i < RoomCount; i++)
                     AddRoomAtRandomPosition();
 
@@ -80,7 +80,7 @@ namespace DN.LevelGeneration
             {
                 for (int j = 2; j < TileMap.Height - 2; j++)
                 {
-                    if (FreeCellsAround(i, j) == 2)
+                    if (GetCellCountAround(i, j) == 2)
                         newMap[i, j] = 1;
                 }
             }
@@ -95,13 +95,25 @@ namespace DN.LevelGeneration
             }
         }
 
-        private int FreeCellsAround(int x , int y)
+        private void RemoveAloneCells()
+        {
+            for (int i = 2; i < TileMap.Width - 2; i++)
+            {
+                for (int j = 2; j < TileMap.Height - 2; j++)
+                {
+                    if (GetCellCountAround(i, j, CellType.Wall) == 1)
+                        TileMap[i, j] = 0;
+                }
+            }
+        }
+
+        private int GetCellCountAround(int x , int y, CellType type = CellType.Free)
         {
             int count = 0;
 
             for (int i = x - 1; i <= x + 1; i++)
                 for (int j = y - 1; j <= y + 1; j++)
-                    if (TileMap[i, j] == CellType.Free)
+                    if (TileMap[i, j] == type)
                         count++;
             return count;
         }
