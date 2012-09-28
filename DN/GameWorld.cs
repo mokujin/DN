@@ -125,11 +125,7 @@ namespace DN
 
             camera.Update(dt);
             UpdateObjectsEnqueues();
-<<<<<<< HEAD
            background.Update(dt);
-=======
-            background.Update(dt);
->>>>>>> fd5bb5d1d521cd5c0d1425fcb6319664ecd205a3
         }
 
         private void UpdateObjectsEnqueues()
