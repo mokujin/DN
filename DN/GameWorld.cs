@@ -123,7 +123,7 @@ namespace DN
 
             camera.Update(dt);
             UpdateObjectsEnqueues();
-           /background.Update(dt);
+           background.Update(dt);
         }
 
         private void UpdateObjectsEnqueues()
