@@ -13,7 +13,9 @@ using DN.GameObjects;
 using OpenTK;
 using DN.GameObjects.Creatures.Enemies;
 using DN.Effects;
+using OpenTK.Graphics.OpenGL;
 using DN.GameObjects.Weapons;
+
 namespace DN
 {
     public class GameWorld
@@ -123,7 +125,11 @@ namespace DN
 
             camera.Update(dt);
             UpdateObjectsEnqueues();
+<<<<<<< HEAD
            background.Update(dt);
+=======
+            background.Update(dt);
+>>>>>>> fd5bb5d1d521cd5c0d1425fcb6319664ecd205a3
         }
 
         private void UpdateObjectsEnqueues()
@@ -135,12 +141,29 @@ namespace DN
                 _gameObjects.Remove(_deleteObjectsQueue.Dequeue());
         }
 
+        Texture back = new Texture(Game.g_screenSize);
         public void Draw(float dt)
         {
+            
             background.Draw(dt);
             SpriteBatch.Instance.Begin(camera.GetViewMatrix());
 
             RenderTiles(dt);
+            GL.ClearColor(0, 0, 0, 0);
+            SpriteBatch.Instance.End(back, true);
+            GL.ClearColor(0, 0, 0, 1);
+
+            SpriteBatch.Instance.Begin();
+            
+            SpriteBatch.Instance.DrawTexture(back, Game.g_screenRect,Rectangle.Empty, Color.White,0,Vector2.Zero,false,true);
+            
+            SpriteBatch.Instance.End();
+
+            SpriteBatch.Instance.Begin();
+            SpriteBatch.Instance.FillCircle(new PointF(200, 200), 20, Color.Red, 10);
+            SpriteBatch.Instance.End();
+
+            SpriteBatch.Instance.Begin(camera.GetViewMatrix());
             foreach (var gameObject in _gameObjects)
                 gameObject.Draw(dt);
 

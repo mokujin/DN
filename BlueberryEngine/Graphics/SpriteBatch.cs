@@ -48,6 +48,9 @@ namespace Blueberry.Graphics
         private Matrix4 trans;
         private Matrix4 proj;
 
+        private int proj_uniform_loc;
+        private int view_uniform_loc;
+
         public SpriteBatch()
         {
             _batchItemList = new List<BatchItem>(256);
@@ -107,6 +110,10 @@ namespace Blueberry.Graphics
             vbuffer.DeclareNextAttribute("vtexcoord", 2);
 
             vbuffer.Attach(shader);
+
+            proj_uniform_loc = GL.GetUniformLocation(shader.Program, "projection");
+            view_uniform_loc = GL.GetUniformLocation(shader.Program, "view");
+
             int[] p = new int[4];
             GL.GetInteger(GetPName.Viewport, p);
 
@@ -143,6 +150,21 @@ namespace Blueberry.Graphics
                 GL.DrawElements(mode, vbuffer.IndexOffset + 1, DrawElementsType.UnsignedInt, 0);
         }
 
+        public void BindShader(string positionAttrib, string colorAttrib, string texcoordAttrib, string projectionUniform, string viewUniform)
+        {
+            vbuffer.DeclareNextAttribute(positionAttrib, 2);
+            vbuffer.DeclareNextAttribute(colorAttrib, 4);
+            vbuffer.DeclareNextAttribute(texcoordAttrib, 2);
+
+            vbuffer.Attach(shader);
+        }
+        /*
+        private bool TestCompatibility(Shader shader) // probably compatible shader
+        {
+            bool cmp = shader.AttributeExists("vposition");
+            cmp = cmp && shader.AttributeExists("vcolor") && attribu
+        }
+        */
         public void Begin()
         {
             Begin(Matrix4.Identity);
@@ -157,8 +179,8 @@ namespace Blueberry.Graphics
         public void End()
         {
             shader.Use();
-            shader.SetUniform("projection", ref proj);
-            shader.SetUniform("view", ref trans);
+            shader.SetUniform(proj_uniform_loc, ref proj);
+            shader.SetUniform(view_uniform_loc, ref trans);
             // nothing to do
             if (_batchItemList.Count == 0)
                 return;
