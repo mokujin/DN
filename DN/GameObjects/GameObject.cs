@@ -10,7 +10,7 @@ namespace DN.GameObjects
 
     public abstract class GameObject
     {
-        public event CollisionEventHandler CollisionWtihObjects;
+        public event CollisionEventHandler CollisionWithObjects;
 
         public bool IgnoreCollisions = false;
 
@@ -59,12 +59,11 @@ namespace DN.GameObjects
             set { _size.Width = value.Width; _size.Height = value.Height; }
         }
 
-        public RectangleF Bounds
+        public virtual RectangleF Bounds
         {
             get
             {
-                var r = new RectangleF((X - Size.Width / 2), (Y - Size.Height / 2), Size.Width, Size.Height);
-                return r;
+                return new RectangleF((X - Size.Width / 2), (Y - Size.Height / 2), Size.Width, Size.Height);
             }
         }
         public float Left { get { return Bounds.Left; } set { X = value + Size.Width / 2; } }
@@ -101,12 +100,12 @@ namespace DN.GameObjects
             //at this point we just will know that we have a collision with particular object
 
 
-            if (CollisionWtihObjects == null) return;
+            if (CollisionWithObjects == null) return;
 
             List<GameObject> collidedGameObjects = World.GetCollisionsWithObjects(this);
 
             foreach (var gameObject in collidedGameObjects)
-                CollisionWtihObjects(this, gameObject);
+                CollisionWithObjects(this, gameObject);
         }
 
     }

@@ -60,7 +60,7 @@ namespace DN.LevelGeneration
                     _cell.X += direction.X;
 
                     if (_levelGenerator.TileMap[_cell.X, _cell.Y + 1] != CellType.Wall)
-                        _levelGenerator.TileMap[_cell.X, _cell.Y] = CellType.VRope;
+                        _levelGenerator.TileMap[_cell.X, _cell.Y] = CellType.Ladder;
                 }
                 else if (direction.Y != 0)
                 {

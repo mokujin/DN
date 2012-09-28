@@ -13,6 +13,7 @@ using DN.GameObjects;
 using OpenTK;
 using DN.GameObjects.Creatures.Enemies;
 using DN.Effects;
+using DN.GameObjects.Weapons;
 namespace DN
 {
     public class GameWorld
@@ -63,9 +64,12 @@ namespace DN
             InsertHero();
 
             background = new ParallaxBackground(this);
+            for (int i = 0; i < 10; i++)
+            {
+             
             Creature bat = EnemiesFabric.CreateEnemy(this, EnemyType.Bat);
-            bat.Cell = GetRandomPoint();
-          //  AddObject(bat);
+            bat.Cell = GetRandomPoint();   
+            }
         }
 
         public void InsertHero()
@@ -119,7 +123,7 @@ namespace DN
 
             camera.Update(dt);
             UpdateObjectsEnqueues();
-           // background.Update(dt);
+           /background.Update(dt);
         }
 
         private void UpdateObjectsEnqueues()
@@ -133,7 +137,7 @@ namespace DN
 
         public void Draw(float dt)
         {
-            //background.Draw(dt);
+            background.Draw(dt);
             SpriteBatch.Instance.Begin(camera.GetViewMatrix());
 
             RenderTiles(dt);
@@ -152,8 +156,8 @@ namespace DN
             rect.Height /= 64;
             rect.Width+=2;
             rect.Height+=2;
-            Console.SetCursorPosition(0,1);
-            Console.Write("tiles in view: {0}   ",rect.Width * rect.Height);
+           // Console.SetCursorPosition(0,1);
+            //Console.Write("tiles in view: {0}   ",rect.Width * rect.Height);
             TileMap.Draw(rect);
         }
 
@@ -173,8 +177,14 @@ namespace DN
             List<GameObject> list = new List<GameObject>();
             foreach (GameObject gO in _gameObjects)
             {
-                if(gO != gameObject)
-                    if (gO.Bounds.IntersectsWith(gameObject.Bounds)) list.Add(gameObject);
+                if (gO != gameObject)
+                {
+                    if (gO.Bounds.IntersectsWith(gameObject.Bounds))
+                    {
+                        list.Add(gO);
+                    }
+                    
+                }
             }
             return list;
         }

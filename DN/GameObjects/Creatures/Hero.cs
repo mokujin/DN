@@ -27,7 +27,7 @@ namespace DN.GameObjects.Creatures
             Game.g_Gamepad.OnButtonPress += g_Gamepad_OnButtonPress;
             Game.g_Keyboard.KeyDown += g_Keyboard_KeyDown;
             Game.g_Keyboard.KeyRepeat = true;
-            Size = new Size(48, 48);
+            Size = new Size(48, 40);
             MaxVelocity = new Vector2(5,15);
             MaxLadderVelocity = new Vector2(5, 5);
             LadderFriction = 40f;
@@ -72,7 +72,7 @@ namespace DN.GameObjects.Creatures
                                              Rectangle.Empty,
                                              Color4.White);
 
-            SpriteBatch.Instance.OutlineRectangle(Bounds, Color.White); // debug draw
+          //  SpriteBatch.Instance.OutlineRectangle(Bounds, Color.White); // debug draw
 
             _dustEffect.Draw(dt);
             
