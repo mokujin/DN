@@ -72,7 +72,7 @@ namespace DN.GameObjects.Creatures
                                              Rectangle.Empty,
                                              Color4.White);
 
-            SpriteBatch.Instance.OutlineRectangle(Bounds, Color.White); // debug draw
+            //SpriteBatch.Instance.OutlineRectangle(Bounds, Color.White); // debug draw
 
             _dustEffect.Draw(dt);
             

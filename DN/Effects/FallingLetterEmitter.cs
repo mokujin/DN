@@ -31,7 +31,7 @@ namespace DN.Effects
             ReleaseQuantity = 1;
             ReleaseSpeed = 0;
             ReleaseScale = 1;
-            ReleaseColour = Color4.Green;
+            ReleaseColour = Color4.CornflowerBlue;
             ReleaseOpacity = 0.5f;
         }
         public override void Initialise()

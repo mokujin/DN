@@ -16,6 +16,8 @@ namespace Blueberry.Graphics
         private int _fragment;
         private int _geometry;
 
+        public int Program { get { return _program; } }
+
         public Shader()
         {
             _vertex = 0;
@@ -68,7 +70,51 @@ namespace Blueberry.Graphics
                 GL.UniformMatrix4(uniformLocation, false, ref value);
         }
 
+
+        public void SetUniform(int location, int value)
+        {
+            if (location > 0)
+                GL.Uniform1(location, value);
+        }
+
+        public void SetUniform(int location, float value)
+        {
+            if (location > 0)
+                GL.Uniform1(location, value);
+        }
+
+        public void SetUniform(int location, ref  Vector2 value)
+        {
+            if (location > 0)
+                GL.Uniform2(location, ref value);
+        }
+
+        public void SetUniform(int location, ref  Vector3 value)
+        {
+            if (location > 0)
+                GL.Uniform3(location, ref value);
+        }
+
+        public void SetUniform(int location, ref  Vector4 value)
+        {
+            if (location > 0)
+                GL.Uniform4(location, ref value);
+        }
+
+        public void SetUniform(int location, ref Matrix4 value)
+        {
+            if (location > 0)
+                GL.UniformMatrix4(location, false, ref value);
+        }
+
+
         #endregion set uniforms
+
+        public bool AttributeExists(string attribName)
+        {
+            int attribLocation = GL.GetAttribLocation(_program, attribName);
+            return attribLocation != -1;
+        }
 
         public void Use()
         {

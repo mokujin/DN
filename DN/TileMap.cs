@@ -92,6 +92,9 @@ namespace DN
                         case CellType.Ladder:
                             SpriteBatch.Instance.DrawTexture(CM.I.tex("stair_tile"), i * ts.Width, j * ts.Height, ts.Width, ts.Height, Rectangle.Empty, Color.White, 0, 0, 0);
                             break;
+                        case CellType.VRope:
+                            SpriteBatch.Instance.DrawTexture(CM.I.tex("stair_tile"), i * ts.Width, j * ts.Height, ts.Width, ts.Height, Rectangle.Empty, Color.Brown, 0, 0, 0);
+                            break;
                     }
                 }
             }

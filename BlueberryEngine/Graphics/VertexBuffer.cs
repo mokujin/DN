@@ -100,7 +100,10 @@ namespace Blueberry.Graphics
         {
             declarations.Add(new VertexDeclaration() { name = name, elements = elements });
         }
-
+        public void ClearAttributeDeclarations()
+        {
+            declarations.Clear();
+        }
         public void AddVertex(params float[] data)
         {
             CheckForOverflowVertexBuffer();

@@ -6,7 +6,7 @@
         {
             using (Game game = new Game())
             {
-                game.Run();
+                game.Run(200.0,200.0);
             }
         }
     }
