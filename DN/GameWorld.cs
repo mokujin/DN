@@ -141,13 +141,17 @@ namespace DN
         public void Draw(float dt)
         {
             
-            background.Draw(dt);
+            
             SpriteBatch.Instance.Begin(camera.GetViewMatrix());
 
             RenderTiles(dt);
             GL.ClearColor(0, 0, 0, 0);
-            SpriteBatch.Instance.End(back, true);
+
+            SpriteBatch.Instance.End(back, true, true);
+            
             GL.ClearColor(0, 0, 0, 1);
+            GL.Clear(ClearBufferMask.ColorBufferBit);
+            background.Draw(dt);
 
             SpriteBatch.Instance.Begin();
             

@@ -222,8 +222,17 @@ namespace Blueberry.Graphics
             _batchItemList.Clear();
         }
 
-        public void End(Texture target, bool clear)
+        public void End(Texture target, bool clear, bool use_back_buffer = false)
         {
+            if (use_back_buffer)
+            {
+                if (clear)
+                    GL.Clear(ClearBufferMask.ColorBufferBit);
+                End();
+                GL.BindTexture(TextureTarget.Texture2D, target.ID);
+                GL.CopyTexImage2D(TextureTarget.Texture2D, 0,PixelInternalFormat.Rgba, 0, 0, target.Size.Width, target.Size.Height, 0);
+                return;
+            }
             if (framebuffer == -1)
             {
                 GL.GenFramebuffers(1, out framebuffer);
