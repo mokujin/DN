@@ -59,11 +59,10 @@ namespace DN.GameObjects.Weapons
         }
         public virtual void StartAttack()
         {
-            if (CanAttack)
-            {
-                _elapsed = 0;
-                AttackStarted = true;
-            }
+            if (!CanAttack) return;
+
+            _elapsed = 0;
+            AttackStarted = true;
         }
         protected virtual void PerformAttack(float dt)
         {

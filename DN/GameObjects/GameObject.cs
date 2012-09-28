@@ -6,8 +6,14 @@ using OpenTK;
 using System.Drawing;
 namespace DN.GameObjects
 {
+    public delegate void CollisionEventHandler(GameObject sender, GameObject gameObject);
+
     public abstract class GameObject
     {
+        public event CollisionEventHandler CollisionWithObjects;
+
+        public bool IgnoreCollisions = false;
+
         protected GameWorld World;
         
 
@@ -53,12 +59,11 @@ namespace DN.GameObjects
             set { _size.Width = value.Width; _size.Height = value.Height; }
         }
 
-        public RectangleF Bounds
+        public virtual RectangleF Bounds
         {
             get
             {
-                var r = new RectangleF((X - Size.Width / 2), (Y - Size.Height / 2), Size.Width, Size.Height);
-                return r;
+                return new RectangleF((X - Size.Width / 2), (Y - Size.Height / 2), Size.Width, Size.Height);
             }
         }
         public float Left { get { return Bounds.Left; } set { X = value + Size.Width / 2; } }
@@ -71,7 +76,37 @@ namespace DN.GameObjects
             this.World = gameWorld;
             this.World.AddObject(this);
         }
-        public abstract void Update(float dt);
+        public virtual void Update(float dt)
+        {
+            Vector2 pos = Position;
+            Vector2 offset = Vector2.Zero;
+
+            CheckCollisions(ref offset,ref pos);
+
+            Position = pos;
+        }
         public abstract void Draw(float dt);
+
+        protected virtual void CheckCollisions(ref Vector2 offset, ref Vector2 position)
+        {
+            if (IgnoreCollisions) return;
+            CheckCollisionsWithObjects(ref offset, ref position);
+        }
+
+
+        private void CheckCollisionsWithObjects(ref Vector2 offset, ref Vector2 position)
+        {
+            //if we will have impassable objects it must be improved
+            //at this point we just will know that we have a collision with particular object
+
+
+            if (CollisionWithObjects == null) return;
+
+            List<GameObject> collidedGameObjects = World.GetCollisionsWithObjects(this);
+
+            foreach (var gameObject in collidedGameObjects)
+                CollisionWithObjects(this, gameObject);
+        }
+
     }
 }

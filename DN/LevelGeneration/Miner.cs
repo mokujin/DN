@@ -88,15 +88,17 @@ namespace DN.LevelGeneration
             if (!_levelGenerator.TileMap.InRange(p))
                 return Int32.MinValue;
 
-            if(_levelGenerator.TileMap.InRange(new Point(p.X, p.Y + 1)))
-                if(offsetY == 0)
-                    if (_levelGenerator.TileMap.IsFree(new Point(p.X, p.Y + 1)))
-                        return Int32.MinValue;
+            if (!_levelGenerator.TileMap.InRange(new Point(p.X, p.Y + 1)))
+                return Int32.MinValue;
+
+            if (offsetY == 0)
+                if (_levelGenerator.TileMap.IsFree(new Point(p.X, p.Y + 1)))
+                    return Int32.MinValue;
 
             if (p.X <= 1 || p.X >= _levelGenerator.TileMap.Width - 1 || p.Y >= _levelGenerator.TileMap.Height - 1)
                 return Int32.MinValue;
 
-            return (byte)_levelGenerator.ResourseMap[p.X, p.Y] - _exploredMap[p.X, p.Y];
+            return (byte) _levelGenerator.ResourseMap[p.X, p.Y] - _exploredMap[p.X, p.Y];
         }
     }
 }

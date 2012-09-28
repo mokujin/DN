@@ -1,4 +1,5 @@
-﻿using OpenTK;
+﻿using DN.GameObjects.Weapons;
+using OpenTK;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,7 +29,7 @@ namespace DN.GameObjects.Creatures.Enemies.Behaviours
 
         public void Initialize()
         {
-            Creature.CollisionWtihObjects += BatCollisionWithHero;
+            Creature.CollisionWithObjects += BatCollisionWithHero;
         }
 
         public void Update(float dt)
@@ -46,10 +47,14 @@ namespace DN.GameObjects.Creatures.Enemies.Behaviours
         }
 
         //just for test
-        static private void BatCollisionWithHero(GameObject sender, GameObject gameObject)
+        private void BatCollisionWithHero(GameObject sender, GameObject gameObject)
         {
-            Creature bat = (Creature)sender;
-            bat.MaxVelocity = new Vector2(0, 0);
+            if (gameObject is Weapons.Weapon)
+            {
+                Weapon weapon = gameObject as Weapon;
+                if(weapon.Attacking)
+                    GameWorld.RemoveObject(sender);
+            }
         }
     }
 }

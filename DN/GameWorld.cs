@@ -14,6 +14,8 @@ using OpenTK;
 using DN.GameObjects.Creatures.Enemies;
 using DN.Effects;
 using OpenTK.Graphics.OpenGL;
+using DN.GameObjects.Weapons;
+
 namespace DN
 {
     public class GameWorld
@@ -55,18 +57,21 @@ namespace DN
             
             var lg = new LevelGenerator
                          {
-                             RoomsMaxWidth = 5,
-                             RoomsMaxHeight = 7,
-                             RoomCount = 5
+                             RoomsMaxWidth = 10,
+                             RoomsMaxHeight = 15,
+                             RoomCount = 25
                          };
             lg.Generate(this);
 
             InsertHero();
 
             background = new ParallaxBackground(this);
+            for (int i = 0; i < 10; i++)
+            {
+             
             Creature bat = EnemiesFabric.CreateEnemy(this, EnemyType.Bat);
-            bat.Cell = GetRandomPoint();
-          //  AddObject(bat);
+            bat.Cell = GetRandomPoint();   
+            }
         }
 
         public void InsertHero()
@@ -170,8 +175,8 @@ namespace DN
             rect.Height /= 64;
             rect.Width+=2;
             rect.Height+=2;
-            Console.SetCursorPosition(0,1);
-            Console.Write("tiles in view: {0}   ",rect.Width * rect.Height);
+           // Console.SetCursorPosition(0,1);
+            //Console.Write("tiles in view: {0}   ",rect.Width * rect.Height);
             TileMap.Draw(rect);
         }
 
@@ -191,8 +196,14 @@ namespace DN
             List<GameObject> list = new List<GameObject>();
             foreach (GameObject gO in _gameObjects)
             {
-                if(gO != gameObject)
-                    if (gO.Bounds.IntersectsWith(gameObject.Bounds)) list.Add(gameObject);
+                if (gO != gameObject)
+                {
+                    if (gO.Bounds.IntersectsWith(gameObject.Bounds))
+                    {
+                        list.Add(gO);
+                    }
+                    
+                }
             }
             return list;
         }

@@ -210,10 +210,10 @@ namespace DN.PathFinding
                 return;
             if (pointMap[pos.X, pos.Y] != 1)
             {
-                byte addCost = _tileMap[pos.X, pos.Y + 1] == CellType.Free ? (byte)20 : (byte)0; 
+               // byte addCost = _tileMap[pos.X, pos.Y + 1] == CellType.Free ? (byte)20 : (byte)0; 
 
                 WayPoint temp = new WayPoint(pos, node,  type);
-                temp.CalculateCost(_tileMap, Creature, endCell, addCost, ImprovedPathFinding);
+                temp.CalculateCost(_tileMap, Creature, endCell, 0, ImprovedPathFinding);
                 OpenList.Add(temp);
                 pointMap[pos.X, pos.Y] = 1;
             }
