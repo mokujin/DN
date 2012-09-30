@@ -12,12 +12,15 @@ namespace DN.LevelGeneration
         public int RoomsMaxWidth;
         public int RoomsMaxHeight;
 
-        public float Scale;
+        public float Scale = 0.5f;
 
         internal TileMap TileMap;
         internal ResourseMap ResourseMap;
         private List<Miner> _miners;
 
+        internal CellType[,] Map;
+        internal int Width;
+        internal int Height;
 
         public LevelGenerator()
         {
@@ -30,26 +33,32 @@ namespace DN.LevelGeneration
             try
             {
                 TileMap = gameWorld.TileMap;
+
+                Width = (int)Math.Round(TileMap.Width * Scale);
+                Height = (int)Math.Round(TileMap.Height * Scale);
+
+                Map = new CellType[Width, Height];
+
                 _miners.Clear();
 
-                ResourseMap = new ResourseMap(TileMap.Width, TileMap.Height);
-                TileMap.FillWith(CellType.Wall);
+                ResourseMap = new ResourseMap(Width, Height);
+                TileMap.FillWith(Map, Width, Height, CellType.Wall);
 
-                _miners.Add(new Miner(this, TileMap.Width / 4, TileMap.Height - 2));
-                _miners.Add(new Miner(this, TileMap.Width / 2, TileMap.Height - 2));
+                _miners.Add(new Miner(this, Width / 4, Height - 2));
+                _miners.Add(new Miner(this, Width / 2, Height - 2));
                 UpdateMiners();
-                
-               
-                //TileMap.PrintDebug();
-                //Console.WriteLine();
-                //Console.ReadKey();
 
                 for (int i = 0; i < RoomCount; i++)
                     AddRoomAtRandomPosition();
 
-                MakeConnection(new Point(TileMap.Width / 4  - 1, TileMap.Height - 2),
-                               new Point(TileMap.Width / 2 + 1, TileMap.Height  - 2));
+                MakeConnection(new Point(Width / 4  - 1, Height - 2),
+                               new Point(Width / 2 + 1, Height  - 2));
 
+                ////PrintDebug();
+                ////Console.WriteLine();
+                ////Console.ReadKey();
+
+                CopyScaledMap();
 
                 var p = GetFreeCell();
                 var adv = new Adventurer(this, p.X, p.Y);
@@ -65,10 +74,13 @@ namespace DN.LevelGeneration
                 Console.WriteLine(e.ToString());
                 TileMap.PrintDebug();
                 Console.ReadKey();
-
                 goto restart;
             }
-            
+        }
+
+        public bool InRange(int x, int y)
+        {
+            return x >= 0 && y >= 0 && x < Width && y < Height;
         }
 
         private void MakeConnection(Point p1, Point p2)
@@ -79,6 +91,23 @@ namespace DN.LevelGeneration
             }
         }
 
+        private void CopyScaledMap()
+        {
+            double C2 = (double) TileMap.Width/(double) Width;
+            double C1 = (double) TileMap.Height/(double) Height;
+
+            int w = (int) (Map.GetLength(0)*C1);
+            int h = (int) (Map.GetLength(1)*C2);
+
+
+            for (int row = 0; row < Width; row++)
+                for (int element = 0; element < Height; element++)
+                    for (int y = (int) (row*C2); y < (int) ((row + 1)*C2); y++)
+                        for (int x = (int) (element*C1); x < (int) ((element + 1)*C1); x++)
+                        {
+                            TileMap[x, y] = Map[element, row];
+                        }
+        }
 
         //private delegate void Func<TArg0, TArg1>(TArg0 arg0, TArg1 arg1);
         //private void CheckAccessibility()
@@ -256,9 +285,9 @@ namespace DN.LevelGeneration
 
             do
             {
-                x = RandomTool.RandInt(2, TileMap.Width - width - 2);
-                y = RandomTool.RandInt(2, TileMap.Height - height - 2);
-            } while (TileMap[x, y] == CellType.Wall);
+                x = RandomTool.RandInt(2, Width - width - 2);
+                y = RandomTool.RandInt(2, Height - height - 2);
+            } while (Map[x, y] == CellType.Wall);
             AddRoom(x, y, width, height);
         }
 
@@ -267,7 +296,7 @@ namespace DN.LevelGeneration
 
             for (int i = x; i <= x + width; i++)
                 for (int j = y; j <= y + height; j++)
-                    TileMap[i, j] = CellType.Free;
+                    Map[i, j] = CellType.Free;
         }
 
 
@@ -311,6 +340,18 @@ namespace DN.LevelGeneration
 
                 if (TileMap[p.X, p.Y] == CellType.Free && TileMap[p.X, p.Y + 1] == CellType.Wall)
                     return p;
+            }
+        }
+
+        public void PrintDebug()
+        {
+            for (int j = 0; j < Height; j++)
+            {
+                Console.WriteLine();
+                for (int i = 0; i < Width; i++)
+                {
+                    Console.Write((byte)Map[i, j]);
+                }
             }
         }
     }
