@@ -30,7 +30,7 @@ namespace DN
         public Game()
             : base(g_screenSize.Width, g_screenSize.Height, GraphicsMode.Default, "Devil's nightmare")
         {
-            GraphicsDevice.Instance.Initialize(g_screenSize.Width, g_screenSize.Height); // i seeked this problem along whole hour x__x
+            GraphicsDevice.Instance.Initialize(g_screenSize.Width, g_screenSize.Height);
         }
 
         protected override void OnLoad(EventArgs e)
@@ -42,7 +42,7 @@ namespace DN
             GL.ClearColor(Color4.Black);
 
             LoadTextures();
-            gameWorld = new GameWorld(200,200);
+            gameWorld = new GameWorld(50,50);
 
             Keyboard.KeyRepeat = false;
 
@@ -72,6 +72,10 @@ namespace DN
         {
             GL.Clear(ClearBufferMask.ColorBufferBit);
             
+            SpriteBatch.Instance.Begin();
+            SpriteBatch.Instance.OutlineRectangle(new RectangleF(5,5,10,40),  Color.White, 10f, 1f, new Vector2(0.5f, 0.5f));
+            SpriteBatch.Instance.End();
+
             gameWorld.Draw((float) e.Time);
 
             SwapBuffers();

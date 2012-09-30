@@ -12,6 +12,8 @@ namespace DN.LevelGeneration
         public int RoomsMaxWidth;
         public int RoomsMaxHeight;
 
+        public float Scale;
+
         internal TileMap TileMap;
         internal ResourseMap ResourseMap;
         private List<Miner> _miners;
@@ -25,7 +27,7 @@ namespace DN.LevelGeneration
         public void Generate(GameWorld gameWorld)
         {
             restart:
-          //  try
+            try
             {
                 TileMap = gameWorld.TileMap;
                 _miners.Clear();
@@ -45,17 +47,8 @@ namespace DN.LevelGeneration
                 for (int i = 0; i < RoomCount; i++)
                     AddRoomAtRandomPosition();
 
-
-                MakeTunnelsWider();
-
-
-                RemoveAloneCells();
-
-
-              //  CheckAccessibility();
-
-                MakeConnection(new Point(TileMap.Width / 4, TileMap.Height - 2),
-                               new Point(TileMap.Width / 2, TileMap.Height  - 2));
+                MakeConnection(new Point(TileMap.Width / 4  - 1, TileMap.Height - 2),
+                               new Point(TileMap.Width / 2 + 1, TileMap.Height  - 2));
 
 
                 var p = GetFreeCell();
@@ -66,11 +59,16 @@ namespace DN.LevelGeneration
 
                 ClearJunk();
             }
-          //  catch (Exception)
+            catch (Exception e)
             {
                 Console.WriteLine("generation");
-               // goto restart;
+                Console.WriteLine(e.ToString());
+                TileMap.PrintDebug();
+                Console.ReadKey();
+
+                goto restart;
             }
+            
         }
 
         private void MakeConnection(Point p1, Point p2)
@@ -227,29 +225,6 @@ namespace DN.LevelGeneration
             }
         }
 
-        private void MakeTunnelsWider()
-        {
-            byte[,] newMap = new byte[TileMap.Width, TileMap.Height];
-
-            for (int i = 2; i < TileMap.Width - 2; i++)
-            {
-                for (int j = 2; j < TileMap.Height - 2; j++)
-                {
-                    if (GetCellCountAround(i, j) == 2)
-                        newMap[i, j] = 1;
-                }
-            }
-
-            for (int i = 2; i < TileMap.Width - 2; i++)
-            {
-                for (int j = 2; j < TileMap.Height - 2; j++)
-                {
-                    if (newMap[i, j] == 1)
-                        AddRoom(i - 1, j - 1, 2, 2);
-                }
-            }
-        }
-
         private void RemoveAloneCells()
         {
             for (int i = 2; i < TileMap.Width - 2; i++)
@@ -290,8 +265,8 @@ namespace DN.LevelGeneration
         private void AddRoom(int x, int y, int width, int height)
         {
 
-            for (int i = x; i < x + width; i++)
-                for (int j = y; j < y + height; j++)
+            for (int i = x; i <= x + width; i++)
+                for (int j = y; j <= y + height; j++)
                     TileMap[i, j] = CellType.Free;
         }
 
