@@ -21,7 +21,7 @@ namespace DN.GameObjects
         
 
         public bool GravityAffected = true;
-        
+        protected bool ClimbLadder;
 
         protected List<CollidedCell> Collisions;
 
@@ -43,7 +43,7 @@ namespace DN.GameObjects
             }
         }
 
-        public bool OnStairs
+        public bool OnLadder
         {
             get { return Collisions.Any(p => p.CellType == CellType.Ladder || p.CellType == CellType.VRope); }
         }
@@ -77,7 +77,7 @@ namespace DN.GameObjects
             if(checkOverspeed)
             {
                 Vector2 vel = Velocity;
-                if (!OnStairs)
+                if (!OnLadder || !ClimbLadder)
                 {
                     CheckOverSpeed(ref vel.X, MaxVelocity.X);
                     CheckOverSpeed(ref vel.Y, MaxVelocity.Y);
@@ -100,20 +100,15 @@ namespace DN.GameObjects
         private void UpdateParametrs(float dt)
         {
 
-            if (!OnStairs)
+            if (!OnLadder ||!ClimbLadder)
             {
                 if (GravityAffected)
                 {
-                    Velocity += World.GravityDirection*World.G*dt;
-
-                    Vector2 velocity = Velocity;
-
-                    CheckOverSpeed(ref velocity.X, MaxVelocity.X);
-                    CheckOverSpeed(ref velocity.Y, MaxVelocity.Y);
-                    Velocity = velocity;
+                    Move(World.GravityDirection, World.G * dt);
                 }
                 if (OnGround)
                     UpdateFriction(ref Velocity.X, Friction, dt);
+                ClimbLadder = false;
             }
             else
             {
@@ -124,16 +119,6 @@ namespace DN.GameObjects
             Vector2 pos = Position;
             Vector2 vel = Velocity;
             Vector2 oldVel = vel;
-            //if (!OnStairs)
-            //{
-            //    CheckOverSpeed(ref vel.X, MaxVelocity.X);
-            //    CheckOverSpeed(ref vel.Y, MaxVelocity.Y);
-            //}
-            //else
-            //{
-            //    CheckOverSpeed(ref vel.X, MaxLadderVelocity.X);
-            //    CheckOverSpeed(ref vel.Y, MaxLadderVelocity.Y);
-            //}
 
             CheckCollisions(ref vel, ref pos);
             Position = pos;

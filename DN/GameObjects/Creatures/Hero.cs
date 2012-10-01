@@ -50,7 +50,7 @@ namespace DN.GameObjects.Creatures
 
         void g_Keyboard_KeyDown(object sender, KeyboardKeyEventArgs e)
         {
-            if (e.Key == Key.Space)
+            if (e.Key == Key.X)
             {
                 Jump();
             }
@@ -99,7 +99,7 @@ namespace DN.GameObjects.Creatures
         {
             if (LeftKeyPressed())
             {
-                Move(new Vector2(-1, 0), 10 * dt * (OnStairs ? 5 : 1));
+                Move(new Vector2(-1, 0), 10 * dt);
                 Direction = Direction.Left;
                 if (OnGround)
                 {
@@ -109,7 +109,7 @@ namespace DN.GameObjects.Creatures
             }
             if (RightKeyPressed())
             {
-                Move(new Vector2(1, 0), 10 * dt * (OnStairs ? 5 : 1));
+                Move(new Vector2(1, 0), 10 * dt);
                 Direction = Direction.Right;
                 if (OnGround)
                 {
@@ -123,20 +123,37 @@ namespace DN.GameObjects.Creatures
                 if (AttackKeyPressed())
                     _currentWeapon.StartAttack();
 
-            if (OnStairs)
+            if (OnLadder)
             {
                 if (UpKeyPressed())
-                    Move(new Vector2(0, -1), 50 * dt);
+                {
+                    Move(new Vector2(0, -1), 50*dt);
+                    ClimbLadder = true;
+                }
                 if (DownKeyPressed())
-                    Move(new Vector2(0, 1), 50 * dt);
+                {
+                    Move(new Vector2(0, 1), 50*dt);
+                    ClimbLadder = true;
+                }
+                if (LeftKeyPressed() && ClimbLadder)
+                {
+                    Move(new Vector2(-1, 0), 35 * dt);
+
+                }
+                if (RightKeyPressed() && ClimbLadder)
+                {
+                    Move(new Vector2(1, 0), 35 * dt);
+
+                }
+
             }
-            if (JumpKeyPressed())
-               Jump();
+           // if (JumpKeyPressed())
+           //    Jump();
         }
 
         private static bool JumpKeyPressed()
         {
-            return Game.g_Keyboard[Key.Up];
+            return Game.g_Keyboard[Key.X];
         }
 
         private static bool DownKeyPressed()
@@ -166,9 +183,10 @@ namespace DN.GameObjects.Creatures
 
         private void Jump()
         {
-            if (OnGround)
+            if (OnGround || OnLadder)
             {
-                Move(new Vector2(0,-1), 7);
+                Move(new Vector2(0,-1), 7, true);
+                ClimbLadder = false;
             }
         }
     }
