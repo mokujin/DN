@@ -42,7 +42,7 @@ namespace DN.GameObjects.Creatures.Enemies.Behaviours
             if (SawPlayer)
             {
                 Vector2 dir = GameWorld.DirectionToObject(Creature, Hero);
-                Creature.Move(dir, 1*dt); //TODO: Remove constant!
+                Creature.Move(dir, 4*dt); //TODO: Remove constant
             }
         }
 
@@ -51,9 +51,11 @@ namespace DN.GameObjects.Creatures.Enemies.Behaviours
         {
             if (gameObject is Weapon)
             {
-                Weapon weapon = gameObject as Weapon;
-                if(weapon.Attacking)
-                    Creature.TakeDamage(weapon.Damage);
+                var weapon = gameObject as Weapon;
+                if (weapon.Attacking)
+                {
+                   Creature.TakeDamage(weapon.Damage, weapon.Direction);
+                }
             }
         }
     }

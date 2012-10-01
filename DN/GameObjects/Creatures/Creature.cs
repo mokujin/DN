@@ -16,8 +16,27 @@ namespace DN.GameObjects.Creatures
 
     public abstract class Creature:CollidableGameObject
     {
-        public float InvulnerabilityDuration;
+        public float InvulnerabilityDuration
+        {
+            get
+            {
+                return _invulnerabilityDuration;
+            }
+            set
+            {
+                _invulnerabilityDuration = value;
+                _invulnerabilityDuration_dt = value;
+            }
+        }
+
+        public bool Invulnerable
+        {
+            get { return InvulnerabilityDuration > _invulnerabilityDuration_dt; }
+        }
+
+        private float _invulnerabilityDuration;
         private float _invulnerabilityDuration_dt;
+
         public float Health { get; protected set; }
         public bool IsDead
         {
@@ -41,24 +60,29 @@ namespace DN.GameObjects.Creatures
                 World.RemoveObject(this);
                 return;
             }
-            if (InvulnerabilityDuration > _invulnerabilityDuration_dt)
+            if (Invulnerable)
             {
                 _invulnerabilityDuration_dt += dt;
             }
         }
 
-        public virtual void AddHelath(float amount)
+        public virtual void AddHealth(float amount)
         {
             Health += amount;
         }
 
-        public virtual void TakeDamage(float amount)
+        public virtual bool TakeDamage(float amount, Direction direction)
         {
             if (InvulnerabilityDuration <= _invulnerabilityDuration_dt)
             {
-               Health -= amount;
+                Health -= amount;
+
+                Move(direction == Direction.Right ? new Vector2(1, 0) : new Vector2(-1, 0), 20*amount, false);
                 _invulnerabilityDuration_dt = 0;
+
+                return true;
             }
+            return false;
         }
 
 

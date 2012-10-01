@@ -59,7 +59,7 @@ namespace DN
                          {
                              RoomsMaxWidth = 10,
                              RoomsMaxHeight = 15,
-                             RoomCount = 2,
+                             RoomCount = 0,
                              Scale = 0.5f
                          };
             lg.Generate(this);

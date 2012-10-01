@@ -48,7 +48,7 @@ namespace DN.GameObjects.Weapons
                                              dir * _rotation,
                                              dir == -1 ? new Vector2(1f, 0.5f): new Vector2(0,0.5f),
                                              false, false);
-            //SpriteBatch.Instance.OutlineRectangle(Bounds, Color4.White);
+            SpriteBatch.Instance.OutlineRectangle(Bounds, Color4.White);
         }
 
         public override void StartAttack()

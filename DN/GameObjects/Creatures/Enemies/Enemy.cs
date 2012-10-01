@@ -6,6 +6,7 @@ using System.Text;
 using Blueberry.Graphics;
 using DN.GameObjects.Creatures.Enemies.Behaviours;
 using Blueberry;
+using OpenTK.Graphics;
 
 namespace DN.GameObjects.Creatures.Enemies
 {
@@ -35,7 +36,7 @@ namespace DN.GameObjects.Creatures.Enemies
         public override void Draw(float dt)
         {
             if(Sprite != null)
-                SpriteBatch.Instance.DrawTexture(CM.I.tex(Sprite), Position, Color.White);
+                SpriteBatch.Instance.DrawTexture(CM.I.tex(Sprite), Position,Invulnerable?new Color4(255,255,255,RandomTool.RandByte(255)): Color.White);
         }
     }
 }

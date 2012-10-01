@@ -286,13 +286,17 @@ namespace DN.LevelGeneration
         private void AddRoomAtRandomPosition()
         {
             int x, y, width, height;
-            width = RandomTool.RandInt(0, RoomsMaxWidth);
-            height = RandomTool.RandInt(0, RoomsMaxHeight);
+
 
             do
             {
+                width = RandomTool.RandInt(0, RoomsMaxWidth);
+                height = RandomTool.RandInt(0, RoomsMaxHeight);
                 x = RandomTool.RandInt(2, Width - width - 2);
                 y = RandomTool.RandInt(2, Height - height - 2);
+
+                //PrintDebug();
+              //  Console.ReadKey();
             } while (Map[x, y] == CellType.Wall);
             AddRoom(x, y, width, height);
         }

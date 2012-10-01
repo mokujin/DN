@@ -29,7 +29,7 @@ namespace DN.GameObjects
         public Vector2 MaxLadderVelocity;
         public Vector2 MaxVelocity;
 
-        private Vector2 Velocity;
+        protected Vector2 Velocity;
 
         public float Friction;
         public float LadderFriction;
@@ -48,7 +48,7 @@ namespace DN.GameObjects
             get { return Collisions.Any(p => p.CellType == CellType.Ladder || p.CellType == CellType.VRope); }
         }
 
-        private Direction _lastDirection;
+        //private Direction _lastDirection;
         public Direction Direction
         {
             //get
@@ -70,9 +70,25 @@ namespace DN.GameObjects
             Collisions = new List<CollidedCell>();
         }
 
-        public void Move(Vector2 direction, float speed)
+        public void Move(Vector2 direction, float speed, bool checkOverspeed = true)
         {
             Velocity += direction*speed;
+
+            if(checkOverspeed)
+            {
+                Vector2 vel = Velocity;
+                if (!OnStairs)
+                {
+                    CheckOverSpeed(ref vel.X, MaxVelocity.X);
+                    CheckOverSpeed(ref vel.Y, MaxVelocity.Y);
+                }
+                else
+                {
+                    CheckOverSpeed(ref vel.X, MaxLadderVelocity.X);
+                    CheckOverSpeed(ref vel.Y, MaxLadderVelocity.Y);
+                }
+                Velocity = vel;
+            }
         }
 
         public override void Update(float dt)
@@ -87,7 +103,15 @@ namespace DN.GameObjects
             if (!OnStairs)
             {
                 if (GravityAffected)
-                    Velocity += World.GravityDirection * World.G * dt;
+                {
+                    Velocity += World.GravityDirection*World.G*dt;
+
+                    Vector2 velocity = Velocity;
+
+                    CheckOverSpeed(ref velocity.X, MaxVelocity.X);
+                    CheckOverSpeed(ref velocity.Y, MaxVelocity.Y);
+                    Velocity = velocity;
+                }
                 if (OnGround)
                     UpdateFriction(ref Velocity.X, Friction, dt);
             }
@@ -99,21 +123,22 @@ namespace DN.GameObjects
 
             Vector2 pos = Position;
             Vector2 vel = Velocity;
-
-            if (!OnStairs)
-            {
-                CheckOverSpeed(ref vel.X, MaxVelocity.X);
-                CheckOverSpeed(ref vel.Y, MaxVelocity.Y);
-            }
-            else
-            {
-                CheckOverSpeed(ref vel.X, MaxLadderVelocity.X);
-                CheckOverSpeed(ref vel.Y, MaxLadderVelocity.Y);
-            }
+            Vector2 oldVel = vel;
+            //if (!OnStairs)
+            //{
+            //    CheckOverSpeed(ref vel.X, MaxVelocity.X);
+            //    CheckOverSpeed(ref vel.Y, MaxVelocity.Y);
+            //}
+            //else
+            //{
+            //    CheckOverSpeed(ref vel.X, MaxLadderVelocity.X);
+            //    CheckOverSpeed(ref vel.Y, MaxLadderVelocity.Y);
+            //}
 
             CheckCollisions(ref vel, ref pos);
             Position = pos;
-            Velocity = vel;
+            if(oldVel != vel)
+                Velocity = vel;
 
             Position += Velocity;
         }
