@@ -51,16 +51,17 @@ namespace DN.GameObjects
         private Direction _lastDirection;
         public Direction Direction
         {
-            get
-            {
-                Vector2 direction = Velocity;
-                direction.Normalize();
-                if (!float.IsNaN(direction.X))
-                {
-                    _lastDirection = direction.X > 0 ? Direction.Right : Direction.Left;
-                }
-                return _lastDirection;
-            }
+            //get
+            //{
+            //    Vector2 direction = Velocity;
+            //    direction.Normalize();
+            //    if (!float.IsNaN(direction.X))
+            //    {
+            //        _lastDirection = direction.X > 0 ? Direction.Right : Direction.Left;
+            //    }
+            //    return _lastDirection;
+            //}
+            get; set;
         }
 
         public CollidableGameObject(GameWorld gameWorld)

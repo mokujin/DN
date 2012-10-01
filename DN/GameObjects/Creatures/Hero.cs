@@ -45,6 +45,7 @@ namespace DN.GameObjects.Creatures
             _dustEffect.Initialise(60, 1);
 
             Health = 10;
+            Direction = Direction.Right;
         }
 
         void g_Keyboard_KeyDown(object sender, KeyboardKeyEventArgs e)
@@ -99,6 +100,7 @@ namespace DN.GameObjects.Creatures
             if (LeftKeyPressed())
             {
                 Move(new Vector2(-1, 0), 10 * dt * (OnStairs ? 5 : 1));
+                Direction = Direction.Left;
                 if (OnGround)
                 {
                     _dustEffect.Direction = MathUtils.RotateVector2(Vector2.UnitX, 0.5f);
@@ -108,6 +110,7 @@ namespace DN.GameObjects.Creatures
             if (RightKeyPressed())
             {
                 Move(new Vector2(1, 0), 10 * dt * (OnStairs ? 5 : 1));
+                Direction = Direction.Right;
                 if (OnGround)
                 {
                     _dustEffect.Direction = MathUtils.RotateVector2(Vector2.UnitX, 0.5f);
