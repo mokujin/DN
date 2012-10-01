@@ -7,7 +7,7 @@ using System.Text;
 
 namespace DN.GameObjects
 {
-    public enum MovementDirection : sbyte
+    public enum Direction : sbyte
     {
         Left = -1,
         Right = 1
@@ -48,8 +48,8 @@ namespace DN.GameObjects
             get { return Collisions.Any(p => p.CellType == CellType.Ladder || p.CellType == CellType.VRope); }
         }
 
-        private MovementDirection _lastDirection;
-        public MovementDirection MovementDirection
+        private Direction _lastDirection;
+        public Direction Direction
         {
             get
             {
@@ -57,7 +57,7 @@ namespace DN.GameObjects
                 direction.Normalize();
                 if (!float.IsNaN(direction.X))
                 {
-                    _lastDirection = direction.X > 0 ? MovementDirection.Right : MovementDirection.Left;
+                    _lastDirection = direction.X > 0 ? Direction.Right : Direction.Left;
                 }
                 return _lastDirection;
             }

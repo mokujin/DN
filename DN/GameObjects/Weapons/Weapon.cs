@@ -13,6 +13,11 @@ namespace DN.GameObjects.Weapons
             get { return AttackStarted; }
         }
 
+        public Direction Direction
+        {
+            get { return Creature.Direction; }
+        }
+
         protected float _elapsed;
         
         protected Creature Creature; // creature which using this weapon
@@ -39,6 +44,11 @@ namespace DN.GameObjects.Weapons
             }
         }
         public float TimeToFinishAttack;
+        public float Damage
+        {
+            get;
+            set;
+        }
 
         public Weapon(GameWorld gameWorld, Creature creature)
             :base(gameWorld)

@@ -16,7 +16,13 @@ namespace DN.GameObjects.Creatures
 
     public abstract class Creature:CollidableGameObject
     {
-        
+        public float InvulnerabilityDuration;
+        private float _invulnerabilityDuration_dt;
+        public float Health { get; protected set; }
+        public bool IsDead
+        {
+            get { return Health <= 0; }
+        }
 
 
         public Creature(GameWorld gameWorld)
@@ -24,6 +30,36 @@ namespace DN.GameObjects.Creatures
         {
         }
 
+        public override void Update(float dt)
+        {
+            base.Update(dt);
+
+            if(IsDead)
+            {
+                //todo: add some event on death
+
+                World.RemoveObject(this);
+                return;
+            }
+            if (InvulnerabilityDuration > _invulnerabilityDuration_dt)
+            {
+                _invulnerabilityDuration_dt += dt;
+            }
+        }
+
+        public virtual void AddHelath(float amount)
+        {
+            Health += amount;
+        }
+
+        public virtual void TakeDamage(float amount)
+        {
+            if (InvulnerabilityDuration <= _invulnerabilityDuration_dt)
+            {
+               Health -= amount;
+                _invulnerabilityDuration_dt = 0;
+            }
+        }
 
 
         // get bounding rectangle with some shift

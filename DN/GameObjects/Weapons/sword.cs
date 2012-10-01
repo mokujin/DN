@@ -37,7 +37,7 @@ namespace DN.GameObjects.Weapons
 
         public override void Draw(float dt)
         {
-            dir = (sbyte)Creature.MovementDirection;
+            dir = (sbyte)Creature.Direction;
 
             SpriteBatch.Instance.DrawTexture(CM.I.tex("sword_sprite"),
                                              new RectangleF(

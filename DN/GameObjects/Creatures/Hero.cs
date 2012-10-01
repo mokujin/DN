@@ -37,13 +37,14 @@ namespace DN.GameObjects.Creatures
             _currentWeapon = new Sword(gameWorld, this)
                           {
                               AttackSpeed = 0.3f,
-                              TimeToFinishAttack = 0.2f
+                              TimeToFinishAttack = 0.2f,
+                              Damage = 1
                           };
 
             _dustEffect = new DustPointEmitter(Position, Vector2.UnitX, 0.5f);
             _dustEffect.Initialise(60, 1);
 
-
+            Health = 10;
         }
 
         void g_Keyboard_KeyDown(object sender, KeyboardKeyEventArgs e)

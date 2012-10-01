@@ -42,7 +42,7 @@ namespace DN
             GL.ClearColor(Color4.Black);
 
             LoadTextures();
-            gameWorld = new GameWorld(200,200);
+            gameWorld = new GameWorld(50,50);
 
             Keyboard.KeyRepeat = false;
 

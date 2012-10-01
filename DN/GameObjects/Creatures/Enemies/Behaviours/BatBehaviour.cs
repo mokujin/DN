@@ -49,11 +49,11 @@ namespace DN.GameObjects.Creatures.Enemies.Behaviours
         //just for test
         private void BatCollisionWithHero(GameObject sender, GameObject gameObject)
         {
-            if (gameObject is Weapons.Weapon)
+            if (gameObject is Weapon)
             {
                 Weapon weapon = gameObject as Weapon;
                 if(weapon.Attacking)
-                    GameWorld.RemoveObject(sender);
+                    Creature.TakeDamage(weapon.Damage);
             }
         }
     }
