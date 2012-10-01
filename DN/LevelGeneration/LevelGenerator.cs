@@ -30,7 +30,7 @@ namespace DN.LevelGeneration
         public void Generate(GameWorld gameWorld)
         {
             restart:
-            //try
+            try
             {
                 TileMap = gameWorld.TileMap;
 
@@ -59,7 +59,7 @@ namespace DN.LevelGeneration
                 MakeConnection(new Point(Width / 4  - 1, Height - 2),
                                new Point(Width / 2 + 1, Height  - 2));
 
-                ////PrintDebug();
+               // PrintDebug();
                 ////Console.WriteLine();
                 ////Console.ReadKey();
 
@@ -73,13 +73,14 @@ namespace DN.LevelGeneration
 
                 ClearJunk();
             }
-          //  catch (Exception e)
+            catch (Exception e)
             {
                // Console.WriteLine("generation");
                // Console.WriteLine(e.ToString());
-               // TileMap.PrintDebug();
-            //    Console.ReadKey();
-                //goto restart;
+                PrintDebug();
+                TileMap.PrintDebug();
+               // Console.ReadKey();
+                goto restart;
             }
         }
 
@@ -92,7 +93,7 @@ namespace DN.LevelGeneration
         {
             for (int i = p1.X; i < p2.X; i++)
             {
-                TileMap[i, p1.Y] = CellType.Free;
+                Map[i, p1.Y] = CellType.Free;
             }
         }
 
