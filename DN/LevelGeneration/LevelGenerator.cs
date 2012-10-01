@@ -30,7 +30,7 @@ namespace DN.LevelGeneration
         public void Generate(GameWorld gameWorld)
         {
             restart:
-            try
+            //try
             {
                 TileMap = gameWorld.TileMap;
 
@@ -44,8 +44,13 @@ namespace DN.LevelGeneration
                 ResourseMap = new ResourseMap(Width, Height);
                 TileMap.FillWith(Map, Width, Height, CellType.Wall);
 
-                _miners.Add(new Miner(this, Width / 4, Height - 2));
-                _miners.Add(new Miner(this, Width / 2, Height - 2));
+
+                var m = new Miner(this, Width / 4, Height - 2);
+                m.Init();
+                _miners.Add(m);
+                m = new Miner(this, Width / 2, Height - 2);
+                _miners.Add(m);
+                m.Init();
                 UpdateMiners();
 
                 for (int i = 0; i < RoomCount; i++)
@@ -68,13 +73,13 @@ namespace DN.LevelGeneration
 
                 ClearJunk();
             }
-            catch (Exception e)
+          //  catch (Exception e)
             {
-                Console.WriteLine("generation");
-                Console.WriteLine(e.ToString());
-                TileMap.PrintDebug();
-                Console.ReadKey();
-                goto restart;
+               // Console.WriteLine("generation");
+               // Console.WriteLine(e.ToString());
+               // TileMap.PrintDebug();
+            //    Console.ReadKey();
+                //goto restart;
             }
         }
 

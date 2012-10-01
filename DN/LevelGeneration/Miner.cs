@@ -27,8 +27,11 @@ namespace DN.LevelGeneration
             _cell.X = x;
             _cell.Y = y;
             _levelGenerator = levelGenerator; 
+        }
 
-            _exploredMap = new byte[levelGenerator.Width, levelGenerator.Height];
+        public virtual void Init()
+        {
+            _exploredMap = new byte[_levelGenerator.Width, _levelGenerator.Height];
             _exploredMap[_cell.X, _cell.Y] = 1;
         }
 

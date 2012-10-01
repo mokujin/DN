@@ -126,7 +126,7 @@ namespace DN
 
             camera.Update(dt);
             UpdateObjectsEnqueues();
-           background.Update(dt);
+           //background.Update(dt);
         }
 
         private void UpdateObjectsEnqueues()
@@ -152,7 +152,7 @@ namespace DN
             
             GL.ClearColor(0, 0, 0, 1);
             GL.Clear(ClearBufferMask.ColorBufferBit);
-            background.Draw(dt);
+          //  background.Draw(dt);
 
             SpriteBatch.Instance.Begin();
             

@@ -179,8 +179,11 @@ namespace Blueberry.Graphics
         public void End()
         {
             shader.Use();
+            //shader.SetUniform("projection", ref proj);
             shader.SetUniform(proj_uniform_loc, ref proj);
+            //shader.SetUniform("view", ref trans);
             shader.SetUniform(view_uniform_loc, ref trans);
+            
             // nothing to do
             if (_batchItemList.Count == 0)
                 return;
