@@ -126,7 +126,7 @@ namespace DN
 
             camera.Update(dt);
             UpdateObjectsEnqueues();
-           //background.Update(dt);
+           background.Update(dt);
         }
 
         private void UpdateObjectsEnqueues()
@@ -145,6 +145,7 @@ namespace DN
             
             SpriteBatch.Instance.Begin(camera.GetViewMatrix());
 
+
             RenderTiles(dt);
             GL.ClearColor(0, 0, 0, 0);
 
@@ -152,7 +153,7 @@ namespace DN
             
             GL.ClearColor(0, 0, 0, 1);
             GL.Clear(ClearBufferMask.ColorBufferBit);
-          //  background.Draw(dt);
+            background.Draw(dt);
 
             SpriteBatch.Instance.Begin();
             
@@ -164,8 +165,11 @@ namespace DN
             SpriteBatch.Instance.FillCircle(new PointF(200, 200), 20, Color.Red, 10);
             SpriteBatch.Instance.End();
 
+
+            var rect = camera.BoundingRectangle;
             SpriteBatch.Instance.Begin(camera.GetViewMatrix());
             foreach (var gameObject in _gameObjects)
+                if(gameObject.Bounds.IntersectsWith(rect))
                 gameObject.Draw(dt);
 
             SpriteBatch.Instance.End();
@@ -178,10 +182,9 @@ namespace DN
             rect.Y /= 64;
             rect.Width /= 64;
             rect.Height /= 64;
-            rect.Width+=2;
-            rect.Height+=2;
-           // Console.SetCursorPosition(0,1);
-            //Console.Write("tiles in view: {0}   ",rect.Width * rect.Height);
+            rect.Width += 2;
+            rect.Height += 2;
+
             TileMap.Draw(rect);
         }
 

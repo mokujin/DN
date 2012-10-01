@@ -72,9 +72,9 @@ namespace DN
         {
             GL.Clear(ClearBufferMask.ColorBufferBit);
             
-            SpriteBatch.Instance.Begin();
-            SpriteBatch.Instance.OutlineRectangle(new RectangleF(5,5,10,40),  Color.White, 10f, 1f, new Vector2(0.5f, 0.5f));
-            SpriteBatch.Instance.End();
+         //   SpriteBatch.Instance.Begin();
+        //    SpriteBatch.Instance.OutlineRectangle(new RectangleF(5,5,10,40),  Color.White, 10f, 1f, new Vector2(0.5f, 0.5f));
+         //   SpriteBatch.Instance.End();
 
             gameWorld.Draw((float) e.Time);
 
