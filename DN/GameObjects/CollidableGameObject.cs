@@ -70,6 +70,21 @@ namespace DN.GameObjects
             Collisions = new List<CollidedCell>();
         }
 
+
+        public void SetMove(Vector2 direction, float speed, bool checkOverspeed = true)
+        {
+            Velocity = direction*speed;
+            if(checkOverspeed)
+                CheckOverSpeed();
+        }
+
+        public void SetMoveY(float speed, bool checkOverspeed = true)
+        {
+            Velocity.Y = speed;
+            if (checkOverspeed)
+                CheckOverSpeed();
+        }
+
         public void Move(Vector2 direction, float speed, bool checkOverspeed = true)
         {
             Velocity += direction*speed;

@@ -128,9 +128,9 @@ namespace DN.GameObjects.Creatures
             {
                 if (UpKeyPressed())
                 {
-                    if (Velocity.Y >= 0 || ClimbLadder)
+                    if (Velocity.Y >= 2 || ClimbLadder)
                     {
-                        Move(new Vector2(0, -1), 50*dt);
+                        Move(new Vector2(0, -1), 45*dt);
                         ClimbLadder = true;
                     }
                 }
@@ -138,7 +138,7 @@ namespace DN.GameObjects.Creatures
                 {
                     if (ClimbLadder)
                     {
-                        Move(new Vector2(0, 1), 50*dt);
+                        Move(new Vector2(0, 1), 45*dt);
                     }
                 }
                 if (LeftKeyPressed() && ClimbLadder)
@@ -149,15 +149,8 @@ namespace DN.GameObjects.Creatures
                 if (RightKeyPressed() && ClimbLadder)
                 {
                     Move(new Vector2(1, 0), 35 * dt);
-
                 }
-
             }
-        }
-
-        private static bool JumpKeyPressed()
-        {
-            return Game.g_Keyboard[Key.X];
         }
 
         private static bool DownKeyPressed()
@@ -189,9 +182,10 @@ namespace DN.GameObjects.Creatures
         {
             if (OnGround || (OnLadder && ClimbLadder))
             {
-                Move(new Vector2(0,-1), 7, false);
+                SetMoveY(-7, false);
                 ClimbLadder = false;
             }
         }
+
     }
 }
