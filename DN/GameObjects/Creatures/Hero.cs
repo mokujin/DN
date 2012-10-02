@@ -1,5 +1,6 @@
 ﻿using Blueberry.Graphics;
 using DN.Effects;
+using GamepadExtension;
 using OpenTK;
 using OpenTK.Graphics;
 using System;
@@ -19,14 +20,21 @@ namespace DN.GameObjects.Creatures
         private Weapon _currentWeapon;
         private float _dt = 0;
 
+        private bool _jump = false;
+        private float _jumpMaxVelocity = 5f;
+
+
         DustPointEmitter _dustEffect;
 
 
         public Hero(GameWorld gameWorld):base(gameWorld)
         {
             Game.g_Gamepad.OnButtonPress += g_Gamepad_OnButtonPress;
+            Game.g_Gamepad.OnButtonUp += g_Gamepad_OnButtonUp;
             Game.g_Keyboard.KeyDown += g_Keyboard_KeyDown;
+            Game.g_Keyboard.KeyUp += g_Keyboard_KeyUp;
             Game.g_Keyboard.KeyRepeat = true;
+
             Size = new Size(48, 40);
             MaxVelocity = new Vector2(5,15);
             MaxLadderVelocity = new Vector2(5, 5);
@@ -50,6 +58,16 @@ namespace DN.GameObjects.Creatures
             Direction = Direction.Right;
         }
 
+
+
+        private void g_Keyboard_KeyUp(object sender, KeyboardKeyEventArgs e)
+        {
+            if(e.Key == Key.X)
+            {
+                _jump = false;
+            }
+        }
+
         void g_Keyboard_KeyDown(object sender, KeyboardKeyEventArgs e)
         {
             if (e.Key == Key.X)
@@ -60,6 +78,7 @@ namespace DN.GameObjects.Creatures
                 if (e.Key == Key.Z)
                     _currentWeapon.StartAttack();
         }
+
 
         private void g_Gamepad_OnButtonPress(object sender, GamepadExtension.GamepadButtons e)
         {
@@ -74,7 +93,13 @@ namespace DN.GameObjects.Creatures
                     _currentWeapon.StartAttack();
                 }
         }
-
+        private void g_Gamepad_OnButtonUp(object sender, GamepadButtons e)
+        {
+            if (e.HasFlag(GamepadExtension.GamepadButtons.A))
+            {
+                _jump = false;
+            }
+        }
 
 
         public override void Draw(float dt)
@@ -109,7 +134,7 @@ namespace DN.GameObjects.Creatures
         {
             if (LeftKeyPressed())
             {
-                Move(new Vector2(-1, 0), 10 * dt);
+                Move(new Vector2(-1, 0), 10*dt);
                 Direction = Direction.Left;
                 if (OnGround)
                 {
@@ -119,7 +144,7 @@ namespace DN.GameObjects.Creatures
             }
             if (RightKeyPressed())
             {
-                Move(new Vector2(1, 0), 10 * dt);
+                Move(new Vector2(1, 0), 10*dt);
                 Direction = Direction.Right;
                 if (OnGround)
                 {
@@ -151,13 +176,23 @@ namespace DN.GameObjects.Creatures
 
                 if (LeftKeyPressed() && ClimbLadder)
                 {
-                    Move(new Vector2(-1, 0), 35 * dt);
+                    Move(new Vector2(-1, 0), 35*dt);
                 }
 
                 if (RightKeyPressed() && ClimbLadder)
                 {
-                    Move(new Vector2(1, 0), 35 * dt);
+                    Move(new Vector2(1, 0), 35*dt);
                 }
+            }
+
+            if (_jump)
+            {
+                if (Math.Abs(Velocity.Y) > _jumpMaxVelocity || ClimbLadder)
+                {
+                    _jump = false;
+                }
+                else
+                    Move(new Vector2(0, -1), 90 * dt, false);
             }
         }
 
@@ -185,7 +220,8 @@ namespace DN.GameObjects.Creatures
         {
             if (OnGround || (OnLadder && ClimbLadder))
             {
-                SetMoveY(-7, false);
+                _jump = true;
+               // SetMoveY(0, false);
                 ClimbLadder = false;
             }
         }
