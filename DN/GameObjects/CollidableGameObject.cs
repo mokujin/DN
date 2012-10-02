@@ -13,12 +13,13 @@ namespace DN.GameObjects
         Right = 1
     }
 
-
+    public delegate void TileCollisionEventHandler(Vector2 velocity, CollidedCell collidedCell);
     
     //dunno how to name it
     public abstract class CollidableGameObject:GameObject
     {
-        
+        public event TileCollisionEventHandler CollisionWithTiles;
+
 
         public bool GravityAffected = true;
         protected bool ClimbLadder;
@@ -48,21 +49,7 @@ namespace DN.GameObjects
             get { return Collisions.Any(p => p.CellType == CellType.Ladder || p.CellType == CellType.VRope); }
         }
 
-        //private Direction _lastDirection;
-        public Direction Direction
-        {
-            //get
-            //{
-            //    Vector2 direction = Velocity;
-            //    direction.Normalize();
-            //    if (!float.IsNaN(direction.X))
-            //    {
-            //        _lastDirection = direction.X > 0 ? Direction.Right : Direction.Left;
-            //    }
-            //    return _lastDirection;
-            //}
-            get; set;
-        }
+        public Direction Direction{get; set;}
 
         public CollidableGameObject(GameWorld gameWorld)
             :base(gameWorld)
@@ -186,6 +173,9 @@ namespace DN.GameObjects
             List<CollidedCell> tilesX = null;
             List<CollidedCell> tilesY = null;
             List<CollidedCell> tiles = null;
+
+            Vector2 startOffset = offset;
+
             //  if (offset.X != 0)
             {
                 float oldOffset = offset.X;
@@ -277,6 +267,11 @@ namespace DN.GameObjects
                 Collisions.AddRange(tilesY);
             if (tiles != null)
                 Collisions.AddRange(tiles);
+            foreach (var collidedCell in Collisions)
+            {
+                if(CollisionWithTiles != null)
+                    CollisionWithTiles(startOffset, collidedCell);
+            }
         }
 
         protected void CheckOverSpeed(ref float velocity, float maxVelocity)

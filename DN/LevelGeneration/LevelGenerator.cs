@@ -63,7 +63,9 @@ namespace DN.LevelGeneration
                 ////Console.WriteLine();
                 ////Console.ReadKey();
 
+
                 CopyScaledMap();
+
 
                 var p = GetFreeCell();
                 var adv = new Adventurer(this, p.X, p.Y);
@@ -71,7 +73,7 @@ namespace DN.LevelGeneration
 
                 UpdateMiners();
 
-                ClearJunk();
+                //ClearJunk();
             }
            catch (Exception e)
             {

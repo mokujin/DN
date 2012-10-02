@@ -2,10 +2,6 @@
 using DN.GameObjects.Weapons;
 using DN.Helpers;
 using OpenTK;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace DN.GameObjects.Creatures.Enemies.Behaviours
 {
@@ -43,7 +39,7 @@ namespace DN.GameObjects.Creatures.Enemies.Behaviours
 
             ChangeDirectionTimer.TickEvent += OnTimerTick;
             ChangeDirectionTimer.UpdateEvent += OnTimerUpdate;
-            ChangeDirectionTimer.Run();
+            ChangeDirectionTimer.Run(true);
 
         }
 

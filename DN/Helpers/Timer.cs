@@ -35,13 +35,14 @@ namespace DN.Helpers
         {
         }
 
-        public void Run()
+        public void Run(bool immediately = false)
         {
             if(_running)
                 throw  new Exception("Already running");
 
             _running = true;
-            _elapsed = 0;
+
+            _elapsed = immediately ? Duration : 0;
 
             if (StartEvent != null)
                 StartEvent();

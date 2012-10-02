@@ -26,7 +26,6 @@ namespace DN.GameObjects.Creatures
 
         DustPointEmitter _dustEffect;
 
-
         public Hero(GameWorld gameWorld):base(gameWorld)
         {
             Game.g_Gamepad.OnButtonPress += g_Gamepad_OnButtonPress;
@@ -54,10 +53,16 @@ namespace DN.GameObjects.Creatures
             _dustEffect = new DustPointEmitter(Position, Vector2.UnitX, 0.5f);
             _dustEffect.Initialise(60, 1);
 
+
             Health = 10;
             Direction = Direction.Right;
+
+            CollisionWithTiles += OnCollisionWithTiles;
         }
 
+        private void OnCollisionWithTiles(Vector2 velocity, CollidedCell collidedCell)
+        {
+        }
 
 
         private void g_Keyboard_KeyUp(object sender, KeyboardKeyEventArgs e)
@@ -82,20 +87,20 @@ namespace DN.GameObjects.Creatures
 
         private void g_Gamepad_OnButtonPress(object sender, GamepadExtension.GamepadButtons e)
         {
-            if (e.HasFlag(GamepadExtension.GamepadButtons.A))
+            if (e.HasFlag(GamepadButtons.A))
             {
                 Jump();
             }
 
             if (_currentWeapon != null)
-                if (e.HasFlag(GamepadExtension.GamepadButtons.X))
+                if (e.HasFlag(GamepadButtons.X))
                 {
                     _currentWeapon.StartAttack();
                 }
         }
         private void g_Gamepad_OnButtonUp(object sender, GamepadButtons e)
         {
-            if (e.HasFlag(GamepadExtension.GamepadButtons.A))
+            if (e.HasFlag(GamepadButtons.A))
             {
                 _jump = false;
             }
@@ -111,7 +116,6 @@ namespace DN.GameObjects.Creatures
             //SpriteBatch.Instance.OutlineRectangle(Bounds, Color.White); // debug draw
 
             _dustEffect.Draw(dt);
-            
         }
 
 
@@ -127,7 +131,6 @@ namespace DN.GameObjects.Creatures
             UpdateControlls(dt);
             _dustEffect.Position = new Vector2(Position.X, Bounds.Bottom);
             _dustEffect.Update(dt);
-
         }
 
         private void UpdateControlls(float dt)

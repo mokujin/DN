@@ -29,7 +29,7 @@ namespace DN.LevelGeneration
 
         public override void Step()
         {
-           // PrintDebug();
+          //  PrintDebug();
             if (NothingLeftToSearch())
             {
                 _cell.Y = -1;
@@ -39,10 +39,8 @@ namespace DN.LevelGeneration
             {
                 _nextPoint = GetGlosestPoint();
 
-                _path = _astar.FindPlatformerCellWay(_cell, _nextPoint);
+                _path = _astar.FindPlatformerCellWay(_cell, _nextPoint) ?? _astar.FindCellWay(_cell, _nextPoint);
 
-                if (_path == null)
-                    _path = _astar.FindCellWay(_cell, _nextPoint);
                 _pathFinished = false;
             }
             else
@@ -58,20 +56,6 @@ namespace DN.LevelGeneration
                     if (_levelGenerator.TileMap[_cell.X, _cell.Y + 1] != CellType.Wall)
                         _levelGenerator.TileMap[_cell.X, _cell.Y] = CellType.Ladder;
                 }
-                //else if (direction.X != 0)
-                //{
-                //    _cell.X += direction.X;
-
-                //    if (_levelGenerator.TileMap[_cell.X, _cell.Y + 1] != CellType.Wall)
-                //        _levelGenerator.TileMap[_cell.X, _cell.Y] = CellType.Ladder;
-                //}
-                //else if (direction.Y != 0)
-                //{
-                //    _cell.Y += direction.Y;
-
-                //    if (_levelGenerator.TileMap[_cell.X, _cell.Y] != CellType.Wall)
-                //        _levelGenerator.TileMap[_cell.X, _cell.Y] = CellType.Ladder;
-                //}
 
                 if (_cell.X == _nextPoint.X && _cell.Y == _nextPoint.Y)
                 {
@@ -86,10 +70,6 @@ namespace DN.LevelGeneration
         private void CellWasReached(Point cell)
         {
             _neededPoints[cell.X, cell.Y] = 0;
-          //  _neededPoints[cell.X - 1, cell.Y] = 0;
-           // _neededPoints[cell.X + 1, cell.Y] = 0;
-          //  _neededPoints[cell.X, cell.Y - 1] = 0;
-          //  _neededPoints[cell.X, cell.Y + 1] = 0;
         }
 
         private bool NothingLeftToSearch()
