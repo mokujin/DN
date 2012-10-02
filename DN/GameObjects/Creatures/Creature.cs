@@ -14,8 +14,13 @@ namespace DN.GameObjects.Creatures
     
     public delegate void CollisionEventHandler(GameObject sender, GameObject gameObject);
 
+    public delegate void DeathEventHandler();
+
+
     public abstract class Creature:CollidableGameObject
     {
+        public event DeathEventHandler Death;
+
         public float InvulnerabilityDuration
         {
             get
@@ -56,7 +61,8 @@ namespace DN.GameObjects.Creatures
             if(IsDead)
             {
                 //todo: add some event on death
-
+                if(Death != null)
+                    Death();
                 World.RemoveObject(this);
                 return;
             }
@@ -71,13 +77,13 @@ namespace DN.GameObjects.Creatures
             Health += amount;
         }
 
-        public virtual bool TakeDamage(float amount, Direction direction)
+        public virtual bool TakeDamage(float amount, Direction direction, float push = 0.0f)
         {
             if (InvulnerabilityDuration <= _invulnerabilityDuration_dt)
             {
                 Health -= amount;
-
-                Move(direction == Direction.Right ? new Vector2(1, 0) : new Vector2(-1, 0), 20*amount, false);
+                if(push > 0)
+                    Move(direction == Direction.Right ? new Vector2(1, 0) : new Vector2(-1, 0), push, false);
                 _invulnerabilityDuration_dt = 0;
 
                 return true;

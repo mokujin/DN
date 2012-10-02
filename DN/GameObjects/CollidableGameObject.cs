@@ -76,19 +76,31 @@ namespace DN.GameObjects
 
             if(checkOverspeed)
             {
-                Vector2 vel = Velocity;
-                if (!OnLadder || !ClimbLadder)
-                {
-                    CheckOverSpeed(ref vel.X, MaxVelocity.X);
-                    CheckOverSpeed(ref vel.Y, MaxVelocity.Y);
-                }
-                else
-                {
-                    CheckOverSpeed(ref vel.X, MaxLadderVelocity.X);
-                    CheckOverSpeed(ref vel.Y, MaxLadderVelocity.Y);
-                }
-                Velocity = vel;
+                CheckOverSpeed();
             }
+        }
+
+        private void CheckOverSpeed()
+        {
+            Vector2 vel = Velocity;
+            if (!OnLadder || !ClimbLadder)
+            {
+                CheckOverSpeed(ref vel.X, MaxVelocity.X);
+                CheckOverSpeed(ref vel.Y, MaxVelocity.Y);
+            }
+            else
+            {
+                CheckOverSpeed(ref vel.X, MaxLadderVelocity.X);
+                CheckOverSpeed(ref vel.Y, MaxLadderVelocity.Y);
+            }
+            Velocity = vel;
+        }
+
+        public void MoveInOppositeDirection(bool checkOverSpeed = true)
+        {
+            Velocity *= -1;
+            if (checkOverSpeed)
+                CheckOverSpeed();
         }
 
         public override void Update(float dt)

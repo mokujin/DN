@@ -69,9 +69,8 @@ namespace DN
             background = new ParallaxBackground(this);
             for (int i = 0; i < 10; i++)
             {
-             
-            Creature bat = EnemiesFabric.CreateEnemy(this, EnemyType.Bat);
-            bat.Cell = GetRandomPoint();   
+                Creature bat = EnemiesFabric.CreateEnemy(this, EnemyType.Bat);
+                bat.Cell = GetRandomPoint();   
             }
         }
 

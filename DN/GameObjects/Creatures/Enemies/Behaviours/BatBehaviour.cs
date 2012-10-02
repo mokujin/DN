@@ -29,7 +29,7 @@ namespace DN.GameObjects.Creatures.Enemies.Behaviours
 
         public void Initialize()
         {
-            Creature.CollisionWithObjects += BatCollisionWithHero;
+            Creature.CollisionWithObjects += BatOnCollision;
         }
 
         public void Update(float dt)
@@ -47,15 +47,22 @@ namespace DN.GameObjects.Creatures.Enemies.Behaviours
         }
 
         //just for test
-        private void BatCollisionWithHero(GameObject sender, GameObject gameObject)
+        private void BatOnCollision(GameObject sender, GameObject gameObject)
         {
             if (gameObject is Weapon)
             {
                 var weapon = gameObject as Weapon;
                 if (weapon.Attacking)
                 {
-                   Creature.TakeDamage(weapon.Damage, weapon.Direction);
+                   Creature.TakeDamage(weapon.Damage, weapon.Direction, 20);
                 }
+            }
+            else if (gameObject is Hero)
+            {
+                Hero hero = (Hero)gameObject;
+                bool t = hero.TakeDamage(1, Creature.Direction, 5);
+                if(t)
+                    Creature.MoveInOppositeDirection();
             }
         }
     }

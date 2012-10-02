@@ -8,6 +8,11 @@ namespace DN.GameObjects.Weapons
 {
     public abstract class Weapon:GameObject
     {
+        protected bool NoCreature
+        {
+            get { return Creature == null || Creature.IsDead; }
+        }
+
         public bool Attacking
         {
             get { return AttackStarted; }
@@ -65,8 +70,16 @@ namespace DN.GameObjects.Weapons
             else
             if(_elapsed < AttackSpeed)
                 _elapsed += dt;
-            Position = Creature.Position;
+            if (NoCreature)
+            {
+                Y += 1000*dt;
+                Creature = null;
+            }
+            else
+                Position = Creature.Position;
         }
+
+
         public virtual void StartAttack()
         {
             if (!CanAttack) return;

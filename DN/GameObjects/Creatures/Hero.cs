@@ -32,6 +32,8 @@ namespace DN.GameObjects.Creatures
             MaxLadderVelocity = new Vector2(5, 5);
             LadderFriction = 40f;
             Friction = 5f;
+            this.InvulnerabilityDuration = 1;
+
 
 
             _currentWeapon = new Sword(gameWorld, this)
@@ -72,7 +74,7 @@ namespace DN.GameObjects.Creatures
                                              Position,
                                             // new Vector2((float)Math.Round(X),(float)Math.Round(Y)), 
                                              Rectangle.Empty,
-                                             Color4.White);
+                                             Invulnerable ? new Color4(255, 1, 1, RandomTool.RandByte(255)) : Color4.White);
             //SpriteBatch.Instance.OutlineRectangle(Bounds, Color.White); // debug draw
 
             _dustEffect.Draw(dt);
@@ -114,7 +116,7 @@ namespace DN.GameObjects.Creatures
                 if (OnGround)
                 {
                     _dustEffect.Direction = MathUtils.RotateVector2(Vector2.UnitX, 0.5f);
-                    _dustEffect.Direction = new Vector2(_dustEffect.Direction.X, _dustEffect.Direction.Y);
+                    _dustEffect.Direction = new Vector2(-_dustEffect.Direction.X, _dustEffect.Direction.Y);
                     _dustEffect.Trigger(dt);
                 }
             }
