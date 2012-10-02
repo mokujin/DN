@@ -53,6 +53,7 @@ namespace DN
             _deleteObjectsQueue = new Queue<GameObject>();
 
             camera = new Camera(Game.g_screenSize, new Point(Game.g_screenSize.Width / 2, Game.g_screenSize.Height / 2), true);
+         //   camera.ScaleTo(1f);
             camera.MoveSpeed = 7;
             
             var lg = new LevelGenerator
@@ -67,7 +68,7 @@ namespace DN
             InsertHero();
 
             background = new ParallaxBackground(this);
-            for (int i = 0; i < 1; i++)
+            for (int i = 0; i < 10; i++)
             {
                 Creature bat = EnemiesFabric.CreateEnemy(this, EnemyType.Bat);
                 bat.Cell = GetRandomPoint();   

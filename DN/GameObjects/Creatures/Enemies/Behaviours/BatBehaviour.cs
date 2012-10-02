@@ -1,4 +1,6 @@
-﻿using DN.GameObjects.Weapons;
+﻿using Blueberry;
+using DN.GameObjects.Weapons;
+using DN.Helpers;
 using OpenTK;
 using System;
 using System.Collections.Generic;
@@ -9,7 +11,10 @@ namespace DN.GameObjects.Creatures.Enemies.Behaviours
 {
     class BatBehaviour:IBehaviour
     {
+
+        private Timer ChangeDirectionTimer;
         private bool SawPlayer = false;
+        private Vector2 _direction;
 
         public Creature Creature
         {
@@ -30,6 +35,16 @@ namespace DN.GameObjects.Creatures.Enemies.Behaviours
         public void Initialize()
         {
             Creature.CollisionWithObjects += BatOnCollision;
+            ChangeDirectionTimer = new Timer
+                                       {
+                                           Repeat = true,
+                                           Duration = RandomTool.RandInt(5) + 5
+                                       };
+
+            ChangeDirectionTimer.TickEvent += OnTimerTick;
+            ChangeDirectionTimer.UpdateEvent += OnTimerUpdate;
+            ChangeDirectionTimer.Run();
+
         }
 
         public void Update(float dt)
@@ -44,7 +59,22 @@ namespace DN.GameObjects.Creatures.Enemies.Behaviours
                 Vector2 dir = GameWorld.DirectionToObject(Creature, Hero);
                 Creature.Move(dir, 4*dt); //TODO: Remove constant
             }
+            else
+            {
+                ChangeDirectionTimer.Update(dt);
+            }
         }
+
+        private void OnTimerTick()
+        {
+            _direction = RandomTool.NextUnitVector2();
+        }
+        private void OnTimerUpdate(float dt)
+        {
+            Creature.Move(_direction, 4 * dt);
+        }
+
+
 
         //just for test
         private void BatOnCollision(GameObject sender, GameObject gameObject)

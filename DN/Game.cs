@@ -19,8 +19,11 @@ namespace DN
     {
         #region GLOBAL
 
+        // public static Size g_screenSize = new Size(1080, 1920);
+        //public static Rectangle g_screenRect = new Rectangle(0, 0, 1080, 1920);
         public static Size g_screenSize = new Size(640, 480);
         public static Rectangle g_screenRect = new Rectangle(0, 0, 640, 480);
+
         public static KeyboardDevice g_Keyboard;
         public static MouseDevice g_Mouse;
         public static GamepadState g_Gamepad;
@@ -42,7 +45,7 @@ namespace DN
             GL.ClearColor(Color4.Black);
 
             LoadTextures();
-            gameWorld = new GameWorld(30,30);
+            gameWorld = new GameWorld(90,90);
 
             Keyboard.KeyRepeat = false;
 

@@ -73,10 +73,10 @@ namespace DN.LevelGeneration
 
                 ClearJunk();
             }
-            catch (Exception e)
+           catch (Exception e)
             {
                // Console.WriteLine("generation");
-               // Console.WriteLine(e.ToString());
+                Console.WriteLine(e.ToString());
                 PrintDebug();
                 TileMap.PrintDebug();
                // Console.ReadKey();
@@ -114,135 +114,6 @@ namespace DN.LevelGeneration
                             TileMap[x, y] = Map[element, row];
                         }
         }
-
-        //private delegate void Func<TArg0, TArg1>(TArg0 arg0, TArg1 arg1);
-        //private void CheckAccessibility()
-        //{
-        //    List<byte[,]> zones = new List<byte[,]>();
-
-        //    Point cell = new Point(1,1);
-        //    while (NoFreePlacesLeft(cell))
-        //    {
-        //        cell = GetUndiscoveredFreeCell(zones);
-
-        //        zones.Add(new byte[TileMap.Width, TileMap.Height]);
-        //        var curZone = zones[zones.Count - 1];
-
-        //        var OpenList = new List<Point>();
-        //        OpenList.Add(cell);
-
-        //        Func<Point, Point> addPoint = (p, o) =>
-        //                                          {
-        //                                              Point pos = new Point(p.X + o.X, p.Y + o.Y);
-        //                                              if(TileMap.InRange(pos))
-        //                                              if (TileMap[pos.X, pos.Y] != CellType.Wall)
-        //                                                  if (!OpenList.Exists(a => a.X == pos.X && a.Y == pos.Y)
-        //                                                      && IsNotInsideZone(pos.X, pos.Y, zones))
-        //                                                  {
-        //                                                      OpenList.Add(pos);
-        //                                                      curZone[pos.X, pos.Y] = 1;
-        //                                                  }
-
-        //                                          };
-
-        //        while (OpenList.Count > 0)
-        //        {
-        //            Point curr = OpenList[0];
-        //            addPoint(curr, new Point(0, 1));
-        //            addPoint(curr, new Point(1, 0));
-        //            addPoint(curr, new Point(0, -1));
-        //            addPoint(curr, new Point(-1, 0));
-        //            OpenList.Remove(curr);
-        //        }
-        //    }
-
-        //    if(zones.Count > 1)
-        //    {
-        //        var cells = zones.Select(GetFreeCell).ToList();
-
-        //        Point p1 = cells[0];
-
-        //        for (int i = 0; i < cells.Count; i++)
-        //        {
-        //            var p = cells[i];
-        //            while (p1.X != p.X && p1.Y != p.Y)
-        //            {
-        //                TileMap[p.X, p.Y] = 0;
-
-        //                var dir = new Point(Direction(p.X, p1.X),
-        //                                    Direction(p.Y, p1.Y));
-        //                if (dir.X != 0)
-        //                    dir.Y = 0;
-
-        //                p.X += dir.X;
-        //                p.Y += dir.Y;
-        //            }
-        //        }
-        //    }
-        //}
-
-        //private sbyte Direction(int x1, int x2)
-        //{
-        //    sbyte t = 0;
-
-        //    if (x1 - x2 < 0) 
-        //        t = 1;
-        //    else if (x1 - x2 > 0) 
-        //        t = -1;
-        //    else 
-        //        t = 0;
-
-        //    return t;
-        //}
-
-        //private bool NoFreePlacesLeft(Point cell)
-        //{
-        //    return cell.X != -1 && cell.Y != -1;
-        //}
-        
-        //private Point GetFreeCell(byte[,] zone)
-        //{
-        //    Point p = Point.Empty;
-
-        //    do
-        //    {
-        //        p = new Point(RandomTool.RandInt(0, TileMap.Width),
-        //                      RandomTool.RandInt(0, TileMap.Height));
-
-        //    } while (zone[p.X, p.Y] != 0);
-
-        //    return p;
-        //}
-
-        //private Point GetUndiscoveredFreeCell(List<byte[,]> zones)
-        //{
-        //    int x = 1, y = 1;
-
-        //    while (x < TileMap.Width - 1 && y < TileMap.Height)
-        //    {
-        //        if(TileMap.IsFree(x,y) && IsNotInsideZone(x,y, zones))
-        //        {
-        //            return new Point(x, y);
-        //        }
-        //        x++;
-        //        if (x > TileMap.Width)
-        //        {
-        //            x = 1;
-        //            y++;
-        //        }
-        //    }
-        //    return new Point(-1, -1);
-        //}
-
-        //private bool IsNotInsideZone(int x, int y, List<byte[,]> zones)
-        //{
-        //    foreach (var z in zones)
-        //    {
-        //        if (z[x, y] == 1)
-        //            return false;
-        //    }
-        //    return true;
-        //}
 
         private void UpdateMiners()
         {

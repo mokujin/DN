@@ -41,7 +41,8 @@ namespace DN.LevelGeneration
             MoveInDirection();
 
             _levelGenerator.ResourseMap.GatherResourses(this);
-            _levelGenerator.Map[_cell.X, _cell.Y] = CellType.Free;
+            if(_cell.Y > 0)
+                _levelGenerator.Map[_cell.X, _cell.Y] = CellType.Free;
         }
 
         private void MoveInDirection()
