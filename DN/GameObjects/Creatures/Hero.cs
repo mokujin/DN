@@ -38,8 +38,8 @@ namespace DN.GameObjects.Creatures
 
             _currentWeapon = new Sword(gameWorld, this)
                           {
-                              AttackSpeed = 0.3f,
-                              TimeToFinishAttack = 0.2f,
+                              AttackSpeed = 0.5f,
+                              TimeToFinishAttack = 0.3f,
                               Damage = 1
                           };
 
@@ -56,6 +56,9 @@ namespace DN.GameObjects.Creatures
             {
                 Jump();
             }
+            if (_currentWeapon != null)
+                if (e.Key == Key.Z)
+                    _currentWeapon.StartAttack();
         }
 
         private void g_Gamepad_OnButtonPress(object sender, GamepadExtension.GamepadButtons e)
@@ -64,6 +67,12 @@ namespace DN.GameObjects.Creatures
             {
                 Jump();
             }
+
+            if (_currentWeapon != null)
+                if (e.HasFlag(GamepadExtension.GamepadButtons.X))
+                {
+                    _currentWeapon.StartAttack();
+                }
         }
 
 
@@ -120,9 +129,7 @@ namespace DN.GameObjects.Creatures
                 }
             }
 
-            if (_currentWeapon != null)
-                if (AttackKeyPressed())
-                    _currentWeapon.StartAttack();
+
 
             if (OnLadder)
             {
@@ -141,11 +148,12 @@ namespace DN.GameObjects.Creatures
                         Move(new Vector2(0, 1), 45*dt);
                     }
                 }
+
                 if (LeftKeyPressed() && ClimbLadder)
                 {
                     Move(new Vector2(-1, 0), 35 * dt);
-
                 }
+
                 if (RightKeyPressed() && ClimbLadder)
                 {
                     Move(new Vector2(1, 0), 35 * dt);
@@ -161,11 +169,6 @@ namespace DN.GameObjects.Creatures
         private static bool UpKeyPressed()
         {
             return Game.g_Gamepad.DPad.Up || Game.g_Keyboard[Key.Up];
-        }
-
-        private static bool AttackKeyPressed()
-        {
-            return Game.g_Keyboard[Key.Z];
         }
 
         private static bool RightKeyPressed()

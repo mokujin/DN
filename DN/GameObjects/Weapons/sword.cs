@@ -67,9 +67,8 @@ namespace DN.GameObjects.Weapons
 
         protected override void PerformAttack(float dt)
         {
-            _offset += 250 * dt;
-            _rotation += 10 * dt;
-            base.PerformAttack(dt);
+            _offset += 150 * dt;
+            _rotation += 6 * dt;
         }
 
         protected override void FinishAttack()
