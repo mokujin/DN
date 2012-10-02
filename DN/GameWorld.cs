@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using OpenTK.Graphics;
 using OpenTK.Input;
 using DN.GameObjects.Creatures;
 using DN.LevelGeneration;
@@ -40,6 +41,9 @@ namespace DN
 
         private Camera camera;
         public Camera Camera { get { return camera; } }
+
+        private float _alphaEffect = 0;
+
         ParallaxBackground background;
 
         public GameWorld(int width, int height)
@@ -126,7 +130,12 @@ namespace DN
 
             camera.Update(dt);
             UpdateObjectsEnqueues();
-           background.Update(dt);
+            background.Update(dt);
+
+            if(Hero.IsDead)
+            {
+                _alphaEffect += dt;
+            }
         }
 
         private void UpdateObjectsEnqueues()
@@ -139,6 +148,7 @@ namespace DN
         }
 
         Texture back = new Texture(Game.g_screenSize);
+
         public void Draw(float dt)
         {
             
@@ -156,9 +166,16 @@ namespace DN
             background.Draw(dt);
 
             SpriteBatch.Instance.Begin();
-            
+
+
             SpriteBatch.Instance.DrawTexture(back, Game.g_screenRect,Rectangle.Empty, Color.White,0,Vector2.Zero,false,true);
-            
+            if (Hero.IsDead)
+            {
+                SpriteBatch.Instance.FillRectangle(Game.g_screenRect, new Color4(0, 0, 0, _alphaEffect));
+
+                SpriteBatch.Instance.PrintText(CM.I.Font("Big"), "You are dead!", Game.g_screenSize.Width / 4,
+                                               Game.g_screenSize.Height / 4, new Color4(255, 255, 255, _alphaEffect));
+            }
             SpriteBatch.Instance.End();
 
             SpriteBatch.Instance.Begin();
@@ -166,13 +183,16 @@ namespace DN
             SpriteBatch.Instance.End();
 
 
-            var rect = camera.BoundingRectangle;
-            SpriteBatch.Instance.Begin(camera.GetViewMatrix());
-            foreach (var gameObject in _gameObjects)
-                if(gameObject.Bounds.IntersectsWith(rect))
-                gameObject.Draw(dt);
+            if (!Hero.IsDead)
+            {
+                var rect = camera.BoundingRectangle;
+                SpriteBatch.Instance.Begin(camera.GetViewMatrix());
+                foreach (var gameObject in _gameObjects)
+                    if (gameObject.Bounds.IntersectsWith(rect))
+                        gameObject.Draw(dt);
 
-            SpriteBatch.Instance.End();
+                SpriteBatch.Instance.End();
+            }
         }
 
         private void RenderTiles(float dt)

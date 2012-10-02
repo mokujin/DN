@@ -60,6 +60,7 @@ namespace DN
             CM.I.LoadTexture("stair_tile", Path.Combine("Content", "Textures", "stair_tile.png"));
             CM.I.LoadTexture("sword_sprite", Path.Combine("Content", "Textures", "Weapons", "Sword.png"));
             CM.I.LoadTexture("bat_sprite", Path.Combine("Content", "Textures", "Enemies", "Bat.png"));
+            CM.I.LoadFont("Big", Path.Combine("Content", "Fonts", "monofur.ttf"), 48);
         }
 
         protected override void OnUpdateFrame(FrameEventArgs e)

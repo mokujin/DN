@@ -46,7 +46,7 @@ namespace DN.GameObjects.Creatures
             _dustEffect = new DustPointEmitter(Position, Vector2.UnitX, 0.5f);
             _dustEffect.Initialise(60, 1);
 
-            Health = 10;
+            Health = 1;
             Direction = Direction.Right;
         }
 
