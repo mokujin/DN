@@ -58,6 +58,7 @@ namespace DN.GameObjects.Creatures.Enemies.Behaviours
             {
                 Vector2 dir = GameWorld.DirectionToObject(Creature, Hero);
                 Creature.Move(dir, 4*dt); //TODO: Remove constant
+                Creature.Direction = dir.X > 0 ? Direction.Right : Direction.Left;
             }
             else
             {
@@ -68,6 +69,7 @@ namespace DN.GameObjects.Creatures.Enemies.Behaviours
         private void OnTimerTick()
         {
             _direction = RandomTool.NextUnitVector2();
+            Creature.Direction = _direction.X > 0 ? Direction.Right : Direction.Left;
         }
         private void OnTimerUpdate(float dt)
         {
