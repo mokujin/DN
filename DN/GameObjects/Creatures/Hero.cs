@@ -72,7 +72,6 @@ namespace DN.GameObjects.Creatures
         {
             SpriteBatch.Instance.DrawTexture(CM.I.tex("hero_tile"),
                                              Position,
-                                            // new Vector2((float)Math.Round(X),(float)Math.Round(Y)), 
                                              Rectangle.Empty,
                                              Invulnerable ? new Color4(255, 1, 1, RandomTool.RandByte(255)) : Color4.White);
             //SpriteBatch.Instance.OutlineRectangle(Bounds, Color.White); // debug draw
@@ -129,13 +128,18 @@ namespace DN.GameObjects.Creatures
             {
                 if (UpKeyPressed())
                 {
-                    Move(new Vector2(0, -1), 50*dt);
-                    ClimbLadder = true;
+                    if (Velocity.Y >= 0 || ClimbLadder)
+                    {
+                        Move(new Vector2(0, -1), 50*dt);
+                        ClimbLadder = true;
+                    }
                 }
                 if (DownKeyPressed())
                 {
-                    Move(new Vector2(0, 1), 50*dt);
-                    ClimbLadder = true;
+                    if (ClimbLadder)
+                    {
+                        Move(new Vector2(0, 1), 50*dt);
+                    }
                 }
                 if (LeftKeyPressed() && ClimbLadder)
                 {
@@ -149,8 +153,6 @@ namespace DN.GameObjects.Creatures
                 }
 
             }
-           // if (JumpKeyPressed())
-           //    Jump();
         }
 
         private static bool JumpKeyPressed()
@@ -185,9 +187,9 @@ namespace DN.GameObjects.Creatures
 
         private void Jump()
         {
-            if (OnGround || OnLadder)
+            if (OnGround || (OnLadder && ClimbLadder))
             {
-                Move(new Vector2(0,-1), 7, true);
+                Move(new Vector2(0,-1), 7, false);
                 ClimbLadder = false;
             }
         }
