@@ -148,12 +148,8 @@ namespace DN
 
             camera.Update(dt);
             UpdateObjectsEnqueues();
-<<<<<<< HEAD
- //           background.Update(dt);
-=======
 
             background.Update(dt);
->>>>>>> b530ce03c0876fe800cc8e05d950c10a25287d42
 
             if(Hero.IsDead)
             {
@@ -184,10 +180,6 @@ namespace DN
 
             GL.ClearColor(0, 0, 0, 1);
             GL.Clear(ClearBufferMask.ColorBufferBit);
-<<<<<<< HEAD
-   //         background.Draw(dt);
-=======
->>>>>>> b530ce03c0876fe800cc8e05d950c10a25287d42
 
             background.Draw(dt);
 
