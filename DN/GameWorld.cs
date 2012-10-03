@@ -15,6 +15,8 @@ using DN.GameObjects.Creatures.Enemies;
 using DN.Effects;
 using OpenTK.Graphics.OpenGL;
 using DN.GameObjects.Weapons;
+using System.IO;
+using OpenTK.Graphics;
 
 namespace DN
 {
@@ -32,8 +34,8 @@ namespace DN
             private set;
         }
 
-        public float G = 15f; // gravity acceleration;
-        public Vector2 GravityDirection = new Vector2(0, 1);
+        public const float G = 15f; // gravity acceleration;
+        public static readonly Vector2 GravityDirection = new Vector2(0, 1);
         private List<GameObject> _gameObjects;
         private Queue<GameObject> _addNewObjectsQueue;
         private Queue<GameObject> _deleteObjectsQueue;
@@ -41,9 +43,11 @@ namespace DN
         private Camera camera;
         public Camera Camera { get { return camera; } }
         ParallaxBackground background;
+        BloodSystem bloodSystem;
 
         public GameWorld(int width, int height)
         {
+            Game.g_Keyboard.KeyDown += g_Keyboard_KeyDown;
             Width = width;
             Height = height;
             TileMap = new TileMap(Width, Height);
@@ -66,12 +70,21 @@ namespace DN
             InsertHero();
 
             background = new ParallaxBackground(this);
+            bloodSystem = new BloodSystem(this);
+            bloodSystem.Init();
+            bloodSystem.BlendWith(back);
+
             for (int i = 0; i < 10; i++)
             {
-             
-            Creature bat = EnemiesFabric.CreateEnemy(this, EnemyType.Bat);
-            bat.Cell = GetRandomPoint();   
+                Creature bat = EnemiesFabric.CreateEnemy(this, EnemyType.Bat);
+                bat.Cell = GetRandomPoint();   
             }
+            
+        }
+
+        void g_Keyboard_KeyDown(object sender, KeyboardKeyEventArgs e)
+        {
+            bloodSystem.InitEmitter(Hero.Position, Vector2.UnitX, 3, 0.4f, 2);
         }
 
         public void InsertHero()
@@ -113,6 +126,8 @@ namespace DN
 
         public void Update(float dt)
         {
+            bloodSystem.Update(dt);
+
             camera.MoveTo(Hero.Position);
 
             foreach (var gameObject in _gameObjects)
@@ -123,9 +138,11 @@ namespace DN
             if (Game.g_Keyboard[Key.Minus])
                 camera.ScaleOn(-0.01f);
 
+            
+
             camera.Update(dt);
             UpdateObjectsEnqueues();
-           background.Update(dt);
+            background.Update(dt);
         }
 
         private void UpdateObjectsEnqueues()
@@ -138,36 +155,30 @@ namespace DN
         }
 
         Texture back = new Texture(Game.g_screenSize);
+        
         public void Draw(float dt)
         {
             
-            
-            SpriteBatch.Instance.Begin(camera.GetViewMatrix());
-
-            RenderTiles(dt);
             GL.ClearColor(0, 0, 0, 0);
-
+            SpriteBatch.Instance.Begin(camera.GetViewMatrix());
+            RenderTiles(dt);
             SpriteBatch.Instance.End(back, true, true);
-            
+
+            bloodSystem.PredrawBloodTexture(dt);
+
             GL.ClearColor(0, 0, 0, 1);
             GL.Clear(ClearBufferMask.ColorBufferBit);
+
             background.Draw(dt);
 
-            SpriteBatch.Instance.Begin();
+            bloodSystem.DrawBackground(dt);
             
-            SpriteBatch.Instance.DrawTexture(back, Game.g_screenRect,Rectangle.Empty, Color.White,0,Vector2.Zero,false,true);
-            
-            SpriteBatch.Instance.End();
-
-            SpriteBatch.Instance.Begin();
-            SpriteBatch.Instance.FillCircle(new PointF(200, 200), 20, Color.Red, 10);
-            SpriteBatch.Instance.End();
-
             SpriteBatch.Instance.Begin(camera.GetViewMatrix());
             foreach (var gameObject in _gameObjects)
                 gameObject.Draw(dt);
-
+            bloodSystem.DrawParticles(dt);
             SpriteBatch.Instance.End();
+             
         }
 
         private void RenderTiles(float dt)
@@ -179,8 +190,6 @@ namespace DN
             rect.Height /= 64;
             rect.Width+=2;
             rect.Height+=2;
-           // Console.SetCursorPosition(0,1);
-            //Console.Write("tiles in view: {0}   ",rect.Width * rect.Height);
             TileMap.Draw(rect);
         }
 
@@ -235,6 +244,7 @@ namespace DN
             return list;
         }
     }
+    
 
     public class CollidedCell
     {

@@ -24,6 +24,7 @@ namespace Blueberry.Graphics
         int pixelTex = -1;
         int framebuffer = -1;
         Shader shader;
+        Shader current;
 
         private static SpriteBatch instance;
 
@@ -47,6 +48,7 @@ namespace Blueberry.Graphics
         private Vector2 texCoordBR = Vector2.Zero;
         private Matrix4 trans;
         private Matrix4 proj;
+        public Matrix4 Projection { get { return proj; } }
 
         private int proj_uniform_loc;
         private int view_uniform_loc;
@@ -103,16 +105,8 @@ namespace Blueberry.Graphics
                                           "void main(void) { color = texture(colorTexture, ftexcoord) * fcolor; }");
             }
             shader.Link();
-            shader.Use();
+            BindShader(this.shader, "vposition", "vcolor", "vtexcoord", "projection", "view");
 
-            vbuffer.DeclareNextAttribute("vposition", 2);
-            vbuffer.DeclareNextAttribute("vcolor", 4);
-            vbuffer.DeclareNextAttribute("vtexcoord", 2);
-
-            vbuffer.Attach(shader);
-
-            proj_uniform_loc = GL.GetUniformLocation(shader.Program, "projection");
-            view_uniform_loc = GL.GetUniformLocation(shader.Program, "view");
 
             int[] p = new int[4];
             GL.GetInteger(GetPName.Viewport, p);
@@ -150,13 +144,25 @@ namespace Blueberry.Graphics
                 GL.DrawElements(mode, vbuffer.IndexOffset + 1, DrawElementsType.UnsignedInt, 0);
         }
 
-        public void BindShader(string positionAttrib, string colorAttrib, string texcoordAttrib, string projectionUniform, string viewUniform)
+        public void BindShader(Shader shader, string positionAttrib, string colorAttrib, string texcoordAttrib, string projectionUniform, string viewUniform)
         {
+            vbuffer.ClearAttributeDeclarations();
+
             vbuffer.DeclareNextAttribute(positionAttrib, 2);
             vbuffer.DeclareNextAttribute(colorAttrib, 4);
             vbuffer.DeclareNextAttribute(texcoordAttrib, 2);
 
             vbuffer.Attach(shader);
+
+            proj_uniform_loc = GL.GetUniformLocation(shader.Program, projectionUniform);
+            view_uniform_loc = GL.GetUniformLocation(shader.Program, viewUniform);
+
+            shader.Use();
+            current = shader;
+        }
+        public void ResetShader()
+        {
+            BindShader(this.shader, "vposition", "vcolor", "vtexcoord", "projection", "view");
         }
         /*
         private bool TestCompatibility(Shader shader) // probably compatible shader
@@ -178,7 +184,10 @@ namespace Blueberry.Graphics
 
         public void End()
         {
-            shader.Use();
+            int pr;
+            GL.GetInteger(GetPName.CurrentProgram,out pr);
+            if(current == null || current.Program != pr)
+                shader.Use();
             shader.SetUniform(proj_uniform_loc, ref proj);
             shader.SetUniform(view_uniform_loc, ref trans);
             // nothing to do
