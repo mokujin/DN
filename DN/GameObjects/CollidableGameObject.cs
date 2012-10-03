@@ -30,6 +30,7 @@ namespace DN.GameObjects
         public Vector2 MaxLadderVelocity;
         public Vector2 MaxVelocity;
 
+
         protected Vector2 Velocity;
 
         public float Friction;
@@ -55,6 +56,11 @@ namespace DN.GameObjects
             :base(gameWorld)
         {
             Collisions = new List<CollidedCell>();
+        }
+
+        public Vector2 GetVelocity()
+        {
+            return Velocity;
         }
 
 

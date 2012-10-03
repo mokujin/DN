@@ -1,4 +1,5 @@
 ﻿using Blueberry;
+using DN.Effects;
 using DN.GameObjects.Weapons;
 using DN.Helpers;
 using OpenTK;
@@ -11,7 +12,10 @@ namespace DN.GameObjects.Creatures.Enemies.Behaviours
         private Timer ChangeDirectionTimer;
         private bool SawPlayer = false;
         private Vector2 _direction;
+        private BloodSystem _bloodSystem;
+        private BloodEmitter _bloodEmitter;
 
+        
         public Creature Creature
         {
             get;
@@ -40,6 +44,7 @@ namespace DN.GameObjects.Creatures.Enemies.Behaviours
 
             ChangeDirectionTimer.TickEvent += OnTimerTick;
             ChangeDirectionTimer.UpdateEvent += OnTimerUpdate;
+
             ChangeDirectionTimer.Run(true);
 
         }
@@ -52,6 +57,10 @@ namespace DN.GameObjects.Creatures.Enemies.Behaviours
 
         public void Update(float dt)
         {
+            if(_bloodEmitter != null && Creature.Invulnerable)
+                _bloodEmitter.Position = Creature.Position;
+
+
             if (!SawPlayer)
                 if (GameWorld.DistanceToObject(Creature, Hero) < 500)
                     if (LineOfSight.Get(GameWorld.TileMap, Creature.Cell, Hero.Cell))
@@ -59,9 +68,9 @@ namespace DN.GameObjects.Creatures.Enemies.Behaviours
 
             if (SawPlayer)
             {
-                Vector2 dir = GameWorld.DirectionToObject(Creature, Hero);
-                Creature.Move(dir, 4*dt); //TODO: Remove constant
-                Creature.Direction = dir.X > 0 ? Direction.Right : Direction.Left;
+                _direction = GameWorld.DirectionToObject(Creature, Hero);
+                Creature.Move(_direction, 4 * dt); //TODO: Remove constant
+                Creature.Direction = _direction.X > 0 ? Direction.Right : Direction.Left;
             }
             else
             {
@@ -89,7 +98,15 @@ namespace DN.GameObjects.Creatures.Enemies.Behaviours
                 var weapon = gameObject as Weapon;
                 if (weapon.Attacking)
                 {
-                   Creature.TakeDamage(weapon.Damage, weapon.Direction, 20);
+                    if (Creature.TakeDamage(weapon.Damage, weapon.Direction, 20))
+                    {
+                        Vector2 vel = Creature.GetVelocity();
+                        vel.Y = 0;
+
+                        _bloodEmitter = GameWorld.BloodSystem.InitEmitter(Creature.Position, vel * 0.2f,
+                                                                          7, 0f, 1);
+                    }
+
                 }
             }
             else if (gameObject is Hero)

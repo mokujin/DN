@@ -15,6 +15,7 @@ namespace DN.Effects
         public Vector2 Position { get; set; }
         public Vector2 Direction { get; set; }
         public float Dispersion { get; set; }
+
         public float triggerInterval = 0.4f;
         private float temp = 0;
         public int countOfSpreads = 100;

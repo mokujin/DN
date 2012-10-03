@@ -36,7 +36,7 @@ namespace DN.GameObjects.Creatures
 
             Size = new Size(48, 40);
             MaxVelocity = new Vector2(5,15);
-            MaxLadderVelocity = new Vector2(2, 2);
+            MaxLadderVelocity = new Vector2(2, 2.5f);
             LadderFriction = 40f;
             Friction = 5f;
             this.InvulnerabilityDuration = 1;

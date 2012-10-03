@@ -47,7 +47,7 @@ namespace DN
         private float _alphaEffect = 0;
 
         ParallaxBackground background;
-        BloodSystem bloodSystem;
+       public BloodSystem BloodSystem;
 
         public GameWorld(int width, int height)
         {
@@ -76,11 +76,11 @@ namespace DN
             InsertHero();
 
             background = new ParallaxBackground(this);
-            bloodSystem = new BloodSystem(this);
-            bloodSystem.Init();
-            bloodSystem.BlendWith(back);
+            BloodSystem = new BloodSystem(this);
+            BloodSystem.Init();
+            BloodSystem.BlendWith(back);
 
-            for (int i = 0; i < 0; i++)
+            for (int i = 0; i < 10; i++)
             {
                 Creature bat = EnemiesFabric.CreateEnemy(this, EnemyType.Bat);
                 bat.Cell = GetRandomPoint();   
@@ -90,7 +90,7 @@ namespace DN
 
         void g_Keyboard_KeyDown(object sender, KeyboardKeyEventArgs e)
         {
-            bloodSystem.InitEmitter(Hero.Position, Vector2.UnitX, 3, 0.4f, 2);
+           // BloodSystem.InitEmitter(Hero.Position, Vector2.UnitX, 3, 0.4f, 2);
         }
 
         public void InsertHero()
@@ -132,7 +132,7 @@ namespace DN
 
         public void Update(float dt)
         {
-            bloodSystem.Update(dt);
+            BloodSystem.Update(dt);
 
             camera.MoveTo(Hero.Position);
 
@@ -176,14 +176,14 @@ namespace DN
             RenderTiles(dt);
             SpriteBatch.Instance.End(back, true, true);
 
-            bloodSystem.PredrawBloodTexture(dt);
+            BloodSystem.PredrawBloodTexture(dt);
 
             GL.ClearColor(0, 0, 0, 1);
             GL.Clear(ClearBufferMask.ColorBufferBit);
 
             background.Draw(dt);
 
-            bloodSystem.DrawBackground(dt);
+            BloodSystem.DrawBackground(dt);
             if (!Hero.IsDead)
             {
                 SpriteBatch.Instance.Begin(camera.GetViewMatrix());
@@ -191,7 +191,7 @@ namespace DN
                 foreach (var gameObject in _gameObjects)
                     if (gameObject.Bounds.IntersectsWith(rect))
                         gameObject.Draw(dt);
-                bloodSystem.DrawParticles(dt);
+                BloodSystem.DrawParticles(dt);
                 SpriteBatch.Instance.End();
             }
              
