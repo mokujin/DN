@@ -36,7 +36,7 @@ namespace DN.GameObjects.Creatures
 
             Size = new Size(48, 40);
             MaxVelocity = new Vector2(5,15);
-            MaxLadderVelocity = new Vector2(5, 5);
+            MaxLadderVelocity = new Vector2(2, 2);
             LadderFriction = 40f;
             Friction = 5f;
             this.InvulnerabilityDuration = 1;
@@ -163,9 +163,9 @@ namespace DN.GameObjects.Creatures
             {
                 if (UpKeyPressed())
                 {
-                    if (Velocity.Y >= 2 || ClimbLadder)
+                    if (Velocity.Y >= 0 || ClimbLadder)
                     {
-                        Move(new Vector2(0, -1), 45*dt);
+                        Move(new Vector2(0, -1),  100*dt);
                         ClimbLadder = true;
                     }
                 }
@@ -173,18 +173,18 @@ namespace DN.GameObjects.Creatures
                 {
                     if (ClimbLadder)
                     {
-                        Move(new Vector2(0, 1), 45*dt);
+                       Move(new Vector2(0, 1), 100 * dt);
                     }
                 }
 
                 if (LeftKeyPressed() && ClimbLadder)
                 {
-                    Move(new Vector2(-1, 0), 35*dt);
+                    Move(new Vector2(-1, 0), 100 * dt);
                 }
 
                 if (RightKeyPressed() && ClimbLadder)
                 {
-                    Move(new Vector2(1, 0), 35*dt);
+                    Move(new Vector2(1, 0), 100 * dt);
                 }
             }
 
