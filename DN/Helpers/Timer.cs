@@ -47,6 +47,12 @@ namespace DN.Helpers
             if (StartEvent != null)
                 StartEvent();
         }
+
+        public void Finish()
+        {
+            _elapsed = Duration;
+        }
+
         public void Stop()
         {
             _running = false;

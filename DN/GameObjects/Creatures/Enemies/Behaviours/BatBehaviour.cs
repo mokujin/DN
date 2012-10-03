@@ -31,6 +31,7 @@ namespace DN.GameObjects.Creatures.Enemies.Behaviours
         public void Initialize()
         {
             Creature.CollisionWithObjects += BatOnCollision;
+            Creature.CollisionWithTiles += Creature_CollisionWithTiles;
             ChangeDirectionTimer = new Timer
                                        {
                                            Repeat = true,
@@ -41,6 +42,12 @@ namespace DN.GameObjects.Creatures.Enemies.Behaviours
             ChangeDirectionTimer.UpdateEvent += OnTimerUpdate;
             ChangeDirectionTimer.Run(true);
 
+        }
+
+        private void Creature_CollisionWithTiles(Vector2 velocity, CollidedCell collidedCell)
+        {
+            if (collidedCell.CellType == CellType.Wall)
+                ChangeDirectionTimer.Finish();
         }
 
         public void Update(float dt)
@@ -73,7 +80,7 @@ namespace DN.GameObjects.Creatures.Enemies.Behaviours
         }
 
 
-
+        
         //just for test
         private void BatOnCollision(GameObject sender, GameObject gameObject)
         {

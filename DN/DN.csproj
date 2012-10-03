@@ -59,6 +59,7 @@
     <Compile Include="GameObjects\Creatures\Creature.cs" />
     <Compile Include="GameObjects\Creatures\Enemies\Behaviours\BatBehaviour.cs" />
     <Compile Include="GameObjects\Creatures\Enemies\Behaviours\IBehaviour.cs" />
+    <Compile Include="GameObjects\Creatures\Enemies\Behaviours\TrollBehaviour.cs" />
     <Compile Include="GameObjects\Creatures\Enemies\EnemiesFabric.cs" />
     <Compile Include="GameObjects\Creatures\Enemies\Enemy.cs" />
     <Compile Include="GameObjects\Creatures\Hero.cs" />
