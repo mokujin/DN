@@ -7,21 +7,22 @@ using System.Text;
 
 namespace DN.GameObjects
 {
-    public enum MovementDirection : sbyte
+    public enum Direction : sbyte
     {
         Left = -1,
         Right = 1
     }
 
-
+    public delegate void TileCollisionEventHandler(Vector2 velocity, CollidedCell collidedCell);
     
     //dunno how to name it
     public abstract class CollidableGameObject:GameObject
     {
-        
+        public event TileCollisionEventHandler CollisionWithTiles;
+
 
         public bool GravityAffected = true;
-        
+        protected bool ClimbLadder;
 
         protected List<CollidedCell> Collisions;
 
@@ -29,7 +30,7 @@ namespace DN.GameObjects
         public Vector2 MaxLadderVelocity;
         public Vector2 MaxVelocity;
 
-        private Vector2 Velocity;
+        protected Vector2 Velocity;
 
         public float Friction;
         public float LadderFriction;
@@ -43,25 +44,12 @@ namespace DN.GameObjects
             }
         }
 
-        public bool OnStairs
+        public bool OnLadder
         {
             get { return Collisions.Any(p => p.CellType == CellType.Ladder || p.CellType == CellType.VRope); }
         }
 
-        private MovementDirection _lastDirection;
-        public MovementDirection MovementDirection
-        {
-            get
-            {
-                Vector2 direction = Velocity;
-                direction.Normalize();
-                if (!float.IsNaN(direction.X))
-                {
-                    _lastDirection = direction.X > 0 ? MovementDirection.Right : MovementDirection.Left;
-                }
-                return _lastDirection;
-            }
-        }
+        public Direction Direction{get; set;}
 
         public CollidableGameObject(GameWorld gameWorld)
             :base(gameWorld)
@@ -69,9 +57,52 @@ namespace DN.GameObjects
             Collisions = new List<CollidedCell>();
         }
 
-        public void Move(Vector2 direction, float speed)
+
+        public void SetMove(Vector2 direction, float speed, bool checkOverspeed = true)
+        {
+            Velocity = direction*speed;
+            if(checkOverspeed)
+                CheckOverSpeed();
+        }
+
+        public void SetMoveY(float speed, bool checkOverspeed = true)
+        {
+            Velocity.Y = speed;
+            if (checkOverspeed)
+                CheckOverSpeed();
+        }
+
+        public void Move(Vector2 direction, float speed, bool checkOverspeed = true)
         {
             Velocity += direction*speed;
+
+            if(checkOverspeed)
+            {
+                CheckOverSpeed();
+            }
+        }
+
+        private void CheckOverSpeed()
+        {
+            Vector2 vel = Velocity;
+            if (!OnLadder || !ClimbLadder)
+            {
+                CheckOverSpeed(ref vel.X, MaxVelocity.X);
+                CheckOverSpeed(ref vel.Y, MaxVelocity.Y);
+            }
+            else
+            {
+                CheckOverSpeed(ref vel.X, MaxLadderVelocity.X);
+                CheckOverSpeed(ref vel.Y, MaxLadderVelocity.Y);
+            }
+            Velocity = vel;
+        }
+
+        public void MoveInOppositeDirection(bool checkOverSpeed = true)
+        {
+            Velocity *= -1;
+            if (checkOverSpeed)
+                CheckOverSpeed();
         }
 
         public override void Update(float dt)
@@ -83,12 +114,15 @@ namespace DN.GameObjects
         private void UpdateParametrs(float dt)
         {
 
-            if (!OnStairs)
+            if (!OnLadder ||!ClimbLadder)
             {
                 if (GravityAffected)
-                    Velocity += GameWorld.GravityDirection * GameWorld.G * dt;
+                {
+                    Move(GameWorld.GravityDirection, GameWorld.G * dt);
+                }
                 if (OnGround)
                     UpdateFriction(ref Velocity.X, Friction, dt);
+                ClimbLadder = false;
             }
             else
             {
@@ -98,21 +132,12 @@ namespace DN.GameObjects
 
             Vector2 pos = Position;
             Vector2 vel = Velocity;
-
-            if (!OnStairs)
-            {
-                CheckOverSpeed(ref vel.X, MaxVelocity.X);
-                CheckOverSpeed(ref vel.Y, MaxVelocity.Y);
-            }
-            else
-            {
-                CheckOverSpeed(ref vel.X, MaxLadderVelocity.X);
-                CheckOverSpeed(ref vel.Y, MaxLadderVelocity.Y);
-            }
+            Vector2 oldVel = vel;
 
             CheckCollisions(ref vel, ref pos);
             Position = pos;
-            Velocity = vel;
+            if(oldVel != vel)
+                Velocity = vel;
 
             Position += Velocity;
         }
@@ -148,6 +173,9 @@ namespace DN.GameObjects
             List<CollidedCell> tilesX = null;
             List<CollidedCell> tilesY = null;
             List<CollidedCell> tiles = null;
+
+            Vector2 startOffset = offset;
+
             //  if (offset.X != 0)
             {
                 float oldOffset = offset.X;
@@ -239,6 +267,11 @@ namespace DN.GameObjects
                 Collisions.AddRange(tilesY);
             if (tiles != null)
                 Collisions.AddRange(tiles);
+            foreach (var collidedCell in Collisions)
+            {
+                if(CollisionWithTiles != null)
+                    CollisionWithTiles(startOffset, collidedCell);
+            }
         }
 
         protected void CheckOverSpeed(ref float velocity, float maxVelocity)

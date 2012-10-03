@@ -1,79 +1,107 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using DN.GameObjects.Creatures;
+using DN.Helpers;
 
 namespace DN.GameObjects.Weapons
 {
     public abstract class Weapon:GameObject
     {
-        public bool Attacking
+        protected bool NoCreature
         {
-            get { return AttackStarted; }
+            get { return Creature == null || Creature.IsDead; }
         }
 
-        protected float _elapsed;
-        
+        public bool Attacking
+        {
+            get { return _perfermingAttackTimer.Running; }
+        }
+
+        public Direction Direction
+        {
+            get { return Creature.Direction; }
+        }
+
         protected Creature Creature; // creature which using this weapon
 
-        protected bool AttackStarted;
 
         protected bool CanAttack
         {
-            get{return _elapsed >= AttackSpeed && !AttackStarted;}
+            get{return !_attackTimer.Running;}
         }
 
+        private readonly Timer _attackTimer;
+        private readonly Timer _perfermingAttackTimer;
 
-        private float _attackSpeed;
         public float AttackSpeed
         {
-            get 
+            get
             {
-                return _attackSpeed; 
+                return _attackTimer.Duration;
             }
             set
             {
-                _attackSpeed = value;
-                _elapsed = value;
+                _attackTimer.Duration = value;
             }
         }
-        public float TimeToFinishAttack;
+
+        public float TimeToFinishAttack
+        {
+            get
+            {
+                return _perfermingAttackTimer.Duration;
+            }
+            set
+            {
+                _perfermingAttackTimer.Duration = value;
+            }
+        }
+
+        public float Damage
+        {
+            get;
+            set;
+        }
 
         public Weapon(GameWorld gameWorld, Creature creature)
             :base(gameWorld)
         {
             Creature = creature;
-            _elapsed = AttackSpeed;
 
+            _attackTimer = new Timer();
+            _perfermingAttackTimer = new Timer();
+
+            _perfermingAttackTimer.TickEvent += FinishAttack;
+            _perfermingAttackTimer.UpdateEvent += PerformAttack;
         }
 
         public override void Update(float dt)
         {
-            if (AttackStarted)
-                PerformAttack(dt);
+            _attackTimer.Update(dt);
+            _perfermingAttackTimer.Update(dt);
+
+            if (NoCreature)
+            {
+                Y += 1000*dt;
+                Creature = null;
+            }
             else
-            if(_elapsed < AttackSpeed)
-                _elapsed += dt;
-            Position = Creature.Position;
+                Position = Creature.Position;
         }
+
+
         public virtual void StartAttack()
         {
             if (!CanAttack) return;
 
-            _elapsed = 0;
-            AttackStarted = true;
+            _attackTimer.Run();
+            _perfermingAttackTimer.Run();
         }
-        protected virtual void PerformAttack(float dt)
-        {
-            _elapsed += dt;
-            if (_elapsed >= TimeToFinishAttack)
-            {
-                _elapsed = 0;
-                AttackStarted = false;
-                FinishAttack();
-            }
-        }
+
+        protected abstract void PerformAttack(float dt);
         protected abstract void FinishAttack();
     }
 }

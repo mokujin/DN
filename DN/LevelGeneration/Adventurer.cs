@@ -20,7 +20,7 @@ namespace DN.LevelGeneration
 
         public Adventurer(LevelGenerator levelGenerator, int x, int y) : base(levelGenerator, x, y)
         {
-            _astar = new AStar(_levelGenerator.TileMap) {DiagonalMovesAllowed = true};
+            _astar = new AStar(_levelGenerator.TileMap) {DiagonalMovesAllowed = false};
 
             _neededPoints = new byte[_levelGenerator.TileMap.Width,
                                      _levelGenerator.TileMap.Height];
@@ -29,6 +29,7 @@ namespace DN.LevelGeneration
 
         public override void Step()
         {
+          //  PrintDebug();
             if (NothingLeftToSearch())
             {
                 _cell.Y = -1;
@@ -38,10 +39,8 @@ namespace DN.LevelGeneration
             {
                 _nextPoint = GetGlosestPoint();
 
-                _path = _astar.FindPlatformerCellWay(_cell, _nextPoint);
+                _path = _astar.FindPlatformerCellWay(_cell, _nextPoint) ?? _astar.FindCellWay(_cell, _nextPoint);
 
-                if (_path == null)
-                    _path = _astar.FindCellWay(_cell, _nextPoint);
                 _pathFinished = false;
             }
             else
@@ -50,23 +49,11 @@ namespace DN.LevelGeneration
                                             (int)_path[0].Y - _cell.Y);
 
 
-                if(direction.X != 0 && direction.Y != 0)
+                if(direction.X != 0 || direction.Y != 0)
                 {
                     _cell.X += direction.X;
                     _cell.Y += direction.Y;
-                }
-                else if (direction.X != 0)
-                {
-                    _cell.X += direction.X;
-
                     if (_levelGenerator.TileMap[_cell.X, _cell.Y + 1] != CellType.Wall)
-                        _levelGenerator.TileMap[_cell.X, _cell.Y] = CellType.Ladder;
-                }
-                else if (direction.Y != 0)
-                {
-                    _cell.Y += direction.Y;
-
-                    if (_levelGenerator.TileMap[_cell.X, _cell.Y] != CellType.Wall)
                         _levelGenerator.TileMap[_cell.X, _cell.Y] = CellType.Ladder;
                 }
 
@@ -77,15 +64,12 @@ namespace DN.LevelGeneration
                 }
                 _path.RemoveAt(0);
             }
+
         }
 
         private void CellWasReached(Point cell)
         {
             _neededPoints[cell.X, cell.Y] = 0;
-            _neededPoints[cell.X - 1, cell.Y] = 0;
-            _neededPoints[cell.X + 1, cell.Y] = 0;
-            _neededPoints[cell.X, cell.Y - 1] = 0;
-            _neededPoints[cell.X, cell.Y + 1] = 0;
         }
 
         private bool NothingLeftToSearch()
@@ -131,12 +115,34 @@ namespace DN.LevelGeneration
         }
         public void PrintDebug()
         {
-            for (int j = 0; j < _levelGenerator.TileMap.Height; j++)
+            Console.Clear();
+            _levelGenerator.TileMap.PrintDebug();
+
+            for (int i = 0; i < _levelGenerator.TileMap.Width; i++)
             {
-                Console.WriteLine();
-                for (int i = 0; i < _levelGenerator.TileMap.Width; i++)
-                    Console.Write(_neededPoints[i, j]);
+                for (int j = 0; j < _levelGenerator.TileMap.Height; j++)
+                {
+                    if (_neededPoints[i, j] == 1)
+                    {
+                        Console.SetCursorPosition(i, j + 1);
+                        Console.Write('N');
+                    }
+                }
+
             }
+            if(_path != null)
+            foreach (var vector2 in _path)
+            {
+                Console.SetCursorPosition((int)vector2.X, (int)vector2.Y + 1);
+                Console.Write('H');
+            }
+
+            Console.SetCursorPosition(_cell.X , _cell.Y + 1);
+            Console.Write('X');
+
+
+            Console.ReadKey();
+
         }
     }
 

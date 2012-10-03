@@ -27,8 +27,11 @@ namespace DN.LevelGeneration
             _cell.X = x;
             _cell.Y = y;
             _levelGenerator = levelGenerator; 
+        }
 
-            _exploredMap = new byte[levelGenerator.TileMap.Width, levelGenerator.TileMap.Height];
+        public virtual void Init()
+        {
+            _exploredMap = new byte[_levelGenerator.Width, _levelGenerator.Height];
             _exploredMap[_cell.X, _cell.Y] = 1;
         }
 
@@ -38,7 +41,8 @@ namespace DN.LevelGeneration
             MoveInDirection();
 
             _levelGenerator.ResourseMap.GatherResourses(this);
-            _levelGenerator.TileMap[_cell.X, _cell.Y] = CellType.Free;
+            if(_cell.Y > 0)
+                _levelGenerator.Map[_cell.X, _cell.Y] = CellType.Free;
         }
 
         private void MoveInDirection()
@@ -85,17 +89,17 @@ namespace DN.LevelGeneration
             if (p.Y <= 0)
                 return Int32.MaxValue;
 
-            if (!_levelGenerator.TileMap.InRange(p))
+            if (!_levelGenerator.InRange(p.X, p.Y))
                 return Int32.MinValue;
 
-            if (!_levelGenerator.TileMap.InRange(new Point(p.X, p.Y + 1)))
+            if (!_levelGenerator.InRange(p.X, p.Y + 1))
                 return Int32.MinValue;
 
             if (offsetY == 0)
-                if (_levelGenerator.TileMap.IsFree(new Point(p.X, p.Y + 1)))
+                if (_levelGenerator.Map[p.X, p.Y + 1] != CellType.Wall)
                     return Int32.MinValue;
 
-            if (p.X <= 1 || p.X >= _levelGenerator.TileMap.Width - 1 || p.Y >= _levelGenerator.TileMap.Height - 1)
+            if (p.X <= 1 || p.X >= _levelGenerator.Width - 1 || p.Y >= _levelGenerator.Height - 1)
                 return Int32.MinValue;
 
             return (byte) _levelGenerator.ResourseMap[p.X, p.Y] - _exploredMap[p.X, p.Y];

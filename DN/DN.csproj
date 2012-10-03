@@ -70,8 +70,9 @@
     <Compile Include="GameObjects\Weapons\Sword.cs" />
     <Compile Include="GameObjects\Weapons\Weapon.cs" />
     <Compile Include="GameWorld.cs" />
+    <Compile Include="Helpers\Timer.cs" />
     <Compile Include="LevelGeneration\Adventurer.cs" />
-    <Compile Include="LineOfSight.cs" />
+    <Compile Include="Helpers\LineOfSight.cs" />
     <Compile Include="PathFinding\AStar.cs" />
     <Compile Include="PathFinding\BinaryHeap.cs" />
     <Compile Include="PathFinding\Path.cs" />

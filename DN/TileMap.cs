@@ -40,10 +40,16 @@ namespace DN
         
         public void FillWith(CellType cellType)
         {
-            for (var i = 0; i < Width; i++)
-                for (var j = 0; j < Height; j++)
-                    _map[i, j] = cellType;
+            FillWith(_map, Width, Height, cellType);
         }
+
+        static public void FillWith(CellType[,] map, int width, int height, CellType cellType)
+        {
+            for (var i = 0; i < width; i++)
+                for (var j = 0; j < height; j++)
+                    map[i, j] = cellType;
+        }
+
 
         public Rectangle GetRect(int x, int y)
         {

@@ -12,10 +12,15 @@ namespace DN.LevelGeneration
         public int RoomsMaxWidth;
         public int RoomsMaxHeight;
 
+        public float Scale = 0.5f;
+
         internal TileMap TileMap;
         internal ResourseMap ResourseMap;
         private List<Miner> _miners;
 
+        internal CellType[,] Map;
+        internal int Width;
+        internal int Height;
 
         public LevelGenerator()
         {
@@ -25,37 +30,41 @@ namespace DN.LevelGeneration
         public void Generate(GameWorld gameWorld)
         {
             restart:
-          //  try
+            try
             {
                 TileMap = gameWorld.TileMap;
+
+                Width = (int)Math.Round(TileMap.Width * Scale);
+                Height = (int)Math.Round(TileMap.Height * Scale);
+
+                Map = new CellType[Width, Height];
+
                 _miners.Clear();
 
-                ResourseMap = new ResourseMap(TileMap.Width, TileMap.Height);
-                TileMap.FillWith(CellType.Wall);
+                ResourseMap = new ResourseMap(Width, Height);
+                TileMap.FillWith(Map, Width, Height, CellType.Wall);
 
-                _miners.Add(new Miner(this, TileMap.Width / 4, TileMap.Height - 2));
-                _miners.Add(new Miner(this, TileMap.Width / 2, TileMap.Height - 2));
+
+                var m = new Miner(this, Width / 4, Height - 2);
+                m.Init();
+                _miners.Add(m);
+                m = new Miner(this, Width / 2, Height - 2);
+                _miners.Add(m);
+                m.Init();
                 UpdateMiners();
-                
-               
-                //TileMap.PrintDebug();
-                //Console.WriteLine();
-                //Console.ReadKey();
 
                 for (int i = 0; i < RoomCount; i++)
                     AddRoomAtRandomPosition();
 
+                MakeConnection(new Point(Width / 4  - 1, Height - 2),
+                               new Point(Width / 2 + 1, Height  - 2));
 
-                MakeTunnelsWider();
+               // PrintDebug();
+                ////Console.WriteLine();
+                ////Console.ReadKey();
 
 
-                RemoveAloneCells();
-
-
-              //  CheckAccessibility();
-
-                MakeConnection(new Point(TileMap.Width / 4, TileMap.Height - 2),
-                               new Point(TileMap.Width / 2, TileMap.Height  - 2));
+                CopyScaledMap();
 
 
                 var p = GetFreeCell();
@@ -64,152 +73,49 @@ namespace DN.LevelGeneration
 
                 UpdateMiners();
 
-                ClearJunk();
+                //ClearJunk();
             }
-          //  catch (Exception)
+           catch (Exception e)
             {
-                Console.WriteLine("generation");
-               // goto restart;
+               // Console.WriteLine("generation");
+                Console.WriteLine(e.ToString());
+                PrintDebug();
+                TileMap.PrintDebug();
+               // Console.ReadKey();
+                goto restart;
             }
+        }
+
+        public bool InRange(int x, int y)
+        {
+            return x >= 0 && y >= 0 && x < Width && y < Height;
         }
 
         private void MakeConnection(Point p1, Point p2)
         {
             for (int i = p1.X; i < p2.X; i++)
             {
-                TileMap[i, p1.Y] = CellType.Free;
+                Map[i, p1.Y] = CellType.Free;
             }
         }
 
+        private void CopyScaledMap()
+        {
+            double C2 = (double) TileMap.Width/(double) Width;
+            double C1 = (double) TileMap.Height/(double) Height;
 
-        //private delegate void Func<TArg0, TArg1>(TArg0 arg0, TArg1 arg1);
-        //private void CheckAccessibility()
-        //{
-        //    List<byte[,]> zones = new List<byte[,]>();
+            int w = (int) (Map.GetLength(0)*C1);
+            int h = (int) (Map.GetLength(1)*C2);
 
-        //    Point cell = new Point(1,1);
-        //    while (NoFreePlacesLeft(cell))
-        //    {
-        //        cell = GetUndiscoveredFreeCell(zones);
 
-        //        zones.Add(new byte[TileMap.Width, TileMap.Height]);
-        //        var curZone = zones[zones.Count - 1];
-
-        //        var OpenList = new List<Point>();
-        //        OpenList.Add(cell);
-
-        //        Func<Point, Point> addPoint = (p, o) =>
-        //                                          {
-        //                                              Point pos = new Point(p.X + o.X, p.Y + o.Y);
-        //                                              if(TileMap.InRange(pos))
-        //                                              if (TileMap[pos.X, pos.Y] != CellType.Wall)
-        //                                                  if (!OpenList.Exists(a => a.X == pos.X && a.Y == pos.Y)
-        //                                                      && IsNotInsideZone(pos.X, pos.Y, zones))
-        //                                                  {
-        //                                                      OpenList.Add(pos);
-        //                                                      curZone[pos.X, pos.Y] = 1;
-        //                                                  }
-
-        //                                          };
-
-        //        while (OpenList.Count > 0)
-        //        {
-        //            Point curr = OpenList[0];
-        //            addPoint(curr, new Point(0, 1));
-        //            addPoint(curr, new Point(1, 0));
-        //            addPoint(curr, new Point(0, -1));
-        //            addPoint(curr, new Point(-1, 0));
-        //            OpenList.Remove(curr);
-        //        }
-        //    }
-
-        //    if(zones.Count > 1)
-        //    {
-        //        var cells = zones.Select(GetFreeCell).ToList();
-
-        //        Point p1 = cells[0];
-
-        //        for (int i = 0; i < cells.Count; i++)
-        //        {
-        //            var p = cells[i];
-        //            while (p1.X != p.X && p1.Y != p.Y)
-        //            {
-        //                TileMap[p.X, p.Y] = 0;
-
-        //                var dir = new Point(Direction(p.X, p1.X),
-        //                                    Direction(p.Y, p1.Y));
-        //                if (dir.X != 0)
-        //                    dir.Y = 0;
-
-        //                p.X += dir.X;
-        //                p.Y += dir.Y;
-        //            }
-        //        }
-        //    }
-        //}
-
-        //private sbyte Direction(int x1, int x2)
-        //{
-        //    sbyte t = 0;
-
-        //    if (x1 - x2 < 0) 
-        //        t = 1;
-        //    else if (x1 - x2 > 0) 
-        //        t = -1;
-        //    else 
-        //        t = 0;
-
-        //    return t;
-        //}
-
-        //private bool NoFreePlacesLeft(Point cell)
-        //{
-        //    return cell.X != -1 && cell.Y != -1;
-        //}
-        
-        //private Point GetFreeCell(byte[,] zone)
-        //{
-        //    Point p = Point.Empty;
-
-        //    do
-        //    {
-        //        p = new Point(RandomTool.RandInt(0, TileMap.Width),
-        //                      RandomTool.RandInt(0, TileMap.Height));
-
-        //    } while (zone[p.X, p.Y] != 0);
-
-        //    return p;
-        //}
-
-        //private Point GetUndiscoveredFreeCell(List<byte[,]> zones)
-        //{
-        //    int x = 1, y = 1;
-
-        //    while (x < TileMap.Width - 1 && y < TileMap.Height)
-        //    {
-        //        if(TileMap.IsFree(x,y) && IsNotInsideZone(x,y, zones))
-        //        {
-        //            return new Point(x, y);
-        //        }
-        //        x++;
-        //        if (x > TileMap.Width)
-        //        {
-        //            x = 1;
-        //            y++;
-        //        }
-        //    }
-        //    return new Point(-1, -1);
-        //}
-
-        //private bool IsNotInsideZone(int x, int y, List<byte[,]> zones)
-        //{
-        //    foreach (var z in zones)
-        //    {
-        //        if (z[x, y] == 1)
-        //            return false;
-        //    }
-        //    return true;
-        //}
+            for (int row = 0; row < Width; row++)
+                for (int element = 0; element < Height; element++)
+                    for (int y = (int) (row*C2); y < (int) ((row + 1)*C2); y++)
+                        for (int x = (int) (element*C1); x < (int) ((element + 1)*C1); x++)
+                        {
+                            TileMap[x, y] = Map[element, row];
+                        }
+        }
 
         private void UpdateMiners()
         {
@@ -224,29 +130,6 @@ namespace DN.LevelGeneration
                         _miners.Remove(_miners[i]);
                         i--;
                     }
-            }
-        }
-
-        private void MakeTunnelsWider()
-        {
-            byte[,] newMap = new byte[TileMap.Width, TileMap.Height];
-
-            for (int i = 2; i < TileMap.Width - 2; i++)
-            {
-                for (int j = 2; j < TileMap.Height - 2; j++)
-                {
-                    if (GetCellCountAround(i, j) == 2)
-                        newMap[i, j] = 1;
-                }
-            }
-
-            for (int i = 2; i < TileMap.Width - 2; i++)
-            {
-                for (int j = 2; j < TileMap.Height - 2; j++)
-                {
-                    if (newMap[i, j] == 1)
-                        AddRoom(i - 1, j - 1, 2, 2);
-                }
             }
         }
 
@@ -276,23 +159,27 @@ namespace DN.LevelGeneration
         private void AddRoomAtRandomPosition()
         {
             int x, y, width, height;
-            width = RandomTool.RandInt(0, RoomsMaxWidth);
-            height = RandomTool.RandInt(0, RoomsMaxHeight);
+
 
             do
             {
-                x = RandomTool.RandInt(2, TileMap.Width - width - 2);
-                y = RandomTool.RandInt(2, TileMap.Height - height - 2);
-            } while (TileMap[x, y] == CellType.Wall);
+                width = RandomTool.RandInt(0, RoomsMaxWidth);
+                height = RandomTool.RandInt(0, RoomsMaxHeight);
+                x = RandomTool.RandInt(2, Width - width - 2);
+                y = RandomTool.RandInt(2, Height - height - 2);
+
+                //PrintDebug();
+              //  Console.ReadKey();
+            } while (Map[x, y] == CellType.Wall);
             AddRoom(x, y, width, height);
         }
 
         private void AddRoom(int x, int y, int width, int height)
         {
 
-            for (int i = x; i < x + width; i++)
-                for (int j = y; j < y + height; j++)
-                    TileMap[i, j] = CellType.Free;
+            for (int i = x; i <= x + width; i++)
+                for (int j = y; j <= y + height; j++)
+                    Map[i, j] = CellType.Free;
         }
 
 
@@ -336,6 +223,18 @@ namespace DN.LevelGeneration
 
                 if (TileMap[p.X, p.Y] == CellType.Free && TileMap[p.X, p.Y + 1] == CellType.Wall)
                     return p;
+            }
+        }
+
+        public void PrintDebug()
+        {
+            for (int j = 0; j < Height; j++)
+            {
+                Console.WriteLine();
+                for (int i = 0; i < Width; i++)
+                {
+                    Console.Write((byte)Map[i, j]);
+                }
             }
         }
     }

@@ -19,8 +19,11 @@ namespace DN
     {
         #region GLOBAL
 
+        // public static Size g_screenSize = new Size(1080, 1920);
+        //public static Rectangle g_screenRect = new Rectangle(0, 0, 1080, 1920);
         public static Size g_screenSize = new Size(640, 480);
         public static Rectangle g_screenRect = new Rectangle(0, 0, 640, 480);
+
         public static KeyboardDevice g_Keyboard;
         public static MouseDevice g_Mouse;
         public static GamepadState g_Gamepad;
@@ -30,7 +33,7 @@ namespace DN
         public Game()
             : base(g_screenSize.Width, g_screenSize.Height, GraphicsMode.Default, "Devil's nightmare")
         {
-            GraphicsDevice.Instance.Initialize(g_screenSize.Width, g_screenSize.Height); // i seeked this problem along whole hour x__x
+            GraphicsDevice.Instance.Initialize(g_screenSize.Width, g_screenSize.Height);
         }
 
         protected override void OnLoad(EventArgs e)
@@ -42,7 +45,7 @@ namespace DN
             GL.ClearColor(Color4.Black);
 
             LoadTextures();
-            gameWorld = new GameWorld(200,200);
+            gameWorld = new GameWorld(250,250);
 
             Keyboard.KeyRepeat = false;
 
@@ -57,6 +60,7 @@ namespace DN
             CM.I.LoadTexture("stair_tile", Path.Combine("Content", "Textures", "stair_tile.png"));
             CM.I.LoadTexture("sword_sprite", Path.Combine("Content", "Textures", "Weapons", "Sword.png"));
             CM.I.LoadTexture("bat_sprite", Path.Combine("Content", "Textures", "Enemies", "Bat.png"));
+            CM.I.LoadFont("Big", Path.Combine("Content", "Fonts", "monofur.ttf"), 48);
         }
 
         protected override void OnUpdateFrame(FrameEventArgs e)
@@ -72,6 +76,10 @@ namespace DN
         {
             GL.Clear(ClearBufferMask.ColorBufferBit);
             
+         //   SpriteBatch.Instance.Begin();
+        //    SpriteBatch.Instance.OutlineRectangle(new RectangleF(5,5,10,40),  Color.White, 10f, 1f, new Vector2(0.5f, 0.5f));
+         //   SpriteBatch.Instance.End();
+
             gameWorld.Draw((float) e.Time);
 
             SwapBuffers();

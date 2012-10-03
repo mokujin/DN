@@ -32,12 +32,17 @@ namespace DN.GameObjects.Weapons
 
         public override void Update(float dt)
         {
-            base.Update(dt);       
+            base.Update(dt);
+            if (NoCreature)
+                _rotation += 10 * dt;
         }
 
         public override void Draw(float dt)
         {
-            dir = (sbyte)Creature.MovementDirection;
+            if(Creature != null)
+                dir = (sbyte)Creature.Direction;
+            else
+                dir = 1;
 
             SpriteBatch.Instance.DrawTexture(CM.I.tex("sword_sprite"),
                                              new RectangleF(
@@ -48,7 +53,7 @@ namespace DN.GameObjects.Weapons
                                              dir * _rotation,
                                              dir == -1 ? new Vector2(1f, 0.5f): new Vector2(0,0.5f),
                                              false, false);
-            //SpriteBatch.Instance.OutlineRectangle(Bounds, Color4.White);
+          //  SpriteBatch.Instance.OutlineRectangle(Bounds, Color4.White);
         }
 
         public override void StartAttack()
@@ -62,9 +67,8 @@ namespace DN.GameObjects.Weapons
 
         protected override void PerformAttack(float dt)
         {
-            _offset += 250 * dt;
-            _rotation += 10 * dt;
-            base.PerformAttack(dt);
+            _offset += 150 * dt;
+            _rotation += 6 * dt;
         }
 
         protected override void FinishAttack()

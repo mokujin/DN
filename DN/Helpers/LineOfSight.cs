@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
 
-namespace DN
+namespace DN.Helpers
 { 
-
     // I guess it's quite stupid to have one class for one method. In future must be moved somewhere else
     static class LineOfSight
     {

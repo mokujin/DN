@@ -1,5 +1,6 @@
 ﻿using Blueberry.Graphics;
 using DN.Effects;
+using GamepadExtension;
 using OpenTK;
 using OpenTK.Graphics;
 using System;
@@ -19,62 +20,102 @@ namespace DN.GameObjects.Creatures
         private Weapon _currentWeapon;
         private float _dt = 0;
 
-        DustPointEmitter _dustEffect;
+        private bool _jump = false;
+        private float _jumpMaxVelocity = 5f;
 
+
+        DustPointEmitter _dustEffect;
 
         public Hero(GameWorld gameWorld):base(gameWorld)
         {
             Game.g_Gamepad.OnButtonPress += g_Gamepad_OnButtonPress;
+            Game.g_Gamepad.OnButtonUp += g_Gamepad_OnButtonUp;
             Game.g_Keyboard.KeyDown += g_Keyboard_KeyDown;
+            Game.g_Keyboard.KeyUp += g_Keyboard_KeyUp;
             Game.g_Keyboard.KeyRepeat = true;
+
             Size = new Size(48, 40);
             MaxVelocity = new Vector2(5,15);
             MaxLadderVelocity = new Vector2(5, 5);
             LadderFriction = 40f;
             Friction = 5f;
+            this.InvulnerabilityDuration = 1;
+
 
 
             _currentWeapon = new Sword(gameWorld, this)
                           {
-                              AttackSpeed = 0.3f,
-                              TimeToFinishAttack = 0.2f
+                              AttackSpeed = 0.5f,
+                              TimeToFinishAttack = 0.3f,
+                              Damage = 1
                           };
 
             _dustEffect = new DustPointEmitter(Position, Vector2.UnitX, 0.5f);
             _dustEffect.Initialise(60, 1);
 
 
+            Health = 10;
+            Direction = Direction.Right;
+
+            CollisionWithTiles += OnCollisionWithTiles;
+        }
+
+        private void OnCollisionWithTiles(Vector2 velocity, CollidedCell collidedCell)
+        {
+        }
+
+
+        private void g_Keyboard_KeyUp(object sender, KeyboardKeyEventArgs e)
+        {
+            if(e.Key == Key.X)
+            {
+                _jump = false;
+            }
         }
 
         void g_Keyboard_KeyDown(object sender, KeyboardKeyEventArgs e)
         {
-            if (e.Key == Key.Space)
+            if (e.Key == Key.X)
             {
                 Jump();
             }
+            if (_currentWeapon != null)
+                if (e.Key == Key.Z)
+                    _currentWeapon.StartAttack();
         }
+
 
         private void g_Gamepad_OnButtonPress(object sender, GamepadExtension.GamepadButtons e)
         {
-            if (e.HasFlag(GamepadExtension.GamepadButtons.A))
+            if (e.HasFlag(GamepadButtons.A))
             {
                 Jump();
             }
-        }
 
+            if (_currentWeapon != null)
+                if (e.HasFlag(GamepadButtons.X))
+                {
+                    _currentWeapon.StartAttack();
+                }
+        }
+        private void g_Gamepad_OnButtonUp(object sender, GamepadButtons e)
+        {
+            if (e.HasFlag(GamepadButtons.A))
+            {
+                _jump = false;
+            }
+        }
 
 
         public override void Draw(float dt)
         {
             SpriteBatch.Instance.DrawTexture(CM.I.tex("hero_tile"),
                                              Position,
-                                            // new Vector2((float)Math.Round(X),(float)Math.Round(Y)), 
                                              Rectangle.Empty,
-                                             Color4.White);
+                                             Invulnerable ? new Color4(255, 1, 1, RandomTool.RandByte(255)) : Color4.White);
             //SpriteBatch.Instance.OutlineRectangle(Bounds, Color.White); // debug draw
 
             _dustEffect.Draw(dt);
-            
         }
 
 
@@ -90,14 +131,14 @@ namespace DN.GameObjects.Creatures
             UpdateControlls(dt);
             _dustEffect.Position = new Vector2(Position.X, Bounds.Bottom);
             _dustEffect.Update(dt);
-
         }
 
         private void UpdateControlls(float dt)
         {
             if (LeftKeyPressed())
             {
-                Move(new Vector2(-1, 0), 10 * dt * (OnStairs ? 5 : 1));
+                Move(new Vector2(-1, 0), 10*dt);
+                Direction = Direction.Left;
                 if (OnGround)
                 {
                     _dustEffect.Direction = MathUtils.RotateVector2(Vector2.UnitX, 0.5f);
@@ -106,33 +147,56 @@ namespace DN.GameObjects.Creatures
             }
             if (RightKeyPressed())
             {
-                Move(new Vector2(1, 0), 10 * dt * (OnStairs ? 5 : 1));
+                Move(new Vector2(1, 0), 10*dt);
+                Direction = Direction.Right;
                 if (OnGround)
                 {
                     _dustEffect.Direction = MathUtils.RotateVector2(Vector2.UnitX, 0.5f);
-                    _dustEffect.Direction = new Vector2(_dustEffect.Direction.X, _dustEffect.Direction.Y);
+                    _dustEffect.Direction = new Vector2(-_dustEffect.Direction.X, _dustEffect.Direction.Y);
                     _dustEffect.Trigger(dt);
                 }
             }
 
-            if (_currentWeapon != null)
-                if (AttackKeyPressed())
-                    _currentWeapon.StartAttack();
 
-            if (OnStairs)
+
+            if (OnLadder)
             {
                 if (UpKeyPressed())
-                    Move(new Vector2(0, -1), 50 * dt);
+                {
+                    if (Velocity.Y >= 2 || ClimbLadder)
+                    {
+                        Move(new Vector2(0, -1), 45*dt);
+                        ClimbLadder = true;
+                    }
+                }
                 if (DownKeyPressed())
-                    Move(new Vector2(0, 1), 50 * dt);
-            }
-            if (JumpKeyPressed())
-               Jump();
-        }
+                {
+                    if (ClimbLadder)
+                    {
+                        Move(new Vector2(0, 1), 45*dt);
+                    }
+                }
 
-        private static bool JumpKeyPressed()
-        {
-            return Game.g_Keyboard[Key.Up];
+                if (LeftKeyPressed() && ClimbLadder)
+                {
+                    Move(new Vector2(-1, 0), 35*dt);
+                }
+
+                if (RightKeyPressed() && ClimbLadder)
+                {
+                    Move(new Vector2(1, 0), 35*dt);
+                }
+            }
+
+            if (_jump)
+            {
+                if (Math.Abs(Velocity.Y) > _jumpMaxVelocity || ClimbLadder)
+                {
+                    _jump = false;
+                }
+                else
+                    Move(new Vector2(0, -1), 90 * dt, false);
+            }
         }
 
         private static bool DownKeyPressed()
@@ -143,11 +207,6 @@ namespace DN.GameObjects.Creatures
         private static bool UpKeyPressed()
         {
             return Game.g_Gamepad.DPad.Up || Game.g_Keyboard[Key.Up];
-        }
-
-        private static bool AttackKeyPressed()
-        {
-            return Game.g_Keyboard[Key.Z];
         }
 
         private static bool RightKeyPressed()
@@ -162,10 +221,13 @@ namespace DN.GameObjects.Creatures
 
         private void Jump()
         {
-            if (OnGround)
+            if (OnGround || (OnLadder && ClimbLadder))
             {
-                Move(new Vector2(0,-1), 7);
+                _jump = true;
+               // SetMoveY(0, false);
+                ClimbLadder = false;
             }
         }
+
     }
 }

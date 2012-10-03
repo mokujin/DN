@@ -6,17 +6,18 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using OpenTK.Graphics;
 using OpenTK.Input;
 using DN.GameObjects.Creatures;
 using DN.LevelGeneration;
 using DN.GameObjects;
 using OpenTK;
 using DN.GameObjects.Creatures.Enemies;
+using System.IO;
+using OpenTK.Graphics;
 using DN.Effects;
 using OpenTK.Graphics.OpenGL;
 using DN.GameObjects.Weapons;
-using System.IO;
-using OpenTK.Graphics;
 
 namespace DN
 {
@@ -42,6 +43,9 @@ namespace DN
 
         private Camera camera;
         public Camera Camera { get { return camera; } }
+
+        private float _alphaEffect = 0;
+
         ParallaxBackground background;
         BloodSystem bloodSystem;
 
@@ -57,13 +61,15 @@ namespace DN
             _deleteObjectsQueue = new Queue<GameObject>();
 
             camera = new Camera(Game.g_screenSize, new Point(Game.g_screenSize.Width / 2, Game.g_screenSize.Height / 2), true);
+         //   camera.ScaleTo(1f);
             camera.MoveSpeed = 7;
             
             var lg = new LevelGenerator
                          {
                              RoomsMaxWidth = 10,
                              RoomsMaxHeight = 15,
-                             RoomCount = 25
+                             RoomCount = 0,
+                             Scale = 0.5f
                          };
             lg.Generate(this);
 
@@ -74,7 +80,7 @@ namespace DN
             bloodSystem.Init();
             bloodSystem.BlendWith(back);
 
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 0; i++)
             {
                 Creature bat = EnemiesFabric.CreateEnemy(this, EnemyType.Bat);
                 bat.Cell = GetRandomPoint();   
@@ -142,7 +148,13 @@ namespace DN
 
             camera.Update(dt);
             UpdateObjectsEnqueues();
+
             background.Update(dt);
+
+            if(Hero.IsDead)
+            {
+                _alphaEffect += dt;
+            }
         }
 
         private void UpdateObjectsEnqueues()
@@ -155,7 +167,7 @@ namespace DN
         }
 
         Texture back = new Texture(Game.g_screenSize);
-        
+
         public void Draw(float dt)
         {
             
@@ -172,13 +184,28 @@ namespace DN
             background.Draw(dt);
 
             bloodSystem.DrawBackground(dt);
-            
-            SpriteBatch.Instance.Begin(camera.GetViewMatrix());
-            foreach (var gameObject in _gameObjects)
-                gameObject.Draw(dt);
-            bloodSystem.DrawParticles(dt);
-            SpriteBatch.Instance.End();
+            if (!Hero.IsDead)
+            {
+                SpriteBatch.Instance.Begin(camera.GetViewMatrix());
+                var rect = camera.BoundingRectangle;
+                foreach (var gameObject in _gameObjects)
+                    if (gameObject.Bounds.IntersectsWith(rect))
+                        gameObject.Draw(dt);
+                bloodSystem.DrawParticles(dt);
+                SpriteBatch.Instance.End();
+            }
              
+            SpriteBatch.Instance.Begin();
+
+            if (Hero.IsDead)
+            {
+                SpriteBatch.Instance.FillRectangle(Game.g_screenRect, new Color4(0, 0, 0, _alphaEffect));
+
+                SpriteBatch.Instance.PrintText(CM.I.Font("Big"), "You are dead!", Game.g_screenSize.Width / 4,
+                                               Game.g_screenSize.Height / 4, new Color4(255, 255, 255, _alphaEffect));
+            }
+            SpriteBatch.Instance.End();
+
         }
 
         private void RenderTiles(float dt)
@@ -188,8 +215,10 @@ namespace DN
             rect.Y /= 64;
             rect.Width /= 64;
             rect.Height /= 64;
-            rect.Width+=2;
-            rect.Height+=2;
+
+            rect.Width += 2;
+            rect.Height += 2;
+
             TileMap.Draw(rect);
         }
 

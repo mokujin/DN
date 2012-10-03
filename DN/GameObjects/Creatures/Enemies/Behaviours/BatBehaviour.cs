@@ -1,15 +1,16 @@
-﻿using DN.GameObjects.Weapons;
+﻿using Blueberry;
+using DN.GameObjects.Weapons;
+using DN.Helpers;
 using OpenTK;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace DN.GameObjects.Creatures.Enemies.Behaviours
 {
     class BatBehaviour:IBehaviour
     {
+
+        private Timer ChangeDirectionTimer;
         private bool SawPlayer = false;
+        private Vector2 _direction;
 
         public Creature Creature
         {
@@ -29,7 +30,17 @@ namespace DN.GameObjects.Creatures.Enemies.Behaviours
 
         public void Initialize()
         {
-            Creature.CollisionWithObjects += BatCollisionWithHero;
+            Creature.CollisionWithObjects += BatOnCollision;
+            ChangeDirectionTimer = new Timer
+                                       {
+                                           Repeat = true,
+                                           Duration = RandomTool.RandInt(5) + 5
+                                       };
+
+            ChangeDirectionTimer.TickEvent += OnTimerTick;
+            ChangeDirectionTimer.UpdateEvent += OnTimerUpdate;
+            ChangeDirectionTimer.Run(true);
+
         }
 
         public void Update(float dt)
@@ -42,18 +53,44 @@ namespace DN.GameObjects.Creatures.Enemies.Behaviours
             if (SawPlayer)
             {
                 Vector2 dir = GameWorld.DirectionToObject(Creature, Hero);
-                Creature.Move(dir, 1*dt); //TODO: Remove constant!
+                Creature.Move(dir, 4*dt); //TODO: Remove constant
+                Creature.Direction = dir.X > 0 ? Direction.Right : Direction.Left;
+            }
+            else
+            {
+                ChangeDirectionTimer.Update(dt);
             }
         }
 
-        //just for test
-        private void BatCollisionWithHero(GameObject sender, GameObject gameObject)
+        private void OnTimerTick()
         {
-            if (gameObject is Weapons.Weapon)
+            _direction = RandomTool.NextUnitVector2();
+            Creature.Direction = _direction.X > 0 ? Direction.Right : Direction.Left;
+        }
+        private void OnTimerUpdate(float dt)
+        {
+            Creature.Move(_direction, 4 * dt);
+        }
+
+
+
+        //just for test
+        private void BatOnCollision(GameObject sender, GameObject gameObject)
+        {
+            if (gameObject is Weapon)
             {
-                Weapon weapon = gameObject as Weapon;
-                if(weapon.Attacking)
-                    GameWorld.RemoveObject(sender);
+                var weapon = gameObject as Weapon;
+                if (weapon.Attacking)
+                {
+                   Creature.TakeDamage(weapon.Damage, weapon.Direction, 20);
+                }
+            }
+            else if (gameObject is Hero)
+            {
+                Hero hero = (Hero)gameObject;
+                bool t = hero.TakeDamage(1, Creature.Direction, 5);
+                if(t)
+                    Creature.MoveInOppositeDirection();
             }
         }
     }

@@ -25,6 +25,11 @@ namespace Blueberry
             return random.Next();
         }
 
+        public static char ChooseRandom(params char[] objects)
+        {
+            return objects[RandInt(objects.Length)];
+        }
+
         public static byte RandByte()
         {
             return (byte)random.Next();
