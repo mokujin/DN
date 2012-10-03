@@ -60,6 +60,7 @@
     <Compile Include="Effects\Emitter.cs" />
     <Compile Include="GameObjects\CollidableGameObject.cs" />
     <Compile Include="GameObjects\Creatures\Creature.cs" />
+    <Compile Include="GameObjects\Creatures\DeadBody.cs" />
     <Compile Include="GameObjects\Creatures\Enemies\Behaviours\BatBehaviour.cs" />
     <Compile Include="GameObjects\Creatures\Enemies\Behaviours\IBehaviour.cs" />
     <Compile Include="GameObjects\Creatures\Enemies\Behaviours\TrollBehaviour.cs" />

@@ -64,6 +64,13 @@ namespace DN.GameObjects
         }
 
 
+        public void SetMove(Vector2 velocity, bool checkOverspeed = true)
+        {
+            Velocity = velocity;
+            if (checkOverspeed)
+                CheckOverSpeed();
+        }
+
         public void SetMove(Vector2 direction, float speed, bool checkOverspeed = true)
         {
             Velocity = direction*speed;

@@ -19,6 +19,7 @@ namespace DN.GameObjects.Creatures
 
     public abstract class Creature:CollidableGameObject
     {
+
         public event DeathEventHandler Death;
 
         public float InvulnerabilityDuration
@@ -52,6 +53,7 @@ namespace DN.GameObjects.Creatures
         public Creature(GameWorld gameWorld)
             :base(gameWorld)
         {
+
         }
 
         public override void Update(float dt)
@@ -61,8 +63,11 @@ namespace DN.GameObjects.Creatures
             if(IsDead)
             {
                 //todo: add some event on death
-                if(Death != null)
+                if (Death != null)
+                {
                     Death();
+                    Death = null;
+                }
                 World.RemoveObject(this);
                 return;
             }

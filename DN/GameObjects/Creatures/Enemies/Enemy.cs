@@ -18,6 +18,7 @@ namespace DN.GameObjects.Creatures.Enemies
         public Enemy(GameWorld gameWorld, IBehaviour behaviour = null)
             :base(gameWorld)
         {
+            Death += CreateDeadBodyOnDeath;
             _behaviour = behaviour;
         }
 
@@ -30,13 +31,32 @@ namespace DN.GameObjects.Creatures.Enemies
         public override void Update(float dt)
         {
             base.Update(dt);
-            _behaviour.Update(dt);
+            if(!IsDead)
+                _behaviour.Update(dt);
         }
 
         public override void Draw(float dt)
         {
             if(Sprite != null)
-                SpriteBatch.Instance.DrawTexture(CM.I.tex(Sprite), Position,Invulnerable?new Color4(255,255,255,RandomTool.RandByte(255)): Color.White);
+                if(!IsDead)
+                    SpriteBatch.Instance.DrawTexture(CM.I.tex(Sprite),
+                                            Position,
+                                            Invulnerable?new Color4(1,1,1,RandomTool.RandFloat()): Color.White);
+        }
+
+
+        private void CreateDeadBodyOnDeath()
+        {
+            DeadBody deadBody = new DeadBody(World)
+                                    {
+                                        Position = Position,
+                                        Sprite = Sprite,
+                                        MaxVelocity = MaxVelocity,
+                                        MaxLadderVelocity = MaxVelocity,
+                                        Friction = 3,
+                                        Size = Size
+                                    };
+            deadBody.SetMove(Velocity, false);
         }
     }
 }
