@@ -23,7 +23,8 @@ namespace Blueberry.Graphics
 
         int pixelTex = -1;
         int framebuffer = -1;
-        Shader shader;
+        Shader defaultShader;
+        Shader current;
 
         private static SpriteBatch instance;
 
@@ -47,6 +48,7 @@ namespace Blueberry.Graphics
         private Vector2 texCoordBR = Vector2.Zero;
         private Matrix4 trans;
         private Matrix4 proj;
+        public Matrix4 Projection { get { return proj; } }
 
         private int proj_uniform_loc;
         private int view_uniform_loc;
@@ -57,21 +59,11 @@ namespace Blueberry.Graphics
             _freeBatchItemQueue = new Queue<BatchItem>(256);
 
             vbuffer = new VertexBuffer(1024);
-            shader = new Shader();
-            string sver = GL.GetString(StringName.ShadingLanguageVersion);
-            sver = sver.Substring(0,4);
-            float fver;
-            if (!float.TryParse(sver, out fver))
+            defaultShader = new Shader();
+            
+            if (Shader.Version < 3.3f)
             {
-                sver = sver.Replace('.', ',');
-                if (!float.TryParse(sver, out fver))
-                    throw new Exception("incorrect shader version");
-            }
-
-
-            if (fver < 3.3f)
-            {
-                shader.LoadVertexSource("#version 120\n" +
+                defaultShader.LoadVertexSource("#version 120\n" +
                                         "uniform mat4 projection, view;" +
                                         "attribute vec2 vposition; attribute vec4 vcolor; attribute vec2 vtexcoord;" +
                                         "varying vec4 fcolor; varying vec2 ftexcoord;" +
@@ -79,7 +71,7 @@ namespace Blueberry.Graphics
                                         "fcolor = vcolor;" +
                                         "ftexcoord = vtexcoord;" +
                                         "gl_Position = projection * view * vec4(vposition, 0, 1); }");
-                shader.LoadFragmentSource("#version 120\n" +
+                defaultShader.LoadFragmentSource("#version 120\n" +
                                           "uniform sampler2D colorTexture;" +
                                           "varying vec4 fcolor; varying vec2 ftexcoord;" +
 
@@ -88,7 +80,7 @@ namespace Blueberry.Graphics
             }
             else
             {
-                shader.LoadVertexSource("#version 330 core \n" +
+                defaultShader.LoadVertexSource("#version 330 core \n" +
                                     "uniform mat4 projection, view;" +
                                     "in vec2 vposition; in vec4 vcolor; in vec2 vtexcoord;" +
                                     "out vec4 fcolor; out vec2 ftexcoord;" +
@@ -96,23 +88,15 @@ namespace Blueberry.Graphics
                                     "fcolor = vcolor;" +
                                     "ftexcoord = vtexcoord;" +
                                     "gl_Position = projection * view * vec4(vposition, 0, 1); }");
-                shader.LoadFragmentSource("#version 330 core \n" +
+                defaultShader.LoadFragmentSource("#version 330 core \n" +
                                           "uniform sampler2D colorTexture;" +
                                           "in vec4 fcolor; in vec2 ftexcoord;" +
                                           "out vec4 color;" +
                                           "void main(void) { color = texture(colorTexture, ftexcoord) * fcolor; }");
             }
-            shader.Link();
-            shader.Use();
+            defaultShader.Link();
+            BindShader(this.defaultShader, "vposition", "vcolor", "vtexcoord", "projection", "view");
 
-            vbuffer.DeclareNextAttribute("vposition", 2);
-            vbuffer.DeclareNextAttribute("vcolor", 4);
-            vbuffer.DeclareNextAttribute("vtexcoord", 2);
-
-            vbuffer.Attach(shader);
-
-            proj_uniform_loc = GL.GetUniformLocation(shader.Program, "projection");
-            view_uniform_loc = GL.GetUniformLocation(shader.Program, "view");
 
             int[] p = new int[4];
             GL.GetInteger(GetPName.Viewport, p);
@@ -150,13 +134,25 @@ namespace Blueberry.Graphics
                 GL.DrawElements(mode, vbuffer.IndexOffset + 1, DrawElementsType.UnsignedInt, 0);
         }
 
-        public void BindShader(string positionAttrib, string colorAttrib, string texcoordAttrib, string projectionUniform, string viewUniform)
+        public void BindShader(Shader shader, string positionAttrib, string colorAttrib, string texcoordAttrib, string projectionUniform, string viewUniform)
         {
+            vbuffer.ClearAttributeDeclarations();
+
             vbuffer.DeclareNextAttribute(positionAttrib, 2);
             vbuffer.DeclareNextAttribute(colorAttrib, 4);
             vbuffer.DeclareNextAttribute(texcoordAttrib, 2);
 
             vbuffer.Attach(shader);
+
+            proj_uniform_loc = GL.GetUniformLocation(shader.Program, projectionUniform);
+            view_uniform_loc = GL.GetUniformLocation(shader.Program, viewUniform);
+
+            shader.Use();
+            current = shader;
+        }
+        public void ResetShader()
+        {
+            BindShader(this.defaultShader, "vposition", "vcolor", "vtexcoord", "projection", "view");
         }
         /*
         private bool TestCompatibility(Shader shader) // probably compatible shader
@@ -178,11 +174,17 @@ namespace Blueberry.Graphics
 
         public void End()
         {
-            shader.Use();
-            //shader.SetUniform("projection", ref proj);
-            shader.SetUniform(proj_uniform_loc, ref proj);
-            //shader.SetUniform("view", ref trans);
-            shader.SetUniform(view_uniform_loc, ref trans);
+            int pr;
+            GL.GetInteger(GetPName.CurrentProgram,out pr);
+            if(current == null)
+            {
+                current = defaultShader;
+                current.Use();
+            } 
+            if (current.Program != pr)
+                current.Use();
+            current.SetUniform(proj_uniform_loc, ref proj);
+            current.SetUniform(view_uniform_loc, ref trans);
             
             // nothing to do
             if (_batchItemList.Count == 0)

@@ -48,6 +48,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ContentManager.cs" />
+    <Compile Include="Effects\BloodEmitter.cs" />
+    <Compile Include="Effects\BloodParticle.cs" />
+    <Compile Include="Effects\BloodSystem.cs" />
     <Compile Include="Effects\DustParticle.cs" />
     <Compile Include="Effects\DustPointEmitter.cs" />
     <Compile Include="Effects\FallingLetterEmitter.cs" />
@@ -85,6 +88,18 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="Content\Fonts\monofur.ttf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Effects\v12\blood_blend.frag">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Effects\v12\blood_blend.vert">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Effects\v33\blood_blend.frag">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Effects\v33\blood_blend.vert">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

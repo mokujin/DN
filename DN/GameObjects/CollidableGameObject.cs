@@ -118,7 +118,7 @@ namespace DN.GameObjects
             {
                 if (GravityAffected)
                 {
-                    Move(World.GravityDirection, World.G * dt);
+                    Move(GameWorld.GravityDirection, GameWorld.G * dt);
                 }
                 if (OnGround)
                     UpdateFriction(ref Velocity.X, Friction, dt);

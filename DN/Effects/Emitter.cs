@@ -8,6 +8,7 @@ using System.Text;
 
 namespace DN.Effects
 {
+    public delegate void ParticleDeathHandler(Emitter sender, Particle particle); 
     public abstract class Emitter
     {
         private int _releaseQuantity;
@@ -69,10 +70,12 @@ namespace DN.Effects
 
         public int ActiveParticlesCount { get; private set; }
 
+        public event ParticleDeathHandler OnParticleDeath;
+
         public Emitter()
         {
             Enabled = true;
-
+            
         }
         public virtual void Initialise()
         {
@@ -114,9 +117,11 @@ namespace DN.Effects
                 {
                     // Increment the index of the first active particle...
                     this.ActiveIndex = (this.ActiveIndex + 1) % this.Budget;
-
+                    
                     // Decrement the active particles count...
                     this.ActiveParticlesCount = (this.ActiveParticlesCount - 1);
+
+                    if (OnParticleDeath != null) OnParticleDeath(this, particle);
                 }
                 else
                 {
