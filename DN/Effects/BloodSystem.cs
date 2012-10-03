@@ -37,8 +37,12 @@ namespace DN.Effects
         public void Init()
         {
             blood_blend_shader = new Shader();
-            blood_blend_shader.LoadVertexFile(Path.Combine("Effects", "v33", "blood_blend.vert"));
-            blood_blend_shader.LoadFragmentFile(Path.Combine("Effects", "v33", "blood_blend.frag"));
+            
+            float v = Shader.Version;
+
+            blood_blend_shader.LoadVertexFile(Path.Combine("Effects", v < 3.3f ? "v12" : "v33", "blood_blend.vert"));
+            blood_blend_shader.LoadFragmentFile(Path.Combine("Effects", v < 3.3f ? "v12" : "v33", "blood_blend.frag"));
+
             blood_blend_shader.Link();
 
             blend_buffer = new VertexBuffer(4);

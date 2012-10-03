@@ -18,6 +18,23 @@ namespace Blueberry.Graphics
 
         public int Program { get { return _program; } }
 
+        public static float Version 
+        {
+            get
+            {
+                string sver = GL.GetString(StringName.ShadingLanguageVersion);
+                sver = sver.Substring(0, 4);
+                float fver;
+                if (!float.TryParse(sver, out fver))
+                {
+                    sver = sver.Replace('.', ',');
+                    if (!float.TryParse(sver, out fver))
+                        throw new Exception("incorrect shader version");
+                }
+                return fver;
+            } 
+        }
+
         public Shader()
         {
             _vertex = 0;
