@@ -57,7 +57,7 @@ namespace DN
             _deleteObjectsQueue = new Queue<GameObject>();
 
             camera = new Camera(Game.g_screenSize, new Point(Game.g_screenSize.Width / 2, Game.g_screenSize.Height / 2), true);
-            camera.ScaleTo(0.1f);
+            camera.ScaleTo(1f);
             camera.MoveSpeed = 7;
             
             var lg = new LevelGenerator
