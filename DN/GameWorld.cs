@@ -82,7 +82,7 @@ namespace DN
 
             for (int i = 0; i < 30; i++)
             {
-                Creature bat = EnemiesFabric.CreateEnemy(this, EnemyType.Bat);
+                Creature bat = EnemiesFabric.CreateEnemy(this, EnemyType.Troll);
                 bat.Cell = GetRandomPoint();   
             }
             

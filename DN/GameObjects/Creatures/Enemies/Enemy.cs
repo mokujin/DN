@@ -15,6 +15,7 @@ namespace DN.GameObjects.Creatures.Enemies
     public class Enemy:Creature
     {
         public string Sprite;
+        private float _dt;
         IBehaviour _behaviour;
 
         public Enemy(GameWorld gameWorld, IBehaviour behaviour = null)
@@ -39,6 +40,7 @@ namespace DN.GameObjects.Creatures.Enemies
             base.Update(dt);
             if(!IsDead)
                 _behaviour.Update(dt);
+            _dt = dt;
         }
 
         public override void Draw(float dt)
@@ -64,6 +66,11 @@ namespace DN.GameObjects.Creatures.Enemies
                 var t = hero.TakeDamage(1, Direction, 5);
                 if (t)
                     MoveInOppositeDirection();
+            }
+            else if(gameObject is Enemy)
+            {
+                var enemy = (Enemy) gameObject;
+                Move(enemy.X > X ? new Vector2(-1, 0) : new Vector2(1, 0), Acceleration*_dt);
             }
         }
 

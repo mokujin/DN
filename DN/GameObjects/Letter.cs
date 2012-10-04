@@ -36,7 +36,6 @@ namespace DN.GameObjects
         {
             if(gameObject is Hero)
             {
-               // var hero = (Hero) gameObject;
                 _heroWasCollided = true;
             }
         }
