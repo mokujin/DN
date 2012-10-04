@@ -21,7 +21,9 @@ namespace DN.GameObjects.Creatures.Enemies
             :base(gameWorld)
         {
             Death += CreateDeadBodyOnDeath;
+            Death += CreateLettersOnDeath;
             CollisionWithObjects += OnCollision;
+            
 
             _behaviour = behaviour;
         }
@@ -54,32 +56,29 @@ namespace DN.GameObjects.Creatures.Enemies
             {
                 var weapon = gameObject as Weapon;
                 if (weapon.Attacking)
-                {
-                    if (TakeDamage(weapon.Damage, weapon.Direction, weapon.Damage * 20, true, 1.0f, 6))
-                    {
-                       // Vector2 vel = Velocity;
-                        //vel.Y = 0;
-
-                        //BloodEmitter = World.BloodSystem.InitEmitter(Position, vel * 0.2f,
-                                             //                             7, 0f, 1);
-                    }
-
-                }
+                    TakeDamage(weapon.Damage, weapon.Direction, weapon.Damage*20, true, 1.0f, 6);
             }
             else if (gameObject is Hero)
             {
-                Hero hero = (Hero)gameObject;
-                bool t = hero.TakeDamage(1, Direction, 5);
+                var hero = (Hero)gameObject;
+                var t = hero.TakeDamage(1, Direction, 5);
                 if (t)
                     MoveInOppositeDirection();
             }
         }
 
+        private void CreateLettersOnDeath()
+        {
+            var letter = new Letter(World, (char)RandomTool.RandByte(97, 122))
+                             {
+                                 Position = Position
+                             };
 
+        }
 
         private void CreateDeadBodyOnDeath()
         {
-            DeadBody deadBody = new DeadBody(World)
+            var deadBody = new DeadBody(World)
                                     {
                                         Position = Position,
                                         Sprite = Sprite,

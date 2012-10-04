@@ -17,6 +17,9 @@ namespace DN.GameObjects.Creatures
 {
     public class Hero:Creature
     {
+
+        public LettersInventory Inventory { get; private set; }
+
         private Weapon _currentWeapon;
         private float _dt = 0;
 
@@ -29,6 +32,9 @@ namespace DN.GameObjects.Creatures
             Game.g_Keyboard.KeyDown += g_Keyboard_KeyDown;
             Game.g_Keyboard.KeyUp += g_Keyboard_KeyUp;
             Game.g_Keyboard.KeyRepeat = true;
+
+
+            Inventory = new LettersInventory();
 
             Size = new Size(48, 40);
             MaxVelocity = new Vector2(5,15);
@@ -56,8 +62,10 @@ namespace DN.GameObjects.Creatures
             CollisionWithTiles += OnCollisionWithTiles;
         }
 
+
         private void OnCollisionWithTiles(Vector2 velocity, CollidedCell collidedCell)
         {
+
         }
 
 

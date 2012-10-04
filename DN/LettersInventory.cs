@@ -14,8 +14,10 @@ namespace DN
             _letters = new List<char>();
         }
 
-        public void Add()
-        { }
+        public void Add(char ch)
+        {
+            _letters.Add(ch);
+        }
         public void Remove()
         { }
 
