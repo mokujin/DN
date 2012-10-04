@@ -55,7 +55,7 @@ namespace DN.GameObjects.Creatures.Enemies
                 var weapon = gameObject as Weapon;
                 if (weapon.Attacking)
                 {
-                    if (TakeDamage(weapon.Damage, weapon.Direction, weapon.Damage * 20, true, 0.2f, 6))
+                    if (TakeDamage(weapon.Damage, weapon.Direction, weapon.Damage * 20, true, 1.0f, 6))
                     {
                        // Vector2 vel = Velocity;
                         //vel.Y = 0;
