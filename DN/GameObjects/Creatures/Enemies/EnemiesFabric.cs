@@ -47,7 +47,7 @@ namespace DN.GameObjects.Creatures.Enemies
                     enemy.AddHealth(10);
                     enemy.Acceleration = 8;
                     enemy.Size = new Size(64, 32);
-                    enemy.Sprite = "bat_sprite";
+                    enemy.Sprite = "troll_sprite";
                     enemy.InvulnerabilityDuration = 0.5f;
                     break;
             }
