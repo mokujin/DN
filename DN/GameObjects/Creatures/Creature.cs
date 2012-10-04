@@ -20,6 +20,9 @@ namespace DN.GameObjects.Creatures
     public abstract class Creature:CollidableGameObject
     {
 
+        private bool _jump = false;
+        
+
         public event DeathEventHandler Death;
 
         public float InvulnerabilityDuration
@@ -44,6 +47,9 @@ namespace DN.GameObjects.Creatures
         private float _invulnerabilityDuration_dt;
 
         public float Health { get; protected set; }
+        public float JumpAcceleration = 90f;
+        public float JumpMaxVelocity = 5f;
+
         public bool IsDead
         {
             get { return Health <= 0; }
@@ -62,7 +68,6 @@ namespace DN.GameObjects.Creatures
 
             if(IsDead)
             {
-                //todo: add some event on death
                 if (Death != null)
                 {
                     Death();
@@ -71,6 +76,16 @@ namespace DN.GameObjects.Creatures
                 World.RemoveObject(this);
                 return;
             }
+            if (_jump)
+            {
+                if (Math.Abs(Velocity.Y) > JumpMaxVelocity || ClimbLadder)
+                {
+                    _jump = false;
+                }
+                else
+                    Move(new Vector2(0, -1), JumpAcceleration * dt, false);
+            }
+
             if (Invulnerable)
             {
                 _invulnerabilityDuration_dt += dt;
@@ -96,6 +111,18 @@ namespace DN.GameObjects.Creatures
             return false;
         }
 
+        public void Jump()
+        {
+            if (OnGround || (OnLadder && ClimbLadder))
+            {
+                _jump = true;
+                ClimbLadder = false;
+            }
+        }
+        public void StopJump()
+        {
+            _jump = false;
+        }
 
         // get bounding rectangle with some shift
         public RectangleF GetBoundsWithShift(float sx, float sy)

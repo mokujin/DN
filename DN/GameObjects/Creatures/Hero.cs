@@ -20,10 +20,6 @@ namespace DN.GameObjects.Creatures
         private Weapon _currentWeapon;
         private float _dt = 0;
 
-        private bool _jump = false;
-        private float _jumpMaxVelocity = 5f;
-
-
         DustPointEmitter _dustEffect;
 
         public Hero(GameWorld gameWorld):base(gameWorld)
@@ -69,7 +65,7 @@ namespace DN.GameObjects.Creatures
         {
             if(e.Key == Key.X)
             {
-                _jump = false;
+                StopJump();
             }
         }
 
@@ -102,7 +98,7 @@ namespace DN.GameObjects.Creatures
         {
             if (e.HasFlag(GamepadButtons.A))
             {
-                _jump = false;
+                StopJump();
             }
         }
 
@@ -187,16 +183,6 @@ namespace DN.GameObjects.Creatures
                     Move(new Vector2(1, 0), 100 * dt);
                 }
             }
-
-            if (_jump)
-            {
-                if (Math.Abs(Velocity.Y) > _jumpMaxVelocity || ClimbLadder)
-                {
-                    _jump = false;
-                }
-                else
-                    Move(new Vector2(0, -1), 90 * dt, false);
-            }
         }
 
         private static bool DownKeyPressed()
@@ -218,16 +204,5 @@ namespace DN.GameObjects.Creatures
         {
             return Game.g_Gamepad.DPad.Left || Game.g_Keyboard[Key.Left];
         }
-
-        private void Jump()
-        {
-            if (OnGround || (OnLadder && ClimbLadder))
-            {
-                _jump = true;
-               // SetMoveY(0, false);
-                ClimbLadder = false;
-            }
-        }
-
     }
 }

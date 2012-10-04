@@ -36,6 +36,9 @@ namespace DN.GameObjects
         public float Friction;
         public float LadderFriction;
 
+        public float Acceleration;
+        
+
         public bool OnGround
         {
             get
@@ -100,7 +103,10 @@ namespace DN.GameObjects
                 CheckOverSpeed();
             }
         }
-
+        public void Move(Vector2 direction, bool checkOverspeed = true)
+        {
+ 
+        }
         private void CheckOverSpeed()
         {
             Vector2 vel = Velocity;

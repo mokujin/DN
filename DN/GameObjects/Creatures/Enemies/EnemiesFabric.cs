@@ -10,7 +10,8 @@ namespace DN.GameObjects.Creatures.Enemies
 {
     public enum EnemyType
     {
-        Bat
+        Bat,
+        Troll
     }
     static public class EnemiesFabric
     {    
@@ -31,7 +32,23 @@ namespace DN.GameObjects.Creatures.Enemies
                     enemy.AddHealth(5);
                     enemy.Size = new Size(16, 16);
                     enemy.Sprite = "bat_sprite";
-                    enemy.InvulnerabilityDuration = 1;
+                    enemy.Acceleration = 4;
+                    enemy.InvulnerabilityDuration = 0.5f;
+                    break;
+                case EnemyType.Troll:
+                    enemy.SetBehaviour(new TrollBehaviour
+                    {
+                        Creature = enemy, Hero = gameWorld.Hero, GameWorld = gameWorld
+                    });
+                    enemy.GravityAffected = true;
+                    enemy.Friction = 2;
+                    enemy.MaxVelocity = new Vector2(2, 9);
+                    enemy.MaxLadderVelocity = new Vector2(2,3);
+                    enemy.AddHealth(10);
+                    enemy.Acceleration = 8;
+                    enemy.Size = new Size(64, 32);
+                    enemy.Sprite = "bat_sprite";
+                    enemy.InvulnerabilityDuration = 0.5f;
                     break;
             }
             return enemy;

@@ -80,13 +80,14 @@ namespace DN.Helpers
                 _elapsed += dt;
                 if (_elapsed >= Duration)
                 {
-                    if (TickEvent != null)
-                        TickEvent();
 
                     if (Repeat)
                         Restart();
                     else
                         Stop();
+
+                    if (TickEvent != null)
+                        TickEvent();
                 }
                 else if (UpdateEvent != null)
                     UpdateEvent(dt);
