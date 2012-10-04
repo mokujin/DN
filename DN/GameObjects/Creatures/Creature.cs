@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Blueberry;
+using DN.Effects;
 
 namespace DN.GameObjects.Creatures
 {
@@ -21,7 +22,7 @@ namespace DN.GameObjects.Creatures
     {
 
         private bool _jump = false;
-        
+        protected BloodEmitter BloodEmitter;
 
         public event DeathEventHandler Death;
 
@@ -76,6 +77,10 @@ namespace DN.GameObjects.Creatures
                 World.RemoveObject(this);
                 return;
             }
+
+            if (BloodEmitter != null && Invulnerable)
+                BloodEmitter.Position = Position;
+
             if (_jump)
             {
                 if (Math.Abs(Velocity.Y) > JumpMaxVelocity || ClimbLadder)
@@ -97,15 +102,20 @@ namespace DN.GameObjects.Creatures
             Health += amount;
         }
 
-        public virtual bool TakeDamage(float amount, Direction direction, float push = 0.0f)
+        public virtual bool TakeDamage(float amount, Direction direction, float push = 0.0f, bool createBlood = false, float bloodSpeed = 0.0f, int bloodCount = 0)
         {
             if (InvulnerabilityDuration <= _invulnerabilityDuration_dt)
             {
                 Health -= amount;
                 if(push > 0)
-                    Move(direction == Direction.Right ? new Vector2(1, 0) : new Vector2(-1, 0), push, false);
+                    Move(direction == Direction.Right ? new Vector2(1, 0) : new Vector2(-1, 0), push, true);
                 _invulnerabilityDuration_dt = 0;
 
+                Vector2 vel = Velocity;
+                vel.Y = 0;
+                if(createBlood)
+                    BloodEmitter = World.BloodSystem.InitEmitter(Position, vel * bloodSpeed,
+                                                                  bloodCount, 0f, 1);
                 return true;
             }
             return false;

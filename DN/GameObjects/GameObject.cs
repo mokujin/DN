@@ -87,25 +87,16 @@ namespace DN.GameObjects
         }
         public abstract void Draw(float dt);
 
+        public void CollisionWithObject(GameObject sender, GameObject gameObject)
+        {
+            if(CollisionWithObjects != null)
+            CollisionWithObjects(sender, gameObject);
+        }
+
         protected virtual void CheckCollisions(ref Vector2 offset, ref Vector2 position)
         {
             if (IgnoreCollisions) return;
-            CheckCollisionsWithObjects(ref offset, ref position);
-        }
-
-
-        private void CheckCollisionsWithObjects(ref Vector2 offset, ref Vector2 position)
-        {
-            //if we will have impassable objects it must be improved
-            //at this point we just will know that we have a collision with particular object
-
-
-            if (CollisionWithObjects == null) return;
-
-            List<GameObject> collidedGameObjects = World.GetCollisionsWithObjects(this);
-
-            foreach (var gameObject in collidedGameObjects)
-                CollisionWithObjects(this, gameObject);
+         //   CheckCollisionsWithObjects(ref offset, ref position);
         }
 
     }

@@ -41,8 +41,8 @@ namespace DN.GameObjects.Creatures.Enemies
                         Creature = enemy, Hero = gameWorld.Hero, GameWorld = gameWorld
                     });
                     enemy.GravityAffected = true;
-                    enemy.Friction = 2;
-                    enemy.MaxVelocity = new Vector2(2, 9);
+                    enemy.Friction = 0.5f;
+                    enemy.MaxVelocity = new Vector2(3, 9);
                     enemy.MaxLadderVelocity = new Vector2(2,3);
                     enemy.AddHealth(10);
                     enemy.Acceleration = 8;

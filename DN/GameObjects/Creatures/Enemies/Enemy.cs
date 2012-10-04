@@ -7,6 +7,8 @@ using Blueberry.Graphics;
 using DN.GameObjects.Creatures.Enemies.Behaviours;
 using Blueberry;
 using OpenTK.Graphics;
+using OpenTK;
+using DN.GameObjects.Weapons;
 
 namespace DN.GameObjects.Creatures.Enemies
 {
@@ -19,6 +21,8 @@ namespace DN.GameObjects.Creatures.Enemies
             :base(gameWorld)
         {
             Death += CreateDeadBodyOnDeath;
+            CollisionWithObjects += OnCollision;
+
             _behaviour = behaviour;
         }
 
@@ -43,6 +47,34 @@ namespace DN.GameObjects.Creatures.Enemies
                                             Position,
                                             Invulnerable?new Color4(1,1,1,RandomTool.RandFloat()): Color.White);
         }
+
+        private void OnCollision(GameObject sender, GameObject gameObject)
+        {
+            if (gameObject is Weapon)
+            {
+                var weapon = gameObject as Weapon;
+                if (weapon.Attacking)
+                {
+                    if (TakeDamage(weapon.Damage, weapon.Direction, weapon.Damage * 20, true, 0.2f, 6))
+                    {
+                       // Vector2 vel = Velocity;
+                        //vel.Y = 0;
+
+                        //BloodEmitter = World.BloodSystem.InitEmitter(Position, vel * 0.2f,
+                                             //                             7, 0f, 1);
+                    }
+
+                }
+            }
+            else if (gameObject is Hero)
+            {
+                Hero hero = (Hero)gameObject;
+                bool t = hero.TakeDamage(1, Direction, 5);
+                if (t)
+                    MoveInOppositeDirection();
+            }
+        }
+
 
 
         private void CreateDeadBodyOnDeath()

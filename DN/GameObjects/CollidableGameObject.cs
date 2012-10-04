@@ -161,7 +161,9 @@ namespace DN.GameObjects
 
             CheckCollisions(ref vel, ref pos);
             Position = pos;
-            if(oldVel != vel)
+            if (Velocity != oldVel)
+                throw new Exception("What have you done????");
+            if(Velocity != vel)
                 Velocity = vel;
 
             Position += Velocity;

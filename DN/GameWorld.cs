@@ -138,6 +138,7 @@ namespace DN
 
             foreach (var gameObject in _gameObjects)
                 gameObject.Update(dt);
+            CheckCollisionsWithObjects();
 
             if (Game.g_Keyboard[Key.Plus])
                 camera.ScaleOn(0.01f);
@@ -233,22 +234,37 @@ namespace DN
             return cell.X >= 0 && cell.X < Width && cell.Y >= 0 && cell.Y < Height;
         }
 
-        internal List<GameObject> GetCollisionsWithObjects(GameObject gameObject)
+        public void CheckCollisionsWithObjects()
         {
             List<GameObject> list = new List<GameObject>();
-            foreach (GameObject gO in _gameObjects)
+            foreach (GameObject gO1 in _gameObjects)
             {
-                if (gO != gameObject)
+                foreach (var gO2 in _gameObjects)
                 {
-                    if (gO.Bounds.IntersectsWith(gameObject.Bounds))
-                    {
-                        list.Add(gO);
-                    }
-                    
+                    if (gO1 != gO2)
+                        if (gO1.Bounds.IntersectsWith(gO2.Bounds))
+                        {
+                            gO1.CollisionWithObject(gO1, gO2);
+                        }
                 }
             }
-            return list;
         }
+        //internal List<GameObject> GetCollisionsWithObjects(GameObject gameObject)
+        //{
+        //    List<GameObject> list = new List<GameObject>();
+        //    foreach (GameObject gO in _gameObjects)
+        //    {
+        //        if (gO != gameObject)
+        //        {
+        //            if (gO.Bounds.IntersectsWith(gameObject.Bounds))
+        //            {
+        //                list.Add(gO);
+        //            }
+                    
+        //        }
+        //    }
+        //    return list;
+        //}
 
         internal List<CollidedCell> GetCollisionsWithTiles(RectangleF rectangle)
         {
