@@ -7,24 +7,48 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DN", "DN.csproj", "{7EDEEB3
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GamepadExtension", "..\GamepadExtension\GamepadExtension.csproj", "{396D4E0E-830A-4D66-AE20-F5C7737A8DCB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NVorbis", "..\NVorbis\NVorbis.csproj", "{A372E591-DFEF-49C4-9C82-98C4361EFCCD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug - Unsafe MDCT|Any CPU = Debug - Unsafe MDCT|Any CPU
 		Debug|Any CPU = Debug|Any CPU
+		Release - Unsafe MDCT|Any CPU = Release - Unsafe MDCT|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0F82D590-BC4F-4D17-B8C5-6E18EA86C126}.Debug - Unsafe MDCT|Any CPU.ActiveCfg = Debug|Any CPU
+		{0F82D590-BC4F-4D17-B8C5-6E18EA86C126}.Debug - Unsafe MDCT|Any CPU.Build.0 = Debug|Any CPU
 		{0F82D590-BC4F-4D17-B8C5-6E18EA86C126}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{0F82D590-BC4F-4D17-B8C5-6E18EA86C126}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0F82D590-BC4F-4D17-B8C5-6E18EA86C126}.Release - Unsafe MDCT|Any CPU.ActiveCfg = Release|Any CPU
+		{0F82D590-BC4F-4D17-B8C5-6E18EA86C126}.Release - Unsafe MDCT|Any CPU.Build.0 = Release|Any CPU
 		{0F82D590-BC4F-4D17-B8C5-6E18EA86C126}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0F82D590-BC4F-4D17-B8C5-6E18EA86C126}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7EDEEB31-18E4-4288-9482-DFD726BF7CF5}.Debug - Unsafe MDCT|Any CPU.ActiveCfg = Debug|Any CPU
+		{7EDEEB31-18E4-4288-9482-DFD726BF7CF5}.Debug - Unsafe MDCT|Any CPU.Build.0 = Debug|Any CPU
 		{7EDEEB31-18E4-4288-9482-DFD726BF7CF5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{7EDEEB31-18E4-4288-9482-DFD726BF7CF5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7EDEEB31-18E4-4288-9482-DFD726BF7CF5}.Release - Unsafe MDCT|Any CPU.ActiveCfg = Release|Any CPU
+		{7EDEEB31-18E4-4288-9482-DFD726BF7CF5}.Release - Unsafe MDCT|Any CPU.Build.0 = Release|Any CPU
 		{7EDEEB31-18E4-4288-9482-DFD726BF7CF5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7EDEEB31-18E4-4288-9482-DFD726BF7CF5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{396D4E0E-830A-4D66-AE20-F5C7737A8DCB}.Debug - Unsafe MDCT|Any CPU.ActiveCfg = Debug|Any CPU
+		{396D4E0E-830A-4D66-AE20-F5C7737A8DCB}.Debug - Unsafe MDCT|Any CPU.Build.0 = Debug|Any CPU
 		{396D4E0E-830A-4D66-AE20-F5C7737A8DCB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{396D4E0E-830A-4D66-AE20-F5C7737A8DCB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{396D4E0E-830A-4D66-AE20-F5C7737A8DCB}.Release - Unsafe MDCT|Any CPU.ActiveCfg = Release|Any CPU
+		{396D4E0E-830A-4D66-AE20-F5C7737A8DCB}.Release - Unsafe MDCT|Any CPU.Build.0 = Release|Any CPU
 		{396D4E0E-830A-4D66-AE20-F5C7737A8DCB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{396D4E0E-830A-4D66-AE20-F5C7737A8DCB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A372E591-DFEF-49C4-9C82-98C4361EFCCD}.Debug - Unsafe MDCT|Any CPU.ActiveCfg = Debug - Unsafe MDCT|Any CPU
+		{A372E591-DFEF-49C4-9C82-98C4361EFCCD}.Debug - Unsafe MDCT|Any CPU.Build.0 = Debug - Unsafe MDCT|Any CPU
+		{A372E591-DFEF-49C4-9C82-98C4361EFCCD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A372E591-DFEF-49C4-9C82-98C4361EFCCD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A372E591-DFEF-49C4-9C82-98C4361EFCCD}.Release - Unsafe MDCT|Any CPU.ActiveCfg = Release - Unsafe MDCT|Any CPU
+		{A372E591-DFEF-49C4-9C82-98C4361EFCCD}.Release - Unsafe MDCT|Any CPU.Build.0 = Release - Unsafe MDCT|Any CPU
+		{A372E591-DFEF-49C4-9C82-98C4361EFCCD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A372E591-DFEF-49C4-9C82-98C4361EFCCD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

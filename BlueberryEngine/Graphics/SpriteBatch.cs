@@ -63,36 +63,42 @@ namespace Blueberry.Graphics
             
             if (Shader.Version < 3.3f)
             {
-                defaultShader.LoadVertexSource("#version 120\n" +
-                                        "uniform mat4 projection, view;" +
-                                        "attribute vec2 vposition; attribute vec4 vcolor; attribute vec2 vtexcoord;" +
-                                        "varying vec4 fcolor; varying vec2 ftexcoord;" +
-                                        "void main(void) {" +
-                                        "fcolor = vcolor;" +
-                                        "ftexcoord = vtexcoord;" +
-                                        "gl_Position = projection * view * vec4(vposition, 0, 1); }");
-                defaultShader.LoadFragmentSource("#version 120\n" +
-                                          "uniform sampler2D colorTexture;" +
-                                          "varying vec4 fcolor; varying vec2 ftexcoord;" +
+                defaultShader.LoadVertexSource(@"#version 120
+                uniform mat4 projection, view;
+                attribute vec2 vposition; 
+                attribute vec4 vcolor; 
+                attribute vec2 vtexcoord;
+                varying vec4 fcolor; 
+                varying vec2 ftexcoord;
+                void main(void) 
+                {
+                    fcolor = vcolor;
+                    ftexcoord = vtexcoord;
+                    gl_Position = projection * view * vec4(vposition, 0, 1); 
+                }");
+                
+                defaultShader.LoadFragmentSource(@"#version 120
+                                          uniform sampler2D colorTexture;
+                                          varying vec4 fcolor; varying vec2 ftexcoord;
 
-                                          "void main(void) { gl_FragColor = texture2D(colorTexture, ftexcoord) * fcolor; }");
+                                          void main(void) { gl_FragColor = texture2D(colorTexture, ftexcoord) * fcolor; }");
                 
             }
             else
             {
-                defaultShader.LoadVertexSource("#version 330 core \n" +
-                                    "uniform mat4 projection, view;" +
-                                    "in vec2 vposition; in vec4 vcolor; in vec2 vtexcoord;" +
-                                    "out vec4 fcolor; out vec2 ftexcoord;" +
-                                    "void main(void) {" +
-                                    "fcolor = vcolor;" +
-                                    "ftexcoord = vtexcoord;" +
-                                    "gl_Position = projection * view * vec4(vposition, 0, 1); }");
-                defaultShader.LoadFragmentSource("#version 330 core \n" +
-                                          "uniform sampler2D colorTexture;" +
-                                          "in vec4 fcolor; in vec2 ftexcoord;" +
-                                          "out vec4 color;" +
-                                          "void main(void) { color = texture(colorTexture, ftexcoord) * fcolor; }");
+                defaultShader.LoadVertexSource(@"#version 330 core
+                                    uniform mat4 projection, view;
+                                    in vec2 vposition; in vec4 vcolor; in vec2 vtexcoord;
+                                    out vec4 fcolor; out vec2 ftexcoord;
+                                    void main(void) {
+                                    fcolor = vcolor;
+                                    ftexcoord = vtexcoord;
+                                    gl_Position = projection * view * vec4(vposition, 0, 1); }");
+                defaultShader.LoadFragmentSource(@"#version 330 core
+                                          uniform sampler2D colorTexture;
+                                          in vec4 fcolor; in vec2 ftexcoord;
+                                          out vec4 color;
+                                          void main(void) { color = texture(colorTexture, ftexcoord) * fcolor; }");
             }
             defaultShader.Link();
             BindShader(this.defaultShader, "vposition", "vcolor", "vtexcoord", "projection", "view");

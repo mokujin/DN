@@ -14,7 +14,6 @@ using DN.GameObjects;
 using OpenTK;
 using DN.GameObjects.Creatures.Enemies;
 using System.IO;
-using OpenTK.Graphics;
 using DN.Effects;
 using OpenTK.Graphics.OpenGL;
 using DN.GameObjects.Weapons;

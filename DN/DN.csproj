@@ -33,7 +33,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="OpenTK, Version=1.0.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL">
+    <Reference Include="OpenTK, Version=1.1.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Dependencies\OpenTK.dll</HintPath>
     </Reference>
@@ -76,6 +76,7 @@
     <Compile Include="Helpers\Timer.cs" />
     <Compile Include="LevelGeneration\Adventurer.cs" />
     <Compile Include="Helpers\LineOfSight.cs" />
+    <Compile Include="OggStream.cs" />
     <Compile Include="LevelGeneration\WayChecker.cs" />
     <Compile Include="PathFinding\AStar.cs" />
     <Compile Include="PathFinding\BinaryHeap.cs" />
@@ -92,6 +93,15 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="Content\Fonts\monofur.ttf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Sounds\rainfall.ogg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Sounds\steelsword.ogg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Content\Sounds\wv-sword.ogg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Effects\v12\blood_blend.frag">
@@ -115,6 +125,10 @@
     <ProjectReference Include="..\GamepadExtension\GamepadExtension.csproj">
       <Project>{396d4e0e-830a-4d66-ae20-f5c7737a8dcb}</Project>
       <Name>GamepadExtension</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\NVorbis\NVorbis.csproj">
+      <Project>{a372e591-dfef-49c4-9c82-98c4361efccd}</Project>
+      <Name>NVorbis</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />
