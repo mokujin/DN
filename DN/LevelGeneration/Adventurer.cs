@@ -29,7 +29,7 @@ namespace DN.LevelGeneration
 
         public override void Step()
         {
-         //   PrintDebug();
+            //PrintDebug();
             if (NothingLeftToSearch())
             {
                 _cell.Y = -1;
@@ -74,7 +74,7 @@ namespace DN.LevelGeneration
 
         protected virtual List<Vector2> GetPath()
         {
-            return _astar.FindPlatformerCellWay(_cell, _nextPoint) ?? _astar.FindCellWay(_cell, _nextPoint);
+            return /*_astar.FindPlatformerCellWay(_cell, _nextPoint) ??*/ _astar.FindCellWay(_cell, _nextPoint);
         }
 
         protected virtual void CellWasReached(Point cell)
