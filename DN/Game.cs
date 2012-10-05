@@ -12,6 +12,9 @@ using System.IO;
 using System.Drawing;
 using OpenTK.Input;
 using GamepadExtension;
+using OpenTK.Audio;
+using OggStream;
+
 
 namespace DN
 {
@@ -29,15 +32,23 @@ namespace DN
         public static GamepadState g_Gamepad;
         #endregion
         private GameWorld gameWorld;
-
+        AudioContext c; 
+        OggStreamer s;
+        OggStream.OggStream a;
         public Game()
             : base(g_screenSize.Width, g_screenSize.Height, GraphicsMode.Default, "Devil's nightmare")
         {
             GraphicsDevice.Instance.Initialize(g_screenSize.Width, g_screenSize.Height);
+            
+            
+            
         }
 
         protected override void OnLoad(EventArgs e)
         {
+            c = new AudioContext();
+            s = new OggStreamer();
+
             g_Keyboard = Keyboard;
             g_Mouse = Mouse;
             g_Gamepad = new GamepadState(GamepadIndex.One);
@@ -51,6 +62,8 @@ namespace DN
 
             base.OnLoad(e);
 
+            OggStream.OggStream rain = new OggStream.OggStream(Path.Combine("Content", "Sounds", "rainfall.ogg"));
+            rain.Play();
         }
 
         private void LoadTextures()
@@ -61,6 +74,8 @@ namespace DN
             CM.I.LoadTexture("sword_sprite", Path.Combine("Content", "Textures", "Weapons", "Sword.png"));
             CM.I.LoadTexture("bat_sprite", Path.Combine("Content", "Textures", "Enemies", "Bat.png"));
             CM.I.LoadFont("Big", Path.Combine("Content", "Fonts", "monofur.ttf"), 48);
+            CM.I.LoadSound("swordA", Path.Combine("Content", "Sounds", "steelsword.ogg"));
+            CM.I.LoadSound("swordB", Path.Combine("Content", "Sounds", "wv-sword.ogg"));
         }
 
         protected override void OnUpdateFrame(FrameEventArgs e)
@@ -85,6 +100,13 @@ namespace DN
             SwapBuffers();
             base.OnRenderFrame(e);
 
+        }
+        protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
+        {
+            c.Dispose();
+            s.Dispose();
+
+            base.OnClosing(e);
         }
     }
 }

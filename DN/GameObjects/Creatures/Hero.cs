@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using Blueberry;
 using OpenTK.Input;
 using DN.GameObjects.Weapons;
+using System.IO;
 
 namespace DN.GameObjects.Creatures
 {
@@ -72,7 +73,6 @@ namespace DN.GameObjects.Creatures
                 _jump = false;
             }
         }
-
         void g_Keyboard_KeyDown(object sender, KeyboardKeyEventArgs e)
         {
             if (e.Key == Key.X)
@@ -81,7 +81,12 @@ namespace DN.GameObjects.Creatures
             }
             if (_currentWeapon != null)
                 if (e.Key == Key.Z)
+                {
+                    var sound = CM.I.Sound("swordB").GetFreeSream();
+                    if (sound != null)
+                        sound.Play();
                     _currentWeapon.StartAttack();
+                }
         }
 
 
