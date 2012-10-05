@@ -41,8 +41,7 @@ namespace DN
         private Queue<GameObject> _addNewObjectsQueue;
         private Queue<GameObject> _deleteObjectsQueue;
 
-        private Camera camera;
-        public Camera Camera { get { return camera; } }
+        public Camera Camera { get; private set; }
 
         private float _alphaEffect = 0;
 
@@ -60,16 +59,17 @@ namespace DN
             _addNewObjectsQueue = new Queue<GameObject>();
             _deleteObjectsQueue = new Queue<GameObject>();
 
-            camera = new Camera(Game.g_screenSize, new Point(Game.g_screenSize.Width / 2, Game.g_screenSize.Height / 2), true);
-            camera.ScaleTo(1f);
-            camera.MoveSpeed = 7;
+            Camera = new Camera(Game.g_screenSize, new Point(Game.g_screenSize.Width / 2, Game.g_screenSize.Height / 2), true);
+            Camera.ScaleTo(1f);
+            Camera.MoveSpeed = 7;
             
             var lg = new LevelGenerator
                          {
                              RoomsMaxWidth = 10,
                              RoomsMaxHeight = 15,
                              RoomCount = 0,
-                             Scale = 0.5f
+                             Scale = 0.5f,
+                             WallSmoothing = 60f
                          };
             lg.Generate(this);
          //   TileMap.PrintDebug();
@@ -99,7 +99,7 @@ namespace DN
             Hero = new Hero(this);
             Point p = GetRandomPoint();
             Hero.Position = new Vector2((p.X * 64)+32, (p.Y * 64)+32);
-            camera.MoveTo(Hero.Position);
+            Camera.MoveTo(Hero.Position);
         }
         public Point GetRandomPoint()
         {
@@ -135,20 +135,20 @@ namespace DN
         {
             BloodSystem.Update(dt);
 
-            camera.MoveTo(Hero.Position);
+            Camera.MoveTo(Hero.Position);
 
             foreach (var gameObject in _gameObjects)
                 gameObject.Update(dt);
             CheckCollisionsWithObjects();
 
             if (Game.g_Keyboard[Key.Plus])
-                camera.ScaleOn(0.01f);
+                Camera.ScaleOn(0.01f);
             if (Game.g_Keyboard[Key.Minus])
-                camera.ScaleOn(-0.01f);
+                Camera.ScaleOn(-0.01f);
 
             
 
-            camera.Update(dt);
+            Camera.Update(dt);
             UpdateObjectsEnqueues();
 
             background.Update(dt);
@@ -174,7 +174,7 @@ namespace DN
         {
             
             GL.ClearColor(0, 0, 0, 0);
-            SpriteBatch.Instance.Begin(camera.GetViewMatrix());
+            SpriteBatch.Instance.Begin(Camera.GetViewMatrix());
             RenderTiles(dt);
             SpriteBatch.Instance.End(back, true, true);
 
@@ -188,8 +188,8 @@ namespace DN
             BloodSystem.DrawBackground(dt);
             if (!Hero.IsDead)
             {
-                SpriteBatch.Instance.Begin(camera.GetViewMatrix());
-                var rect = camera.BoundingRectangle;
+                SpriteBatch.Instance.Begin(Camera.GetViewMatrix());
+                var rect = Camera.BoundingRectangle;
                 foreach (var gameObject in _gameObjects)
                     if (gameObject.Bounds.IntersectsWith(rect))
                         gameObject.Draw(dt);
@@ -212,7 +212,7 @@ namespace DN
 
         private void RenderTiles(float dt)
         {
-            Rectangle rect = camera.BoundingRectangle;
+            Rectangle rect = Camera.BoundingRectangle;
             rect.X /= 64;
             rect.Y /= 64;
             rect.Width /= 64;

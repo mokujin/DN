@@ -13,7 +13,10 @@ namespace DN.LevelGeneration
         public int RoomsMaxHeight;
 
         public float Scale = 0.5f;
-
+        /// <summary>
+        /// percantage of chance to smooth walls, 0 - 100
+        /// </summary>
+        public float WallSmoothing = 75;
         internal TileMap TileMap;
         internal ResourseMap ResourseMap;
         private List<Miner> _miners;
@@ -103,7 +106,7 @@ namespace DN.LevelGeneration
                         int wallCount = GetCellCountAround(i, j, CellType.Wall);
                         if (wallCount == 4)
                         {
-                            if (RandomTool.RandBool())
+                            if (RandomTool.RandBool(WallSmoothing))
                             {
                                 TileMap[i, j] = CellType.Free;
                             }
