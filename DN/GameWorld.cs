@@ -72,7 +72,8 @@ namespace DN
                              Scale = 0.5f
                          };
             lg.Generate(this);
-
+         //   TileMap.PrintDebug();
+           // Console.ReadKey();
             InsertHero();
 
             background = new ParallaxBackground(this);

@@ -7,23 +7,25 @@ namespace DN
 {
     public class LettersInventory
     {
-        private List<char> _letters;
+        private readonly Dictionary<char, int> _letters;
 
         public LettersInventory()
         {
-            _letters = new List<char>();
+            _letters = new Dictionary<char, int>();
+
+            for (int i = 97; i < 122; i++)
+            {
+                _letters.Add((char)i, 0);
+            }
         }
 
         public void Add(char ch)
         {
-            _letters.Add(ch);
+            _letters[ch]++;
         }
-        public void Remove()
-        { }
-
-        public bool IsIn(char l)
+        public void Remove(char ch)
         {
-            return _letters.Any(p => p == l);
+            _letters[ch]--;
         }
     }
 }

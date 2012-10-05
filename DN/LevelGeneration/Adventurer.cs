@@ -20,7 +20,7 @@ namespace DN.LevelGeneration
 
         public Adventurer(LevelGenerator levelGenerator, int x, int y) : base(levelGenerator, x, y)
         {
-            _astar = new AStar(_levelGenerator.TileMap) {DiagonalMovesAllowed = false};
+            _astar = new AStar(_levelGenerator.TileMap) {DiagonalMovesAllowed = true};
 
             _neededPoints = new byte[_levelGenerator.TileMap.Width,
                                      _levelGenerator.TileMap.Height];

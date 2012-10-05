@@ -100,13 +100,13 @@ namespace DN.PathFinding
                 Point temp = new Point(node.PositionX, node.PositionY);
                 if (DiagonalMovesAllowed)
                 {
-                    if (CheckPassability(temp.X - 1, temp.Y) && CheckPassability(temp.X, temp.Y - 1))
+                    if (CheckPassability(temp.X - 1, temp.Y) || CheckPassability(temp.X, temp.Y - 1))
                         AddNode(node, -1, -1, false, endCell);
-                    if (CheckPassability(temp.X + 1, temp.Y) && CheckPassability(temp.X, temp.Y - 1))
+                    if (CheckPassability(temp.X + 1, temp.Y) || CheckPassability(temp.X, temp.Y - 1))
                         AddNode(node, 1, -1, false, endCell);
-                    if (CheckPassability(temp.X - 1, temp.Y) && CheckPassability(temp.X, temp.Y + 1))
+                    if (CheckPassability(temp.X - 1, temp.Y) || CheckPassability(temp.X, temp.Y + 1))
                         AddNode(node, -1, 1, false, endCell);
-                    if (CheckPassability(temp.X + 1, temp.Y) && CheckPassability(temp.X, temp.Y + 1))
+                    if (CheckPassability(temp.X + 1, temp.Y) || CheckPassability(temp.X, temp.Y + 1))
                         AddNode(node, 1, 1, false, endCell);
                 }
 

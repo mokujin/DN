@@ -80,7 +80,6 @@ namespace DN.GameObjects.Creatures.Enemies
                              {
                                  Position = Position
                              };
-
         }
 
         private void CreateDeadBodyOnDeath()

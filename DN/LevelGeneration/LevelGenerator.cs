@@ -65,7 +65,7 @@ namespace DN.LevelGeneration
 
 
                 CopyScaledMap();
-
+                MakeCorosion();
 
                 var p = GetFreeCell();
                 var adv = new Adventurer(this, p.X, p.Y);
@@ -89,6 +89,28 @@ namespace DN.LevelGeneration
         public bool InRange(int x, int y)
         {
             return x >= 0 && y >= 0 && x < Width && y < Height;
+        }
+
+        private void MakeCorosion()
+        {
+            for (int i = 2; i < TileMap.Width - 2; i++)
+            {
+                for (int j = 2; j < TileMap.Height - 2; j++)
+                {
+
+                    if (TileMap[i, j] == CellType.Wall)
+                    {
+                        int wallCount = GetCellCountAround(i, j, CellType.Wall);
+                        if (wallCount == 4)
+                        {
+                            if (RandomTool.RandBool())
+                            {
+                                TileMap[i, j] = CellType.Free;
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         private void MakeConnection(Point p1, Point p2)
