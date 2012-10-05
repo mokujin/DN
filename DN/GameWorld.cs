@@ -69,7 +69,7 @@ namespace DN
                              RoomsMaxHeight = 15,
                              RoomCount = 0,
                              Scale = 0.5f,
-                             WallSmoothing = 60f
+                             WallSmoothing = 100f
                          };
             lg.Generate(this);
          //   TileMap.PrintDebug();
@@ -81,7 +81,7 @@ namespace DN
             BloodSystem.Init();
             BloodSystem.BlendWith(back);
 
-            for (int i = 0; i < 30; i++)
+            for (int i = 0; i < 0; i++)
             {
                 Creature bat = EnemiesFabric.CreateEnemy(this, EnemyType.Troll);
                 bat.Cell = GetRandomPoint();   

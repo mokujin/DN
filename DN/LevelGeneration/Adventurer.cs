@@ -29,7 +29,7 @@ namespace DN.LevelGeneration
 
         public override void Step()
         {
-          //  PrintDebug();
+         //   PrintDebug();
             if (NothingLeftToSearch())
             {
                 _cell.Y = -1;

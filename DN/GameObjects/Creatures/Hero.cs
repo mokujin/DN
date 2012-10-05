@@ -163,7 +163,7 @@ namespace DN.GameObjects.Creatures
 
 
 
-            if (OnLadder)
+            if (OnLadder && !OnGround)
             {
                 if (UpKeyPressed())
                 {
