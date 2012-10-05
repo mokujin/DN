@@ -156,17 +156,19 @@ namespace DN.GameObjects
             }
 
             Vector2 pos = Position;
-            Vector2 vel = Velocity;
-            Vector2 oldVel = vel;
+            
+            Vector2 vel = Velocity * dt * 50;// i guess it is dirty hack
 
             CheckCollisions(ref vel, ref pos);
-            Position = pos;
-           // if (Velocity != oldVel)
-         //       throw new Exception("What have you done????");
-           // if(Velocity != vel)
-                Velocity = vel;
 
-            Position += Velocity;
+            Position = pos;
+
+            if (vel.X == 0)
+                Velocity.X = 0;
+            if (vel.Y == 0)
+                Velocity.Y = 0;
+
+            Position += vel;
         }
 
         private void UpdateFriction(ref float vel, float friction, float dt)

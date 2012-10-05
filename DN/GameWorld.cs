@@ -80,7 +80,7 @@ namespace DN
             BloodSystem.Init();
             BloodSystem.BlendWith(back);
 
-            for (int i = 0; i < 0; i++)
+            for (int i = 0; i < 3; i++)
             {
                 Creature bat = EnemiesFabric.CreateEnemy(this, EnemyType.Troll);
                 bat.Cell = GetRandomPoint();   
