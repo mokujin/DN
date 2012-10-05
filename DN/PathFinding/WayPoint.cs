@@ -44,7 +44,7 @@ namespace DN.PathFinding
             else
                 H = 0;
 
-            H = (Math.Abs(PositionX - endPoint.X) - Math.Abs(PositionY - endPoint.Y)) * 10;
+         //   H = (Math.Abs(PositionX - endPoint.X) - Math.Abs(PositionY - endPoint.Y)) * 10;
 
             if (Parent != null)
                 if (type)

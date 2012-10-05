@@ -62,8 +62,8 @@ namespace DN.LevelGeneration
                 MakeConnection(new Point(Width / 4  - 1, Height - 2),
                                new Point(Width / 2 + 1, Height  - 2));
 
-              //  PrintDebug();
-                ////Console.WriteLine();
+              //  TileMap.GetHashCode()PrintDebug();
+               // Console.WriteLine();
                 ////Console.ReadKey();
 
 
@@ -78,6 +78,9 @@ namespace DN.LevelGeneration
                 TileMap.PrintDebug();
                 _miners.Add(new WayChecker(this, p.X, p.Y));
                 UpdateMiners();
+                
+                UpdateMiners();
+                TileMap.PrintDebug();
             }
            catch (Exception e)
             {

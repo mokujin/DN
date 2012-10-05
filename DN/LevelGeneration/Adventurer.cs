@@ -16,6 +16,8 @@ namespace DN.LevelGeneration
 
         protected AStar _astar;
         List<Vector2> _path;
+
+        private Point _startPoint;
         bool _pathFinished = true;
 
         public Adventurer(LevelGenerator levelGenerator, int x, int y) : base(levelGenerator, x, y)
@@ -25,6 +27,7 @@ namespace DN.LevelGeneration
             _neededPoints = new byte[_levelGenerator.TileMap.Width,
                                      _levelGenerator.TileMap.Height];
             DetermineNeededPoints();
+            _startPoint = new Point(x, y);
         }
 
         public override void Step()
@@ -59,6 +62,7 @@ namespace DN.LevelGeneration
                 if (_cell.X == _nextPoint.X && _cell.Y == _nextPoint.Y)
                 {
                     CellWasReached(_cell);
+                //    _cell = _startPoint;
                     _pathFinished = true;
                 }
                 _path.RemoveAt(0);
@@ -70,6 +74,7 @@ namespace DN.LevelGeneration
         {
             if (_levelGenerator.TileMap[_cell.X, _cell.Y + 1] != CellType.Wall)
                 _levelGenerator.TileMap[_cell.X, _cell.Y] = CellType.Ladder;
+            CellWasReached(_cell);
         }
 
         protected virtual List<Vector2> GetPath()

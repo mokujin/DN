@@ -108,9 +108,9 @@ namespace DN.PathFinding
                             AddNode(node, -1, -1, false, endCell);
 
 
-                       if (CheckPassability(temp.X - 1, temp.Y) && _tileMap[temp.X, temp.Y + 1] == CellType.Wall)
+                       if (CheckPassability(temp.X + 1, temp.Y) && _tileMap[temp.X, temp.Y + 1] == CellType.Wall)
                            AddNode(node, 1, 1, false, endCell);
-                       if (CheckPassability(temp.X + 1, temp.Y) && _tileMap[temp.X , temp.Y + 1] == CellType.Wall)
+                       if (CheckPassability(temp.X - 1, temp.Y) && _tileMap[temp.X , temp.Y + 1] == CellType.Wall)
                            AddNode(node, -1, 1, false, endCell);
                     //      if (CheckPassability(temp.X + 1, temp.Y) || CheckPassability(temp.X, temp.Y + 1))
                     //        AddNode(node, 1, 1, false, endCell);
@@ -169,9 +169,9 @@ namespace DN.PathFinding
                         AddPlatformerNode(node, -1, -1, false, endCell);
 
 
-                    if (CheckPassability(temp.X - 1, temp.Y) && _tileMap[temp.X, temp.Y + 1] == CellType.Wall)
-                        AddPlatformerNode(node, 1, 1, false, endCell);
                     if (CheckPassability(temp.X + 1, temp.Y) && _tileMap[temp.X, temp.Y + 1] == CellType.Wall)
+                        AddPlatformerNode(node, 1, 1, false, endCell);
+                    if (CheckPassability(temp.X - 1, temp.Y) && _tileMap[temp.X, temp.Y + 1] == CellType.Wall)
                         AddPlatformerNode(node, -1, 1, false, endCell);
                     //if (CheckPassability(temp.X - 1, temp.Y) || CheckPassability(temp.X, temp.Y - 1))
                     //    AddPlatformerNode(node, -1, -1, false, endCell);
@@ -249,7 +249,7 @@ namespace DN.PathFinding
 
             if (pointMap[pos.X, pos.Y] != 1)
             {
-                byte addCost = _tileMap[pos.X, pos.Y + 1] == CellType.Free ? (byte)20 : (byte)0;
+                byte addCost = 0;// _tileMap[pos.X, pos.Y + 1] == CellType.Free ? (byte)20 : (byte)0;
 
                 WayPoint temp = new WayPoint(pos, node, type);
                 temp.CalculateCost(_tileMap, Creature, endCell, addCost, ImprovedPathFinding);
