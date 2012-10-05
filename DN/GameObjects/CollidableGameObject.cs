@@ -36,6 +36,9 @@ namespace DN.GameObjects
         public float Friction;
         public float LadderFriction;
 
+        public float Acceleration;
+        
+
         public bool OnGround
         {
             get
@@ -63,6 +66,13 @@ namespace DN.GameObjects
             return Velocity;
         }
 
+
+        public void SetMove(Vector2 velocity, bool checkOverspeed = true)
+        {
+            Velocity = velocity;
+            if (checkOverspeed)
+                CheckOverSpeed();
+        }
 
         public void SetMove(Vector2 direction, float speed, bool checkOverspeed = true)
         {
@@ -93,7 +103,10 @@ namespace DN.GameObjects
                 CheckOverSpeed();
             }
         }
-
+        public void Move(Vector2 direction, bool checkOverspeed = true)
+        {
+            throw  new NotImplementedException();
+        }
         private void CheckOverSpeed()
         {
             Vector2 vel = Velocity;
@@ -148,7 +161,9 @@ namespace DN.GameObjects
 
             CheckCollisions(ref vel, ref pos);
             Position = pos;
-            if(oldVel != vel)
+           // if (Velocity != oldVel)
+         //       throw new Exception("What have you done????");
+           // if(Velocity != vel)
                 Velocity = vel;
 
             Position += Velocity;

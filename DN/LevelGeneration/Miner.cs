@@ -35,6 +35,10 @@ namespace DN.LevelGeneration
             _exploredMap[_cell.X, _cell.Y] = 1;
         }
 
+        public virtual void Remove()
+        {
+        }
+
         public virtual void Step()
         {
             _direction = GetDirection();
@@ -94,10 +98,6 @@ namespace DN.LevelGeneration
 
             if (!_levelGenerator.InRange(p.X, p.Y + 1))
                 return Int32.MinValue;
-
-            if (offsetY == 0)
-                if (_levelGenerator.Map[p.X, p.Y + 1] != CellType.Wall)
-                    return Int32.MinValue;
 
             if (p.X <= 1 || p.X >= _levelGenerator.Width - 1 || p.Y >= _levelGenerator.Height - 1)
                 return Int32.MinValue;

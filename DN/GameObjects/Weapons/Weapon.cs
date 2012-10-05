@@ -22,7 +22,7 @@ namespace DN.GameObjects.Weapons
 
         public Direction Direction
         {
-            get { return Creature.Direction; }
+            get { return Creature != null? Creature.Direction : Direction.Left; }
         }
 
         protected Creature Creature; // creature which using this weapon

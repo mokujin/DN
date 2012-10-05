@@ -44,7 +44,7 @@ namespace DN.PathFinding
             else
                 H = 0;
 
-          //  H = Math.Abs(PositionX - endPoint.X) + Math.Abs(PositionY - endPoint.Y) * 10;
+         //   H = (Math.Abs(PositionX - endPoint.X) - Math.Abs(PositionY - endPoint.Y)) * 10;
 
             if (Parent != null)
                 if (type)
@@ -53,8 +53,8 @@ namespace DN.PathFinding
                     G = Parent.G + 14;
             else
                 G = 0;
-            Cost = G + H + (tileMap[PositionX, PositionY] != CellType.Ladder ? 10000 : 0) + additionalCost
-                   + (tileMap[PositionX, PositionY + 1] == CellType.Wall ? 0 : 5000);
+            Cost = G + H;//+ (tileMap[PositionX, PositionY] != CellType.Ladder ? 10000 : 0) + additionalCost
+                  // + (tileMap[PositionX, PositionY + 1] == CellType.Wall ? 0 : 5000);
 
 
             //  if (creature != null)

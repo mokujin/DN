@@ -18,12 +18,11 @@ namespace DN.GameObjects.Creatures
 {
     public class Hero:Creature
     {
+
+        public LettersInventory Inventory { get; private set; }
+
         private Weapon _currentWeapon;
         private float _dt = 0;
-
-        private bool _jump = false;
-        private float _jumpMaxVelocity = 5f;
-
 
         DustPointEmitter _dustEffect;
 
@@ -34,6 +33,9 @@ namespace DN.GameObjects.Creatures
             Game.g_Keyboard.KeyDown += g_Keyboard_KeyDown;
             Game.g_Keyboard.KeyUp += g_Keyboard_KeyUp;
             Game.g_Keyboard.KeyRepeat = true;
+
+
+            Inventory = new LettersInventory();
 
             Size = new Size(48, 40);
             MaxVelocity = new Vector2(5,15);
@@ -61,8 +63,10 @@ namespace DN.GameObjects.Creatures
             CollisionWithTiles += OnCollisionWithTiles;
         }
 
+
         private void OnCollisionWithTiles(Vector2 velocity, CollidedCell collidedCell)
         {
+
         }
 
 
@@ -70,7 +74,7 @@ namespace DN.GameObjects.Creatures
         {
             if(e.Key == Key.X)
             {
-                _jump = false;
+                StopJump();
             }
         }
         void g_Keyboard_KeyDown(object sender, KeyboardKeyEventArgs e)
@@ -107,7 +111,7 @@ namespace DN.GameObjects.Creatures
         {
             if (e.HasFlag(GamepadButtons.A))
             {
-                _jump = false;
+                StopJump();
             }
         }
 
@@ -164,7 +168,7 @@ namespace DN.GameObjects.Creatures
 
 
 
-            if (OnLadder)
+            if (OnLadder && !OnGround)
             {
                 if (UpKeyPressed())
                 {
@@ -192,16 +196,6 @@ namespace DN.GameObjects.Creatures
                     Move(new Vector2(1, 0), 100 * dt);
                 }
             }
-
-            if (_jump)
-            {
-                if (Math.Abs(Velocity.Y) > _jumpMaxVelocity || ClimbLadder)
-                {
-                    _jump = false;
-                }
-                else
-                    Move(new Vector2(0, -1), 90 * dt, false);
-            }
         }
 
         private static bool DownKeyPressed()
@@ -223,16 +217,5 @@ namespace DN.GameObjects.Creatures
         {
             return Game.g_Gamepad.DPad.Left || Game.g_Keyboard[Key.Left];
         }
-
-        private void Jump()
-        {
-            if (OnGround || (OnLadder && ClimbLadder))
-            {
-                _jump = true;
-               // SetMoveY(0, false);
-                ClimbLadder = false;
-            }
-        }
-
     }
 }

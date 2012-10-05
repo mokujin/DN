@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Blueberry;
+using DN.Effects;
 
 namespace DN.GameObjects.Creatures
 {
@@ -19,6 +20,10 @@ namespace DN.GameObjects.Creatures
 
     public abstract class Creature:CollidableGameObject
     {
+
+        private bool _jump = false;
+        protected BloodEmitter BloodEmitter;
+
         public event DeathEventHandler Death;
 
         public float InvulnerabilityDuration
@@ -43,6 +48,9 @@ namespace DN.GameObjects.Creatures
         private float _invulnerabilityDuration_dt;
 
         public float Health { get; protected set; }
+        public float JumpAcceleration = 90f;
+        public float JumpMaxVelocity = 5f;
+
         public bool IsDead
         {
             get { return Health <= 0; }
@@ -52,6 +60,7 @@ namespace DN.GameObjects.Creatures
         public Creature(GameWorld gameWorld)
             :base(gameWorld)
         {
+
         }
 
         public override void Update(float dt)
@@ -60,12 +69,28 @@ namespace DN.GameObjects.Creatures
 
             if(IsDead)
             {
-                //todo: add some event on death
-                if(Death != null)
+                if (Death != null)
+                {
                     Death();
+                    Death = null;
+                }
                 World.RemoveObject(this);
                 return;
             }
+
+            if (BloodEmitter != null && Invulnerable)
+                BloodEmitter.Position = Position;
+
+            if (_jump)
+            {
+                if (Math.Abs(Velocity.Y) > JumpMaxVelocity || ClimbLadder)
+                {
+                    _jump = false;
+                }
+                else
+                    Move(new Vector2(0, -1), JumpAcceleration * dt, false);
+            }
+
             if (Invulnerable)
             {
                 _invulnerabilityDuration_dt += dt;
@@ -77,20 +102,37 @@ namespace DN.GameObjects.Creatures
             Health += amount;
         }
 
-        public virtual bool TakeDamage(float amount, Direction direction, float push = 0.0f)
+        public virtual bool TakeDamage(float amount, Direction direction, float push = 0.0f, bool createBlood = false, float bloodSpeed = 0.0f, int bloodCount = 0)
         {
             if (InvulnerabilityDuration <= _invulnerabilityDuration_dt)
             {
                 Health -= amount;
                 if(push > 0)
-                    Move(direction == Direction.Right ? new Vector2(1, 0) : new Vector2(-1, 0), push, false);
+                    Move(direction == Direction.Right ? new Vector2(1, 0) : new Vector2(-1, 0), push, true);
                 _invulnerabilityDuration_dt = 0;
 
+                Vector2 vel = Velocity;
+                vel.Y = 0;
+                if(createBlood)
+                    BloodEmitter = World.BloodSystem.InitEmitter(Position, vel * bloodSpeed,
+                                                                  bloodCount, 0f, 1);
                 return true;
             }
             return false;
         }
 
+        public void Jump()
+        {
+            if (OnGround || (OnLadder && ClimbLadder))
+            {
+                _jump = true;
+                ClimbLadder = false;
+            }
+        }
+        public void StopJump()
+        {
+            _jump = false;
+        }
 
         // get bounding rectangle with some shift
         public RectangleF GetBoundsWithShift(float sx, float sy)

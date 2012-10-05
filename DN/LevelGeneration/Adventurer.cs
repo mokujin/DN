@@ -11,25 +11,28 @@ namespace DN.LevelGeneration
 {
     class Adventurer:Miner
     {
-        private byte[,] _neededPoints;
-        Point _nextPoint;
+        protected byte[,] _neededPoints;
+        protected Point _nextPoint;
 
-        AStar _astar;
+        protected AStar _astar;
         List<Vector2> _path;
+
+        private Point _startPoint;
         bool _pathFinished = true;
 
         public Adventurer(LevelGenerator levelGenerator, int x, int y) : base(levelGenerator, x, y)
         {
-            _astar = new AStar(_levelGenerator.TileMap) {DiagonalMovesAllowed = false};
+            _astar = new AStar(_levelGenerator.TileMap) {DiagonalMovesAllowed = true};
 
             _neededPoints = new byte[_levelGenerator.TileMap.Width,
                                      _levelGenerator.TileMap.Height];
             DetermineNeededPoints();
+            _startPoint = new Point(x, y);
         }
 
         public override void Step()
         {
-          //  PrintDebug();
+            //PrintDebug();
             if (NothingLeftToSearch())
             {
                 _cell.Y = -1;
@@ -39,7 +42,7 @@ namespace DN.LevelGeneration
             {
                 _nextPoint = GetGlosestPoint();
 
-                _path = _astar.FindPlatformerCellWay(_cell, _nextPoint) ?? _astar.FindCellWay(_cell, _nextPoint);
+                _path = GetPath();
 
                 _pathFinished = false;
             }
@@ -53,13 +56,13 @@ namespace DN.LevelGeneration
                 {
                     _cell.X += direction.X;
                     _cell.Y += direction.Y;
-                    if (_levelGenerator.TileMap[_cell.X, _cell.Y + 1] != CellType.Wall)
-                        _levelGenerator.TileMap[_cell.X, _cell.Y] = CellType.Ladder;
+                    OnMove();
                 }
 
                 if (_cell.X == _nextPoint.X && _cell.Y == _nextPoint.Y)
                 {
                     CellWasReached(_cell);
+                //    _cell = _startPoint;
                     _pathFinished = true;
                 }
                 _path.RemoveAt(0);
@@ -67,7 +70,19 @@ namespace DN.LevelGeneration
 
         }
 
-        private void CellWasReached(Point cell)
+        protected virtual void OnMove()
+        {
+            if (_levelGenerator.TileMap[_cell.X, _cell.Y + 1] != CellType.Wall)
+                _levelGenerator.TileMap[_cell.X, _cell.Y] = CellType.Ladder;
+            CellWasReached(_cell);
+        }
+
+        protected virtual List<Vector2> GetPath()
+        {
+            return /*_astar.FindPlatformerCellWay(_cell, _nextPoint) ??*/ _astar.FindCellWay(_cell, _nextPoint);
+        }
+
+        protected virtual void CellWasReached(Point cell)
         {
             _neededPoints[cell.X, cell.Y] = 0;
         }
@@ -80,7 +95,7 @@ namespace DN.LevelGeneration
                         return false;
             return true;
         }
-        private Point GetGlosestPoint()
+        protected Point GetGlosestPoint()
         {
             float minDist = float.MaxValue;
             float curDist = float.MaxValue;
@@ -103,7 +118,7 @@ namespace DN.LevelGeneration
             return minPoint;
         }
 
-        private void DetermineNeededPoints()
+        protected void DetermineNeededPoints()
         {
             for (int i = 1; i < _levelGenerator.TileMap.Width - 1; i++)
                 for (int j = 1; j < _levelGenerator.TileMap.Height - 1; j++)

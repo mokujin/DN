@@ -12,8 +12,7 @@ namespace DN.GameObjects.Creatures.Enemies.Behaviours
         private Timer ChangeDirectionTimer;
         private bool SawPlayer = false;
         private Vector2 _direction;
-        private BloodSystem _bloodSystem;
-        private BloodEmitter _bloodEmitter;
+        
 
         
         public Creature Creature
@@ -34,8 +33,7 @@ namespace DN.GameObjects.Creatures.Enemies.Behaviours
 
         public void Initialize()
         {
-            Creature.CollisionWithObjects += BatOnCollision;
-            Creature.CollisionWithTiles += Creature_CollisionWithTiles;
+                       Creature.CollisionWithTiles += Creature_CollisionWithTiles;
             ChangeDirectionTimer = new Timer
                                        {
                                            Repeat = true,
@@ -57,8 +55,6 @@ namespace DN.GameObjects.Creatures.Enemies.Behaviours
 
         public void Update(float dt)
         {
-            if(_bloodEmitter != null && Creature.Invulnerable)
-                _bloodEmitter.Position = Creature.Position;
 
 
             if (!SawPlayer)
@@ -69,7 +65,7 @@ namespace DN.GameObjects.Creatures.Enemies.Behaviours
             if (SawPlayer)
             {
                 _direction = GameWorld.DirectionToObject(Creature, Hero);
-                Creature.Move(_direction, 4 * dt); //TODO: Remove constant
+                Creature.Move(_direction, Creature.Acceleration * dt);
                 Creature.Direction = _direction.X > 0 ? Direction.Right : Direction.Left;
             }
             else
@@ -85,37 +81,12 @@ namespace DN.GameObjects.Creatures.Enemies.Behaviours
         }
         private void OnTimerUpdate(float dt)
         {
-            Creature.Move(_direction, 4 * dt);
+            Creature.Move(_direction, Creature.Acceleration * dt);
         }
 
 
         
         //just for test
-        private void BatOnCollision(GameObject sender, GameObject gameObject)
-        {
-            if (gameObject is Weapon)
-            {
-                var weapon = gameObject as Weapon;
-                if (weapon.Attacking)
-                {
-                    if (Creature.TakeDamage(weapon.Damage, weapon.Direction, 20))
-                    {
-                        Vector2 vel = Creature.GetVelocity();
-                        vel.Y = 0;
-
-                        _bloodEmitter = GameWorld.BloodSystem.InitEmitter(Creature.Position, vel * 0.2f,
-                                                                          7, 0f, 1);
-                    }
-
-                }
-            }
-            else if (gameObject is Hero)
-            {
-                Hero hero = (Hero)gameObject;
-                bool t = hero.TakeDamage(1, Creature.Direction, 5);
-                if(t)
-                    Creature.MoveInOppositeDirection();
-            }
-        }
+        
     }
 }
