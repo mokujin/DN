@@ -75,12 +75,12 @@ namespace DN.LevelGeneration
                 _miners.Add(adv);
 
                 UpdateMiners();
-                TileMap.PrintDebug();
+             //   TileMap.PrintDebug();
                 _miners.Add(new WayChecker(this, p.X, p.Y));
                 UpdateMiners();
                 
                 UpdateMiners();
-                TileMap.PrintDebug();
+              //  TileMap.PrintDebug();
             }
            catch (Exception e)
             {
