@@ -35,6 +35,10 @@ namespace DN.LevelGeneration
             _exploredMap[_cell.X, _cell.Y] = 1;
         }
 
+        public virtual void Remove()
+        {
+        }
+
         public virtual void Step()
         {
             _direction = GetDirection();

@@ -62,7 +62,7 @@ namespace DN.LevelGeneration
                 MakeConnection(new Point(Width / 4  - 1, Height - 2),
                                new Point(Width / 2 + 1, Height  - 2));
 
-               // PrintDebug();
+              //  PrintDebug();
                 ////Console.WriteLine();
                 ////Console.ReadKey();
 
@@ -70,21 +70,22 @@ namespace DN.LevelGeneration
                 CopyScaledMap();
                 MakeCorosion();
 
-                var p = GetFreeCell();
+                var p = GetFreeGroundCell();
                 var adv = new Adventurer(this, p.X, p.Y);
                 _miners.Add(adv);
 
                 UpdateMiners();
-
-                //ClearJunk();
+                TileMap.PrintDebug();
+                _miners.Add(new WayChecker(this, p.X, p.Y));
+                UpdateMiners();
             }
            catch (Exception e)
             {
                // Console.WriteLine("generation");
                 Console.WriteLine(e.ToString());
-                PrintDebug();
+            //    PrintDebug();
                 TileMap.PrintDebug();
-               // Console.ReadKey();
+              //  Console.ReadKey();
                 goto restart;
             }
         }
@@ -152,6 +153,7 @@ namespace DN.LevelGeneration
                 for (int i = 0; i < _miners.Count; i++)
                     if (_miners[i].Cell.Y <= 0)
                     {
+                        _miners[i].Remove();
                         _miners.Remove(_miners[i]);
                         i--;
                     }
@@ -185,7 +187,6 @@ namespace DN.LevelGeneration
         {
             int x, y, width, height;
 
-
             do
             {
                 width = RandomTool.RandInt(0, RoomsMaxWidth);
@@ -207,26 +208,6 @@ namespace DN.LevelGeneration
                     Map[i, j] = CellType.Free;
         }
 
-
-
-        private void ClearJunk()
-        {
-            for (int i = 0; i < TileMap.Width; i++)
-            {
-                for (int j = 0; j < TileMap.Height; j++)
-                {
-                    if (TileMap[i, j] == CellType.Ladder)
-                    {
-                        int length = LadderLength(i, j);
-                        if (length == 1)
-                        {
-                            if(TileMap[i,j - 1] != CellType.Wall)
-                                TileMap[i, j] = CellType.Free;
-                        }
-                    }
-                }
-            }
-        }
         private int LadderLength(int x, int y)
         {
             int length = 0;
@@ -239,7 +220,7 @@ namespace DN.LevelGeneration
         }
 
 
-        private Point GetFreeCell()
+        private Point GetFreeGroundCell()
         {
             while (true)
             {

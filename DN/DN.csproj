@@ -76,6 +76,7 @@
     <Compile Include="Helpers\Timer.cs" />
     <Compile Include="LevelGeneration\Adventurer.cs" />
     <Compile Include="Helpers\LineOfSight.cs" />
+    <Compile Include="LevelGeneration\WayChecker.cs" />
     <Compile Include="PathFinding\AStar.cs" />
     <Compile Include="PathFinding\BinaryHeap.cs" />
     <Compile Include="PathFinding\Path.cs" />

@@ -163,14 +163,24 @@ namespace DN.PathFinding
                 Point temp = new Point(node.PositionX, node.PositionY);
                 if (DiagonalMovesAllowed)
                 {
-                    if (CheckPassability(temp.X - 1, temp.Y) || CheckPassability(temp.X, temp.Y - 1))
-                        AddPlatformerNode(node, -1, -1, false, endCell);
-                    if (CheckPassability(temp.X + 1, temp.Y) || CheckPassability(temp.X, temp.Y - 1))
+                    if (CheckPassability(temp.X, temp.Y - 1) && _tileMap[temp.X + 1, temp.Y] == CellType.Wall)
                         AddPlatformerNode(node, 1, -1, false, endCell);
-                    if (CheckPassability(temp.X - 1, temp.Y) || CheckPassability(temp.X, temp.Y + 1))
-                        AddPlatformerNode(node, -1, 1, false, endCell);
-                    if (CheckPassability(temp.X + 1, temp.Y) || CheckPassability(temp.X, temp.Y + 1))
+                    if (CheckPassability(temp.X, temp.Y - 1) && _tileMap[temp.X - 1, temp.Y] == CellType.Wall)
+                        AddPlatformerNode(node, -1, -1, false, endCell);
+
+
+                    if (CheckPassability(temp.X - 1, temp.Y) && _tileMap[temp.X, temp.Y + 1] == CellType.Wall)
                         AddPlatformerNode(node, 1, 1, false, endCell);
+                    if (CheckPassability(temp.X + 1, temp.Y) && _tileMap[temp.X, temp.Y + 1] == CellType.Wall)
+                        AddPlatformerNode(node, -1, 1, false, endCell);
+                    //if (CheckPassability(temp.X - 1, temp.Y) || CheckPassability(temp.X, temp.Y - 1))
+                    //    AddPlatformerNode(node, -1, -1, false, endCell);
+                    //if (CheckPassability(temp.X + 1, temp.Y) || CheckPassability(temp.X, temp.Y - 1))
+                    //    AddPlatformerNode(node, 1, -1, false, endCell);
+                    //if (CheckPassability(temp.X - 1, temp.Y) || CheckPassability(temp.X, temp.Y + 1))
+                    //    AddPlatformerNode(node, -1, 1, false, endCell);
+                    //if (CheckPassability(temp.X + 1, temp.Y) || CheckPassability(temp.X, temp.Y + 1))
+                    //    AddPlatformerNode(node, 1, 1, false, endCell);
                 }
                 AddPlatformerNode(node, -1, 0, true, endCell);
                 AddPlatformerNode(node, 0, -1, true, endCell);
@@ -202,7 +212,7 @@ namespace DN.PathFinding
                 return false;
             if (!_tileMap.InRange(x, y + 1))
                 return false;
-            if (_tileMap[x, y + 1] == CellType.Free)
+            if (_tileMap[x, y + 1] == CellType.Free && _tileMap[x, y] != CellType.Ladder)
                 return false;
             return _tileMap[x, y] != CellType.Wall;
         }
