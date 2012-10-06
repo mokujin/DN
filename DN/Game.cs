@@ -25,7 +25,7 @@ namespace DN
         #region GLOBAL
 
         // public static Size g_screenSize = new Size(1080, 1920);
-        //public static Rectangle g_screenRect = new Rectangle(0, 0, 1080, 1920);
+      //  public static Rectangle g_screenRect = new Rectangle(0, 0, 1080, 1920);
         public static Size g_screenSize = new Size(640, 480);
         public static Rectangle g_screenRect = new Rectangle(0, 0, 640, 480);
 

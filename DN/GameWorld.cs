@@ -80,7 +80,7 @@ namespace DN
             BloodSystem.Init();
             BloodSystem.BlendWith(back);
 
-            for (int i = 0; i < 0; i++)
+            for (int i = 0; i < 30; i++)
             {
                 Creature bat = EnemiesFabric.CreateEnemy(this, EnemyType.Troll);
                 bat.Cell = GetRandomPoint();   
@@ -136,8 +136,10 @@ namespace DN
 
             Camera.MoveTo(Hero.Position);
 
-            foreach (var gameObject in _gameObjects)
-                gameObject.Update(dt);
+           // foreach (var gameObject in _gameObjects)
+            //    gameObject.Update(dt);
+
+            Parallel.ForEach(_gameObjects, gameObject => gameObject.Update(dt));
             CheckCollisionsWithObjects();
 
             if (Game.g_Keyboard[Key.Plus])
@@ -195,17 +197,18 @@ namespace DN
                 BloodSystem.DrawParticles(dt);
                 SpriteBatch.Instance.End();
             }
-             
-            SpriteBatch.Instance.Begin();
 
             if (Hero.IsDead)
             {
-                SpriteBatch.Instance.FillRectangle(Game.g_screenRect, new Color4(0, 0, 0, _alphaEffect));
+                SpriteBatch.Instance.Begin();
 
-                SpriteBatch.Instance.PrintText(CM.I.Font("Big"), "You are dead!", Game.g_screenSize.Width / 4,
-                                               Game.g_screenSize.Height / 4, new Color4(255, 255, 255, _alphaEffect));
+                    SpriteBatch.Instance.FillRectangle(Game.g_screenRect, new Color4(0, 0, 0, _alphaEffect));
+
+                    SpriteBatch.Instance.PrintText(CM.I.Font("Big"), "You are dead!", Game.g_screenSize.Width / 4,
+                                                   Game.g_screenSize.Height / 4, new Color4(255, 255, 255, _alphaEffect));
+
+                SpriteBatch.Instance.End();
             }
-            SpriteBatch.Instance.End();
 
         }
 
@@ -236,17 +239,14 @@ namespace DN
 
         public void CheckCollisionsWithObjects()
         {
-            foreach (GameObject gO1 in _gameObjects)
-            {
-                foreach (var gO2 in _gameObjects)
-                {
-                    if (gO1 != gO2)
-                        if (gO1.Bounds.IntersectsWith(gO2.Bounds))
-                        {
-                            gO1.CollisionWithObject(gO1, gO2);
-                        }
-                }
-            }
+            Parallel.ForEach(_gameObjects, gO1 => Parallel.ForEach(_gameObjects, gO2 =>
+                                                                                     {
+                                                                                         if (gO1 != gO2)
+                                                                                             if (gO1.Bounds.IntersectsWith(gO2.Bounds))
+                                                                                             {
+                                                                                                 gO1.CollisionWithObject(gO1, gO2);
+                                                                                             }
+                                                                                     }));
         }
         //internal List<GameObject> GetCollisionsWithObjects(GameObject gameObject)
         //{

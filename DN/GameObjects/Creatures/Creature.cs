@@ -22,6 +22,10 @@ namespace DN.GameObjects.Creatures
     {
 
         private bool _jump = false;
+        private float _jumpStartY;
+
+
+
         protected BloodEmitter BloodEmitter;
 
         public event DeathEventHandler Death;
@@ -48,7 +52,8 @@ namespace DN.GameObjects.Creatures
         private float _invulnerabilityDuration_dt;
 
         public float Health { get; protected set; }
-        public float JumpAcceleration = 90f;
+        public float JumpAcceleration = 7f;
+        public double JumpHeight = 20;
         public float JumpMaxVelocity = 5f;
 
         public bool IsDead
@@ -83,12 +88,12 @@ namespace DN.GameObjects.Creatures
 
             if (_jump)
             {
-                if (Math.Abs(Velocity.Y) > JumpMaxVelocity || ClimbLadder)
+                if (Y < _jumpStartY - JumpHeight || ClimbLadder)
                 {
                     _jump = false;
                 }
                 else
-                    Move(new Vector2(0, -1), JumpAcceleration * dt, false);
+                    SetMoveY(-JumpAcceleration, false);
             }
 
             if (Invulnerable)
@@ -96,6 +101,8 @@ namespace DN.GameObjects.Creatures
                 _invulnerabilityDuration_dt += dt;
             }
         }
+
+
 
         public virtual void AddHealth(float amount)
         {
@@ -127,6 +134,7 @@ namespace DN.GameObjects.Creatures
             {
                 _jump = true;
                 ClimbLadder = false;
+                _jumpStartY = Y;
             }
         }
         public void StopJump()
