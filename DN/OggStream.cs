@@ -329,7 +329,7 @@ namespace OggStream
         {
             underlyingStream.Seek(0, SeekOrigin.Begin);
             Reader = new VorbisReader(underlyingStream, false);
-
+            
             if (precache)
             {
                 // Fill first buffer synchronously

@@ -13,6 +13,7 @@ using Blueberry;
 using OpenTK.Input;
 using DN.GameObjects.Weapons;
 using System.IO;
+using System.Threading;
 
 namespace DN.GameObjects.Creatures
 {
@@ -86,9 +87,7 @@ namespace DN.GameObjects.Creatures
             if (_currentWeapon != null)
                 if (e.Key == Key.Z)
                 {
-                    var sound = CM.I.Sound("swordB").GetFreeSream();
-                    if (sound != null)
-                        sound.Play();
+                    CM.I.Sound("swordB").PlayDynamic();
                     _currentWeapon.StartAttack();
                 }
         }

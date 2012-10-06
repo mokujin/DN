@@ -14,6 +14,8 @@ using OpenTK.Input;
 using GamepadExtension;
 using OpenTK.Audio;
 using OggStream;
+using Blueberry.Audio;
+using System.Threading;
 
 
 namespace DN
@@ -32,22 +34,20 @@ namespace DN
         public static GamepadState g_Gamepad;
         #endregion
         private GameWorld gameWorld;
-        AudioContext c; 
-        OggStreamer s;
-        OggStream.OggStream a;
+        AudioContext audioContext;
+
         public Game()
             : base(g_screenSize.Width, g_screenSize.Height, GraphicsMode.Default, "Devil's nightmare")
         {
             GraphicsDevice.Instance.Initialize(g_screenSize.Width, g_screenSize.Height);
-            
-            
+
+            VSync = VSyncMode.On;
             
         }
 
         protected override void OnLoad(EventArgs e)
         {
-            c = new AudioContext();
-            s = new OggStreamer();
+            audioContext = new AudioContext();
 
             g_Keyboard = Keyboard;
             g_Mouse = Mouse;
@@ -61,9 +61,9 @@ namespace DN
             Keyboard.KeyRepeat = false;
 
             base.OnLoad(e);
-
-            OggStream.OggStream rain = new OggStream.OggStream(Path.Combine("Content", "Sounds", "rainfall.ogg"));
-            rain.Play();
+            new AudioManager(16, 8, 4096, true);
+            AudioClip clip = new AudioClip(Path.Combine("Content", "Sounds", "rainfall.ogg"));
+            clip.Play();
         }
 
         private void LoadTextures()
@@ -86,6 +86,7 @@ namespace DN
         {
             if (g_Keyboard[Key.Escape])
                 Exit();
+
             g_Gamepad.Update();
             gameWorld.Update((float)e.Time);
             base.OnUpdateFrame(e);
@@ -107,8 +108,7 @@ namespace DN
         }
         protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
         {
-            c.Dispose();
-            s.Dispose();
+            audioContext.Dispose();
 
             base.OnClosing(e);
         }

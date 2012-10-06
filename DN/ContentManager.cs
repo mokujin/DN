@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Blueberry.Graphics.Fonts;
 using System.IO;
+using Blueberry.Audio;
 
 
 namespace DN
@@ -22,42 +23,13 @@ namespace DN
         private readonly Dictionary<string, Texture> _textures;
         private readonly Dictionary<string, BitmapFont> _fonts;
 
-        public struct SoundStream
-        {
-            byte[] buffer;
-            List<OggStream.OggStream> streams;
-            public int maxStreams;
-
-            public SoundStream(string file)
-            {
-                buffer = File.ReadAllBytes(file);
-                streams = new List<OggStream.OggStream>();
-                maxStreams = 5;
-            }
-            public OggStream.OggStream GetFreeSream()
-            {
-                foreach (var item in streams)
-                {
-                    if (item.State != OpenTK.Audio.OpenAL.ALSourceState.Playing)
-                        return item;
-                }
-                if (maxStreams > streams.Count)
-                {
-                    OggStream.OggStream s = new OggStream.OggStream(new MemoryStream(buffer));
-                    streams.Add(s);
-                    return s;
-                }
-                else
-                    return null;
-            }
-        }
-        private readonly Dictionary<string, SoundStream> _sounds;
+        private readonly Dictionary<string, AudioClip> _sounds;
 
         private CM()
         {
             _textures = new Dictionary<string, Texture>();
             _fonts = new Dictionary<string, BitmapFont>();
-            _sounds = new Dictionary<string, SoundStream>();
+            _sounds = new Dictionary<string, AudioClip>();
         }
         public void LoadTexture(string asset, string file)
         {
@@ -69,7 +41,7 @@ namespace DN
         }
         public void LoadSound(string asset, string file)
         {
-            _sounds.Add(asset, new SoundStream(file));
+            _sounds.Add(asset, new AudioClip(file));
         }
         public Texture tex(string asset)
         {
@@ -80,7 +52,7 @@ namespace DN
         {
             return _fonts[asset];
         }
-        public SoundStream Sound(string asset)
+        public AudioClip Sound(string asset)
         {
             return _sounds[asset];
         }

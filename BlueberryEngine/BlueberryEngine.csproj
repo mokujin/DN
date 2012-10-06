@@ -52,6 +52,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Animation.cs" />
+    <Compile Include="Audio\AudioChannel.cs" />
+    <Compile Include="Audio\AudioClip.cs" />
+    <Compile Include="Audio\AudioManager.cs" />
     <Compile Include="FloatAnimation.cs" />
     <Compile Include="IntAnimation.cs" />
     <Compile Include="ArrayTimSort.cs" />
@@ -98,6 +101,12 @@
     <Compile Include="TimSortExtender.cs" />
   </ItemGroup>
   <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\NVorbis\NVorbis.csproj">
+      <Project>{a372e591-dfef-49c4-9c82-98c4361efccd}</Project>
+      <Name>NVorbis</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
