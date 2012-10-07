@@ -1,4 +1,5 @@
 ﻿using Blueberry.Graphics;
+using DN.GameObjects.Items;
 using OpenTK;
 using OpenTK.Graphics;
 using System;
@@ -24,12 +25,27 @@ namespace DN.GameObjects.Creatures
         private bool _jump = false;
         private float _jumpStartY;
 
-
-
-        protected BloodEmitter BloodEmitter;
-
         public event DeathEventHandler Death;
 
+
+        private Item _inHandItem;
+        protected Item InHandItem
+        { 
+            get
+            {
+                return _inHandItem;
+            }
+            set
+            {
+                if(_inHandItem != null)
+                    _inHandItem.Creature = null;
+                _inHandItem = value;
+                _inHandItem.Creature = this;
+            }
+        }
+
+        protected BloodEmitter BloodEmitter;
+        
         public float InvulnerabilityDuration
         {
             get
@@ -99,6 +115,13 @@ namespace DN.GameObjects.Creatures
             if (Invulnerable)
             {
                 _invulnerabilityDuration_dt += dt;
+            }
+
+            if(InHandItem != null)
+            {
+                InHandItem.Position = this.Position;
+                InHandItem.Direction = Direction;
+                InHandItem.Update(dt);
             }
         }
 

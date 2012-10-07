@@ -7,11 +7,7 @@ using System.Text;
 
 namespace DN.GameObjects
 {
-    public enum Direction : sbyte
-    {
-        Left = -1,
-        Right = 1
-    }
+
 
     public delegate void TileCollisionEventHandler(Vector2 velocity, CollidedCell collidedCell);
     
@@ -53,7 +49,6 @@ namespace DN.GameObjects
             get { return Collisions.Any(p => p.CellType == CellType.Ladder || p.CellType == CellType.VRope); }
         }
 
-        public Direction Direction{get; set;}
 
         public CollidableGameObject(GameWorld gameWorld)
             :base(gameWorld)

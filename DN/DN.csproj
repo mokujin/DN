@@ -69,9 +69,10 @@
     <Compile Include="GameObjects\Creatures\Hero.cs" />
     <Compile Include="Game.cs" />
     <Compile Include="GameObjects\GameObject.cs" />
+    <Compile Include="GameObjects\Items\Item.cs" />
     <Compile Include="GameObjects\Letter.cs" />
-    <Compile Include="GameObjects\Weapons\Sword.cs" />
-    <Compile Include="GameObjects\Weapons\Weapon.cs" />
+    <Compile Include="GameObjects\Items\Weapons\MeleeWeapon.cs" />
+    <Compile Include="GameObjects\Items\Weapons\Weapon.cs" />
     <Compile Include="GameWorld.cs" />
     <Compile Include="Helpers\Timer.cs" />
     <Compile Include="LevelGeneration\Adventurer.cs" />

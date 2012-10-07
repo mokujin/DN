@@ -16,7 +16,6 @@ using DN.GameObjects.Creatures.Enemies;
 using System.IO;
 using DN.Effects;
 using OpenTK.Graphics.OpenGL;
-using DN.GameObjects.Weapons;
 
 namespace DN
 {

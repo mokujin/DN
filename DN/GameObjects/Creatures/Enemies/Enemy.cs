@@ -8,7 +8,6 @@ using DN.GameObjects.Creatures.Enemies.Behaviours;
 using Blueberry;
 using OpenTK.Graphics;
 using OpenTK;
-using DN.GameObjects.Weapons;
 
 namespace DN.GameObjects.Creatures.Enemies
 {

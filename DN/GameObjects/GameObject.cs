@@ -6,6 +6,13 @@ using OpenTK;
 using System.Drawing;
 namespace DN.GameObjects
 {
+
+    public enum Direction : sbyte
+    {
+        Left = -1,
+        Right = 1
+    }
+
     public delegate void CollisionEventHandler(GameObject sender, GameObject gameObject);
 
     public abstract class GameObject
@@ -15,7 +22,9 @@ namespace DN.GameObjects
         public bool IgnoreCollisions = false;
 
         protected GameWorld World;
-        
+
+
+        public Direction Direction { get; set; }
 
         private float _x, _y;
         
