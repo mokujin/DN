@@ -28,6 +28,7 @@ namespace DN.GameObjects.Weapons
             :base(gameWorld, creature)
         {
             Size = new Size(40, 20);
+            CollisionWithObjects += OnCollision;
         }
 
         public override void Update(float dt)
@@ -54,6 +55,23 @@ namespace DN.GameObjects.Weapons
                                              dir == -1 ? new Vector2(1f, 0.5f): new Vector2(0,0.5f),
                                              false, false);
           //  SpriteBatch.Instance.OutlineRectangle(Bounds, Color4.White);
+        }
+
+
+        private void OnCollision(GameObject sender, GameObject gameObject)
+        {
+            if (gameObject is Creature)
+            {
+                var creature = gameObject as Creature;
+                if(creature != this.Creature)
+                if (Attacking)
+                {
+                    if(creature.TakeDamage(Damage, Direction, Damage*20, true, 1.0f, 6))
+                    {
+                        //play sound
+                    }
+                }
+            }
         }
 
         public override void StartAttack()

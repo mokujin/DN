@@ -54,13 +54,13 @@ namespace DN.GameObjects.Creatures.Enemies
 
         private void OnCollision(GameObject sender, GameObject gameObject)
         {
-            if (gameObject is Weapon)
-            {
-                var weapon = gameObject as Weapon;
-                if (weapon.Attacking)
-                    TakeDamage(weapon.Damage, weapon.Direction, weapon.Damage*20, true, 1.0f, 6);
-            }
-            else if (gameObject is Hero)
+            //if (gameObject is Weapon)
+            //{
+            //    var weapon = gameObject as Weapon;
+            //    if (weapon.Attacking)
+            //        TakeDamage(weapon.Damage, weapon.Direction, weapon.Damage * 20, true, 1.0f, 6);
+            //}
+            if (gameObject is Hero)
             {
                 var hero = (Hero)gameObject;
                 var t = hero.TakeDamage(1, Direction, 5);
