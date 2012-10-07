@@ -199,7 +199,7 @@ namespace DN.GameObjects
             List<CollidedCell> tiles = null;
 
             Vector2 startOffset = offset;
-
+          //  Console.WriteLine(startOffset.Y);
             //  if (offset.X != 0)
             {
                 float oldOffset = offset.X;
@@ -296,6 +296,8 @@ namespace DN.GameObjects
                 if(CollisionWithTiles != null)
                     CollisionWithTiles(startOffset, collidedCell);
             }
+            //Console.WriteLine("start: " + startOffset);
+           // Console.WriteLine("Velocity" + Velocity);
         }
 
         protected void CheckOverSpeed(ref float velocity, float maxVelocity)

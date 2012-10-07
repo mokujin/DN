@@ -86,9 +86,9 @@ namespace DN
         {
             if (g_Keyboard[Key.Escape])
                 Exit();
-
-            g_Gamepad.Update();
-            gameWorld.Update((float)e.Time);
+            float dt = (float) e.Time;
+            g_Gamepad.Update(dt);
+            gameWorld.Update(dt);
             base.OnUpdateFrame(e);
         }
         

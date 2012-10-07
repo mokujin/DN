@@ -17,9 +17,8 @@ namespace DN.GameObjects.Items
         {
             get { return !IntervalTimer.Running && !PerfermingTimer.Running; }
         }
+
         public Creature Creature { get; set; }
-
-
 
         public float IntervalDuration {set { IntervalTimer.Duration = value; }}
         protected float PerformingDuration { set { PerfermingTimer.Duration = value; } }

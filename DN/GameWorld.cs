@@ -79,13 +79,30 @@ namespace DN
             BloodSystem.Init();
             BloodSystem.BlendWith(back);
 
-            for (int i = 0; i < 30; i++)
+            for (int i = 0; i < 0; i++)
             {
                 Creature bat = EnemiesFabric.CreateEnemy(this, EnemyType.Troll);
                 bat.Cell = GetRandomPoint();   
             }
+
+            Hero.CollisionWithTiles += HeroOnCollisionWithTiles;
             
         }
+
+        private void HeroOnCollisionWithTiles(Vector2 velocity, CollidedCell collidedCell)
+        {
+
+            if (collidedCell.CellType == CellType.Wall)
+            {
+                if(collidedCell.Direction.Y == 1)
+                if (velocity.Y >= 10)
+                {
+                    Camera.Rumble(0.2f, 8, 4);
+                    Game.g_Gamepad.Vibrate(0.8f, 0.8f, 0.2f);
+                }
+            }
+        }
+
 
         void g_Keyboard_KeyDown(object sender, KeyboardKeyEventArgs e)
         {
