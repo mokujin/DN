@@ -5,38 +5,30 @@ using System.Text;
 
 namespace Blueberry
 {
-    public class IntAnimation
+    public class IntAnimation : Animation<int>
     {
-        private int _from;
-        private int _to;
-        private int _value;
-        private bool _loop;
-        private double _temp; // время, прошедшее с последнего
-        private double _period;
-
-        public int From { get { return _from; } }
-
-        public int To { get { return _to; } }
-
-        public int Value { get { return _value; } }
-
-        public bool Loop { get { return _loop; } }
-
-        public double Period { get { return _period; } }
+        protected double temp; // время, прошедшее с последнего
 
         public IntAnimation(int from, int to, double period, bool loop)
         {
-            _from = from;
-            _to = to;
-            _period = period;
-            _loop = loop;
-            _value = _from;
+            From = from;
+            To = to;
+            Period = period;
+            Loop = loop;
+            Value = From;
         }
-
+        public IntAnimation()
+        {
+            From = 0;
+            To = 0;
+            Period = 0;
+            Loop = false;
+            Value = 0;
+        }
         public void Reset()
         {
-            _value = _from;
-            _temp = 0;
+            Value = From;
+            temp = 0;
         }
 
         public static explicit operator int(IntAnimation anim)
@@ -44,18 +36,35 @@ namespace Blueberry
             return anim.Value;
         }
 
-        public void Animate(double dtime)
+        public override void Animate(float dtime)
         {
-            _temp += dtime;
-            //_value += (int)(_temp / _period);
-            if (_from < _to)
-                _value += (int)(_temp / _period);
-            else
-                _value -= (int)(_temp / _period);
-            _temp = _temp % _period;
-            if (_loop)
-                if ((_from < _to && _value > _to) || (_from > _to && _value < _to))
-                    _value = _from;
+            temp += dtime;
+            int v = (int)(temp / Period);
+            if (v > 0)
+            {
+                if (From < To)
+                    Value += v;
+                else
+                    Value -= v;
+
+                temp = temp % Period;
+            }
+            if ((From < To && Value > To) || (From > To && Value < To))
+            {
+                if (Loop) Value = From;
+                else { Value = To; Stop(); }
+            }
+        }
+        public override void Play(bool restart = false)
+        {
+            base.Play(restart);
+            if (restart)
+                temp = 0;
+        }
+        public override void Stop()
+        {
+            base.Stop();
+            temp = 0;
         }
     }
 }

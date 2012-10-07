@@ -52,10 +52,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Animation.cs" />
+    <Compile Include="AnimationManager.cs" />
     <Compile Include="Audio\AudioChannel.cs" />
     <Compile Include="Audio\AudioClip.cs" />
     <Compile Include="Audio\AudioManager.cs" />
     <Compile Include="FloatAnimation.cs" />
+    <Compile Include="IAnimation.cs" />
     <Compile Include="IntAnimation.cs" />
     <Compile Include="ArrayTimSort.cs" />
     <Compile Include="Camera.cs" />

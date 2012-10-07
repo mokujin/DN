@@ -59,7 +59,6 @@ namespace DN
             gameWorld = new GameWorld(100, 100);
 
             Keyboard.KeyRepeat = false;
-
             base.OnLoad(e);
             new AudioManager(16, 8, 4096, true);
             AudioClip clip = new AudioClip(Path.Combine("Content", "Sounds", "rainfall.ogg"));
@@ -87,6 +86,7 @@ namespace DN
             if (g_Keyboard[Key.Escape])
                 Exit();
 
+
             g_Gamepad.Update();
             gameWorld.Update((float)e.Time);
             base.OnUpdateFrame(e);
@@ -99,9 +99,8 @@ namespace DN
          //   SpriteBatch.Instance.Begin();
         //    SpriteBatch.Instance.OutlineRectangle(new RectangleF(5,5,10,40),  Color.White, 10f, 1f, new Vector2(0.5f, 0.5f));
          //   SpriteBatch.Instance.End();
-
+            
             gameWorld.Draw((float) e.Time);
-
             SwapBuffers();
             base.OnRenderFrame(e);
 

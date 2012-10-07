@@ -64,7 +64,7 @@ namespace Blueberry.Audio
 
             // Make the source
             Source = AL.GenSource();
-
+            
             // Make the buffers
             for(int i = 0; i < BufferCount; i++)
                 Buffers[i] = AL.GenBuffer();

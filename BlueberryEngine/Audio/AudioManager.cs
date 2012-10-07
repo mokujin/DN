@@ -25,24 +25,24 @@ namespace Blueberry.Audio
 
         public bool RunUpdates { get; set; }
 
-        private static AudioManager manager = null;
+        private static AudioManager instance = null;
 
         /// <summary>
         /// The sole instance of the audio manager.
         /// </summary>
-        public static AudioManager Manager
+        public static AudioManager Instance
         {
             get
             {
-                if(manager == null)
-                    manager = new AudioManager();
+                if(instance == null)
+                    instance = new AudioManager();
 
-                return manager;
+                return instance;
             }
 
             set
             {
-                manager = value;
+                instance = value;
             }
         }
 
@@ -95,7 +95,7 @@ namespace Blueberry.Audio
             for (int i = 0; i < channels; i++)
                 Channels[i] = new AudioChannel(buffersPerChannel, bytesPerBuffer);
 
-            Manager = this;
+            Instance = this;
             
             if(launchThread)
             {
