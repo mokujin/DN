@@ -87,7 +87,6 @@ namespace DN.GameObjects.Creatures
             if (_currentWeapon != null)
                 if (e.Key == Key.Z)
                 {
-                    CM.I.Sound("swordB").PlayDynamic();
                     _currentWeapon.StartAttack();
                 }
         }

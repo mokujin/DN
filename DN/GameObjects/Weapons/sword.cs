@@ -57,7 +57,7 @@ namespace DN.GameObjects.Weapons
           //  SpriteBatch.Instance.OutlineRectangle(Bounds, Color4.White);
         }
 
-
+        private bool _hitRegistered = false;
         private void OnCollision(GameObject sender, GameObject gameObject)
         {
             if (gameObject is Creature)
@@ -68,7 +68,8 @@ namespace DN.GameObjects.Weapons
                 {
                     if(creature.TakeDamage(Damage, Direction, Damage*20, true, 1.0f, 6))
                     {
-                        //play sound
+                        if (!_hitRegistered) CM.I.Sound("swordA").PlayDynamic();
+                        _hitRegistered = true;
                     }
                 }
             }
@@ -80,6 +81,8 @@ namespace DN.GameObjects.Weapons
             if (!CanAttack) return;
             _offset = 0;
             _rotation = 4.71f;
+            CM.I.Sound("swordB").PlayDynamic();
+            _hitRegistered = false;
             base.StartAttack();
         }
 
