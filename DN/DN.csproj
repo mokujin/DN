@@ -74,6 +74,9 @@
     <Compile Include="GameObjects\Items\Weapons\MeleeWeapon.cs" />
     <Compile Include="GameObjects\Items\Weapons\Weapon.cs" />
     <Compile Include="GameWorld.cs" />
+    <Compile Include="GUI\GUIManager.cs" />
+    <Compile Include="GUI\GUIObject.cs" />
+    <Compile Include="GUI\HealthBar.cs" />
     <Compile Include="Helpers\Timer.cs" />
     <Compile Include="LevelGeneration\Adventurer.cs" />
     <Compile Include="Helpers\LineOfSight.cs" />
@@ -139,6 +142,9 @@
     </Content>
     <Content Include="Content\Textures\Enemies\Troll.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Textures\Gui\heart.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Textures\stair_tile.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

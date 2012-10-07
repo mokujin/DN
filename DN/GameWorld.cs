@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DN.GUI;
 using OpenTK.Graphics;
 using OpenTK.Input;
 using DN.GameObjects.Creatures;
@@ -26,6 +27,7 @@ namespace DN
         public int Width{get; private set;}
         public int Height{get; private set;}
         public TileMap TileMap { get; private set; }
+        private GUIManager _guiManager;
 
         public Hero Hero
         {
@@ -79,13 +81,19 @@ namespace DN
             BloodSystem.Init();
             BloodSystem.BlendWith(back);
 
-            for (int i = 0; i < 0; i++)
+            for (int i = 0; i < 3; i++)
             {
                 Creature bat = EnemiesFabric.CreateEnemy(this, EnemyType.Troll);
                 bat.Cell = GetRandomPoint();   
             }
 
             Hero.CollisionWithTiles += HeroOnCollisionWithTiles;
+
+            _guiManager = new GUIManager();
+            HealthBar healthBar = new HealthBar(Hero);
+            healthBar.Y = Game.g_screenRect.Bottom - 48;
+            healthBar.X = Game.g_screenRect.Left + 48;
+            _guiManager.Add(healthBar);
             
         }
 
@@ -169,7 +177,7 @@ namespace DN
             UpdateObjectsEnqueues();
 
             background.Update(dt);
-
+            _guiManager.Update(dt);
             if(Hero.IsDead)
             {
                 _alphaEffect += dt;
@@ -225,6 +233,9 @@ namespace DN
 
                 SpriteBatch.Instance.End();
             }
+            SpriteBatch.Instance.Begin();
+            _guiManager.Draw(dt);
+            SpriteBatch.Instance.End();
 
         }
 
@@ -293,7 +304,7 @@ namespace DN
         {
 
             var tilesToCheck = TileMap.GetRectanglesAround(new Point(rectangle.X / 64,
-                                                                     rectangle.Y / 64));
+                                                                     rectangle.Y / 64), CellType.Free);
 
             var list = new List<CollidedCell>();
             foreach (Rectangle rect in tilesToCheck)

@@ -68,7 +68,7 @@ namespace DN
             return _map[x, y] == CellType.Free;
         }
         
-        public List<Rectangle> GetRectanglesAround(Point p)
+        public List<Rectangle> GetRectanglesAround(Point p, CellType cellType)
         {
             List<Rectangle> rects = new List<Rectangle>();
 
@@ -76,7 +76,8 @@ namespace DN
             {
                 for (int j = p.Y - 1; j <= p.Y + 1; j++)
                 {
-                    rects.Add(GetRect(i, j));
+                    if (_map[i, j] != cellType)
+                        rects.Add(GetRect(i, j));
                 }
             }
 

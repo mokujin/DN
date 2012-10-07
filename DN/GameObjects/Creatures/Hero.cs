@@ -56,7 +56,7 @@ namespace DN.GameObjects.Creatures
             _dustEffect.Initialise(60, 1);
 
 
-            Health = 10;
+            Health = 9;
             Direction = Direction.Right;
 
             CollisionWithTiles += OnCollisionWithTiles;

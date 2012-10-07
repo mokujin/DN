@@ -55,7 +55,7 @@ namespace DN
       
             GL.ClearColor(Color4.Black);
 
-            LoadTextures();
+            LoadContent();
             gameWorld = new GameWorld(100, 100);
 
             Keyboard.KeyRepeat = false;
@@ -66,7 +66,7 @@ namespace DN
             clip.Play();
         }
 
-        private void LoadTextures()
+        private void LoadContent()
         {
             CM.I.LoadTexture("wall_tile", Path.Combine("Content", "Textures", "wall_tile.png"));
             CM.I.LoadTexture("hero_tile", Path.Combine("Content", "Textures", "hero_tile.png"));
@@ -74,6 +74,7 @@ namespace DN
             CM.I.LoadTexture("sword_sprite", Path.Combine("Content", "Textures", "Weapons", "Sword.png"));
             CM.I.LoadTexture("bat_sprite", Path.Combine("Content", "Textures", "Enemies", "Bat.png"));
             CM.I.LoadTexture("troll_sprite", Path.Combine("Content", "Textures", "Enemies", "Troll.png"));
+            CM.I.LoadTexture("heart", Path.Combine("Content", "Textures", "Gui", "heart.png"));
 
             CM.I.LoadFont("Big", Path.Combine("Content", "Fonts", "monofur.ttf"), 48);
             CM.I.LoadFont("Middle", Path.Combine("Content", "Fonts", "monofur.ttf"), 24);
