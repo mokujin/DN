@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using DN.GameObjects.Creatures;
 using DN.Helpers;
+using OpenTK;
 
 namespace DN.GameObjects.Items
 {
-    public abstract class Item:GameObject
+    public abstract class Item:CollidableGameObject
     {
         public bool DoingAction
         {
@@ -18,7 +19,23 @@ namespace DN.GameObjects.Items
             get { return !IntervalTimer.Running && !PerfermingTimer.Running; }
         }
 
-        public Creature Creature { get; set; }
+        private Creature _creature;
+
+        public Creature Creature
+        {
+            get { return _creature; }
+            set
+            {
+                    _creature = value;
+                    if (_creature == null)
+                        GravityAffected = true;
+                    else
+                    {
+                        Velocity = new Vector2(0,0);
+                        GravityAffected = false;
+                    }
+            }
+        }
 
         public float IntervalDuration {set { IntervalTimer.Duration = value; }}
         protected float PerformingDuration { set { PerfermingTimer.Duration = value; } }
@@ -32,6 +49,16 @@ namespace DN.GameObjects.Items
         {
             IntervalTimer = new Timer();
             PerfermingTimer = new Timer();
+            GravityAffected = true;
+            MaxVelocity = new Vector2(10, 10);
+            Friction = 1.0f;
+        }
+
+
+        public override void Destroy()
+        {
+            base.Destroy();
+            Creature.DropItem();
         }
 
         public virtual void DoAction()
@@ -44,12 +71,17 @@ namespace DN.GameObjects.Items
 
         public override void Update(float dt)
         {
+            if(Destroyed)
+                throw new Exception("Destroyed item cannot be used");
+
+
+
             if (!DoingAction)
                 IntervalTimer.Update(dt);
             else
                 PerfermingTimer.Update(dt);
 
-
+            base.Update(dt);
         }
     }
 }

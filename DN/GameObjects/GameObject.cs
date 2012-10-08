@@ -14,15 +14,17 @@ namespace DN.GameObjects
     }
 
     public delegate void CollisionEventHandler(GameObject sender, GameObject gameObject);
+    public delegate void DestroyEventHandler();
 
     public abstract class GameObject
     {
         public event CollisionEventHandler CollisionWithObjects;
 
         public bool IgnoreCollisions = false;
+        public bool Destroyed = false;
 
         protected GameWorld World;
-
+        public event DestroyEventHandler DestroyEvent;
 
         public Direction Direction { get; set; }
 
@@ -31,12 +33,16 @@ namespace DN.GameObjects
         public float X
         {
             get { return _x; }
-            set { _x = value; }
+            set { _x = value;
+            }
         }
         public float Y
         {
             get { return _y; }
-            set { _y = value; }
+            set
+            {
+                _y = value;
+            }
         }
 
         public Vector2 Position
@@ -57,7 +63,8 @@ namespace DN.GameObjects
             }
             set 
             {
-                _x = value.X * 64 + Size.Width/2; _y = value.Y * 64 + Size.Width/2; 
+
+                _x = value.X * 64 + Size.Width/2; _y = value.Y * 64 + Size.Height/2;
             }
         }
 
@@ -100,6 +107,13 @@ namespace DN.GameObjects
         {
             if(CollisionWithObjects != null)
             CollisionWithObjects(sender, gameObject);
+        }
+
+        public virtual void Destroy()
+        {
+            if(DestroyEvent != null)
+                Destroy();
+            World.RemoveObject(this);
         }
 
         protected virtual void CheckCollisions(ref Vector2 offset, ref Vector2 position)

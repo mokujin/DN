@@ -20,8 +20,8 @@ namespace DN.GameObjects.Creatures.Enemies
         public Enemy(GameWorld gameWorld, IBehaviour behaviour = null)
             :base(gameWorld)
         {
-            Death += CreateDeadBodyOnDeath;
-            Death += CreateLettersOnDeath;
+            DestroyEvent += CreateDeadBodyOnDestroyEvent;
+            DestroyEvent += CreateLettersOnDestroyEvent;
             CollisionWithObjects += OnCollision;
             
 
@@ -73,7 +73,7 @@ namespace DN.GameObjects.Creatures.Enemies
             }
         }
 
-        private void CreateLettersOnDeath()
+        private void CreateLettersOnDestroyEvent()
         {
             var letter = new Letter(World, (char)RandomTool.RandByte(97, 122))
                              {
@@ -81,7 +81,7 @@ namespace DN.GameObjects.Creatures.Enemies
                              };
         }
 
-        private void CreateDeadBodyOnDeath()
+        private void CreateDeadBodyOnDestroyEvent()
         {
             var deadBody = new DeadBody(World)
                                     {

@@ -81,11 +81,18 @@ namespace DN.GameObjects.Creatures
             {
                 Jump();
             }
-            if (InHandItem != null)
-                if (e.Key == Key.Z)
+
+            if (e.Key == Key.Z)
+            {
+                if (Game.g_Keyboard[Key.Down] && !OnLadder)
+                    PickUpItem();
+                else
                 {
-                    InHandItem.DoAction();
+                    if (InHandItem != null)
+                        InHandItem.DoAction();
+                    StopPickingUpItem();
                 }
+            }
         }
 
 
@@ -96,10 +103,16 @@ namespace DN.GameObjects.Creatures
                 Jump();
             }
 
-            if (InHandItem != null)
                 if (e.HasFlag(GamepadButtons.X))
                 {
-                    InHandItem.DoAction();
+                    if (Game.g_Gamepad.DPad.Down && !OnLadder)
+                        PickUpItem();
+                    else
+                    {
+                        if (InHandItem != null)
+                            InHandItem.DoAction();
+                        StopPickingUpItem();
+                    }
                 }
         }
         private void g_Gamepad_OnButtonUp(object sender, GamepadButtons e)

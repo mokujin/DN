@@ -17,7 +17,7 @@ namespace DN.GameObjects.Creatures
     public delegate void CollisionEventHandler(GameObject sender, GameObject gameObject);
 
     public delegate void TakeDamageEventHandler(GameObject sender, float amount);
-    public delegate void DeathEventHandler();
+
 
 
     public abstract class Creature:CollidableGameObject
@@ -26,7 +26,8 @@ namespace DN.GameObjects.Creatures
         private bool _jump = false;
         private float _jumpStartY;
 
-        public event DeathEventHandler Death;
+        private bool _pickUpItem = false;
+
         public event TakeDamageEventHandler TakeDamageEvent;
 
         private Item _inHandItem;
@@ -82,7 +83,52 @@ namespace DN.GameObjects.Creatures
         public Creature(GameWorld gameWorld)
             :base(gameWorld)
         {
+            CollisionWithObjects += OnCollisionWithObjects;
+        }
 
+        private void OnCollisionWithObjects(GameObject sender, GameObject gameObject)
+        {
+            lock (gameObject)
+            {
+                if (gameObject is Item)
+                {
+                    if (gameObject == InHandItem)
+                        return;
+                    if (_pickUpItem)
+                    {
+                        _pickUpItem = false;
+                        DropItem();
+                        PickUpItem((Item) gameObject);
+                        Console.WriteLine(gameObject);
+                    }
+                }
+            }
+        }
+
+        public void DropItem()
+        {
+            if(_inHandItem == null) 
+                return;
+            _inHandItem.Creature = null;
+            _inHandItem = null;
+        }
+
+        private void PickUpItem(Item item)
+        {
+            if(item.Creature != null)
+                return;
+
+            _inHandItem = item;
+            _inHandItem.Creature = this;
+        }
+
+        public void PickUpItem()
+        {
+            _pickUpItem = true;
+        }
+        public void StopPickingUpItem()
+        {
+            _pickUpItem = false;
         }
 
         public override void Update(float dt)
@@ -91,12 +137,9 @@ namespace DN.GameObjects.Creatures
 
             if(IsDead)
             {
-                if (Death != null)
-                {
-                    Death();
-                    Death = null;
-                }
-                World.RemoveObject(this);
+                if (_inHandItem != null)
+                    _inHandItem.Creature = null;
+                Destroy();
                 return;
             }
 
@@ -128,12 +171,12 @@ namespace DN.GameObjects.Creatures
 
 
 
-        public virtual void AddHealth(float amount)
+        public void AddHealth(float amount)
         {
             Health += amount;
         }
 
-        public virtual bool TakeDamage(float amount, Direction direction, float push = 0.0f, bool createBlood = false, float bloodSpeed = 0.0f, int bloodCount = 0)
+        public bool TakeDamage(float amount, Direction direction, float push = 0.0f, bool createBlood = false, float bloodSpeed = 0.0f, int bloodCount = 0)
         {
             if (InvulnerabilityDuration <= _invulnerabilityDuration_dt)
             {
