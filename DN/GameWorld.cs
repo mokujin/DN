@@ -45,7 +45,8 @@ namespace DN
         private float _alphaEffect = 0;
 
         ParallaxBackground background;
-       public BloodSystem BloodSystem;
+        public BloodSystem BloodSystem;
+        MagicBackground mback;
 
         public GameWorld(int width, int height)
         {
@@ -89,6 +90,8 @@ namespace DN
             BloodSystem = new BloodSystem(this);
             BloodSystem.Init();
             BloodSystem.BlendWith(back);
+
+            mback = new MagicBackground();
 
             for (int i = 0; i < 0; i++)
             {
@@ -194,6 +197,7 @@ namespace DN
             GL.ClearColor(0, 0, 0, 1);
             GL.Clear(ClearBufferMask.ColorBufferBit);
 
+            //mback.Draw();
             background.Draw(dt);
 
             BloodSystem.DrawBackground(dt);
