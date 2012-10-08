@@ -71,8 +71,18 @@ namespace DN
                              WallSmoothing = 100f
                          };
             lg.Generate(this);
-         //   TileMap.PrintDebug();
-           // Console.ReadKey();
+            /*
+            for (int i = 0; i < width; i++)
+            {
+                TileMap[0, i] = TileMap[width - 1, i] = CellType.Wall;
+            }
+            for (int j = 0; j < height; j++)
+            {
+                TileMap[j, 0] = TileMap[j, height - 1] = CellType.Wall;
+            }
+            */
+            //TileMap.PrintDebug();
+            // Console.ReadKey();
             InsertHero();
 
             background = new ParallaxBackground(this);
@@ -80,9 +90,9 @@ namespace DN
             BloodSystem.Init();
             BloodSystem.BlendWith(back);
 
-            for (int i = 0; i < 30; i++)
+            for (int i = 0; i < 0; i++)
             {
-                Creature bat = EnemiesFabric.CreateEnemy(this, EnemyType.Troll);
+                Creature bat = EnemiesFabric.CreateEnemy(this,RandomTool.RandBool()? EnemyType.Troll: EnemyType.Bat);
                 bat.Cell = GetRandomPoint();   
             }
             

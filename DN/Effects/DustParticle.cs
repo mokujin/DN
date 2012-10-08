@@ -8,18 +8,23 @@ namespace DN.Effects
 {
     class DustParticle : Particle
     {
-        public char letter;
+        public string letter;
+        public int cw;
         public DustParticle()
         {
-            letter = RandomTool.ChooseRandom(new []{'d', 'u', 's', 't'});// char.ConvertFromUtf32(RandomTool.RandByte())[0];
+            letter = RandomTool.ChooseRandom("d", "u", "s", "t");
+            cw = RandomTool.RandBool(0.5) ? -1 : 1;
+
         }
         public override void Update(float dt)
         {
-            Colour.A = 1 - this.Age;
-            Rotation += this.Age * dt;
-            Velocity.X -= dt*3;
+            Colour.A = 0.7f - this.Age * 0.7f;
+
+            Rotation += cw * this.Age * dt * 6;
+                
+            Velocity.X = MathUtils.Lerp(Velocity.X, 0, dt*2);
             Velocity.Y -= dt*3;
-            Scale += dt/2;
+            Scale += dt/1.5f;
             base.Update(dt);
         }
     }

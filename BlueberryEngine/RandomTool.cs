@@ -30,6 +30,16 @@ namespace Blueberry
             return objects[RandInt(objects.Length)];
         }
 
+        public static string ChooseRandom(params string[] objects)
+        {
+            return objects[RandInt(objects.Length)];
+        }
+
+        public static int ChooseRandom(params int[] objects)
+        {
+            return objects[RandInt(objects.Length)];
+        }
+
         public static byte RandByte()
         {
             return (byte)random.Next();
@@ -65,12 +75,12 @@ namespace Blueberry
 
         public static bool RandBool(float ratio)
         {
-            return random.NextDouble() <= ratio / 100;
+            return random.NextDouble() <= ratio;
         }
 
         public static bool RandBool(double ratio)
         {
-            return random.NextDouble() <= ratio / 100;
+            return random.NextDouble() <= ratio;
         }
 
         public static bool RandBool()

@@ -54,11 +54,11 @@ namespace DN.GameObjects.Creatures
                               Damage = 1
                           };
 
-            _dustEffect = new DustPointEmitter(Position, Vector2.UnitX, 0.5f);
+            _dustEffect = new DustPointEmitter(Position, Vector2.UnitX, 2f);
             _dustEffect.Initialise(60, 1);
 
 
-            Health = 10;
+            Health = 10000;
             Direction = Direction.Right;
 
             CollisionWithTiles += OnCollisionWithTiles;
@@ -136,7 +136,7 @@ namespace DN.GameObjects.Creatures
                 _currentWeapon.Update(dt);
 
             UpdateControlls(dt);
-            _dustEffect.Position = new Vector2(Position.X, Bounds.Bottom);
+            _dustEffect.Position = new Vector2(Direction == GameObjects.Direction.Left ?Bounds.Right:Bounds.Left, Bounds.Bottom);
             _dustEffect.Update(dt);
         }
 
@@ -148,7 +148,10 @@ namespace DN.GameObjects.Creatures
                 Direction = Direction.Left;
                 if (OnGround)
                 {
-                    _dustEffect.Direction = MathUtils.RotateVector2(Vector2.UnitX, 0.5f);
+                    _dustEffect.Direction = Vector2.UnitX;// MathUtils.RotateVector2(-Vector2.UnitY, 0.2f);
+                    float q = 1/(Velocity.Length*5);
+                    _dustEffect.TriggerInterval = q;
+                    //_dustEffect.ReleaseOpacity = q/3;
                     _dustEffect.Trigger(dt);
                 }
             }
@@ -158,8 +161,10 @@ namespace DN.GameObjects.Creatures
                 Direction = Direction.Right;
                 if (OnGround)
                 {
-                    _dustEffect.Direction = MathUtils.RotateVector2(Vector2.UnitX, 0.5f);
-                    _dustEffect.Direction = new Vector2(-_dustEffect.Direction.X, _dustEffect.Direction.Y);
+                    _dustEffect.Direction = -Vector2.UnitX;//MathUtils.RotateVector2(-Vector2.UnitY, -0.2f);
+                    float q = 1/ (Velocity.Length * 5f);
+                    _dustEffect.TriggerInterval = q;
+                    //_dustEffect.ReleaseOpacity = q/3;
                     _dustEffect.Trigger(dt);
                 }
             }

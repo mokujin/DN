@@ -27,8 +27,9 @@ namespace DN.Effects
             
             ReleaseQuantity = 1;
             ReleaseSpeed = new Range(5, 10);
-            ReleaseScale = 1;
+            ReleaseScale = 0.8f;
             ReleaseColour = Color4.White;
+            ReleaseOpacity = 0.8f;
         }
         public override void Initialise()
         {
@@ -46,10 +47,21 @@ namespace DN.Effects
         {
             offset = Vector2.Zero;
             position = Position;
-            Vector2 f = Direction;
-            MathUtils.RotateVector2(ref f, RandomTool.RandFloat(-(Dispersion / 2f), Dispersion / 2f));
+            Vector2 f = -Vector2.UnitY;
+            MathUtils.RotateVector2(ref f, (Direction.X > 0 ? 0.5f : -0.5f) + RandomTool.RandFloat(-(Dispersion / 2f), Dispersion / 2f));
             f *= 10;
             force = f;
+        }
+        public float TriggerInterval { get; set; }
+        private float temp = 0;
+        public override void Trigger(float dt)
+        {
+            temp += dt;
+            if (temp >= TriggerInterval)
+            {
+                temp = 0;
+                base.Trigger(dt);
+            }
         }
         public override void Draw(float dt)
         {
@@ -61,8 +73,7 @@ namespace DN.Effects
                 // Extract the particle from the buffer...
                 DustParticle particle = this._particles[currentIndex] as DustParticle;
 
-                SpriteBatch.Instance.PrintText(font, particle.letter.ToString(), particle.Position, particle.Colour, particle.Rotation, particle.Scale);
-                //SpriteBatch.Instance.FillCircle(particle.Position, 10, Color4.White, 10);
+                SpriteBatch.Instance.PrintText(font, particle.letter, particle.Position, particle.Colour, particle.Rotation, particle.Scale);
                 currentIndex = (currentIndex + 1) % this.Budget;
             }
             base.Draw(dt);
