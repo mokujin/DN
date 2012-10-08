@@ -39,7 +39,7 @@ namespace DN.GameObjects.Creatures
 
             Size = new Size(48, 40);
             MaxVelocity = new Vector2(5,15);
-            MaxLadderVelocity = new Vector2(2, 2.5f);
+            MaxLadderVelocity = new Vector2(3, 3.5f);
             LadderFriction = 40f;
             Friction = 5f;
             InvulnerabilityDuration = 1;
@@ -61,7 +61,6 @@ namespace DN.GameObjects.Creatures
 
             CollisionWithTiles += OnCollisionWithTiles;
         }
-
 
         private void OnCollisionWithTiles(Vector2 velocity, CollidedCell collidedCell)
         {

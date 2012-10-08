@@ -81,13 +81,13 @@ namespace DN
             BloodSystem.Init();
             BloodSystem.BlendWith(back);
 
-            for (int i = 0; i < 3; i++)
+            for (int i = 0; i < 15; i++)
             {
-                Creature bat = EnemiesFabric.CreateEnemy(this, EnemyType.Troll);
+                Creature bat = EnemiesFabric.CreateEnemy(this,RandomTool.RandBool()? EnemyType.Bat : EnemyType.Troll);
                 bat.Cell = GetRandomPoint();   
             }
 
-            Hero.CollisionWithTiles += HeroOnCollisionWithTiles;
+
 
             _guiManager = new GUIManager();
             HealthBar healthBar = new HealthBar(Hero);
@@ -122,8 +122,17 @@ namespace DN
             Hero = new Hero(this);
             Point p = GetRandomPoint();
             Hero.Position = new Vector2((p.X * 64)+32, (p.Y * 64)+32);
+            Hero.CollisionWithTiles += HeroOnCollisionWithTiles;
+            Hero.TakeDamageEvent += HeroOnTakeDamageEvent;
             Camera.MoveTo(Hero.Position);
         }
+
+        private void HeroOnTakeDamageEvent(GameObject sender, float amount)
+        {
+            Camera.Rumble(0.2f, 4, 4);
+            Game.g_Gamepad.Vibrate(0.6f, 0.6f, 0.2f);
+        }
+
         public Point GetRandomPoint()
         {
             Point p;

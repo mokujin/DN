@@ -16,6 +16,7 @@ namespace DN.GameObjects.Creatures
     
     public delegate void CollisionEventHandler(GameObject sender, GameObject gameObject);
 
+    public delegate void TakeDamageEventHandler(GameObject sender, float amount);
     public delegate void DeathEventHandler();
 
 
@@ -26,7 +27,7 @@ namespace DN.GameObjects.Creatures
         private float _jumpStartY;
 
         public event DeathEventHandler Death;
-
+        public event TakeDamageEventHandler TakeDamageEvent;
 
         private Item _inHandItem;
         protected Item InHandItem
@@ -146,6 +147,8 @@ namespace DN.GameObjects.Creatures
                 if(createBlood)
                     BloodEmitter = World.BloodSystem.InitEmitter(Position, vel * bloodSpeed,
                                                                   bloodCount, 0f, 1);
+                if (TakeDamageEvent != null)
+                    TakeDamageEvent(this, amount);
                 return true;
             }
             return false;

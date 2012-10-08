@@ -56,12 +56,13 @@ namespace DN
             GL.ClearColor(Color4.Black);
 
             LoadContent();
-            gameWorld = new GameWorld(100, 100);
+            gameWorld = new GameWorld(50, 50);
 
             Keyboard.KeyRepeat = false;
 
             base.OnLoad(e);
-            new AudioManager(16, 8, 4096, true);
+
+            new AudioManager(16, 8, 4096, false);
             AudioClip clip = new AudioClip(Path.Combine("Content", "Sounds", "rainfall.ogg"));
             clip.Play();
         }
