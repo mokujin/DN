@@ -42,7 +42,7 @@ namespace DN
         private Queue<GameObject> _deleteObjectsQueue;
 
         public Camera Camera { get; private set; }
-
+        private float _scale = 1.0f;
         private float _alphaEffect = 0;
 
         ParallaxBackground background;
@@ -50,7 +50,6 @@ namespace DN
 
         public GameWorld(int width, int height)
         {
-            Game.g_Keyboard.KeyDown += g_Keyboard_KeyDown;
             Width = width;
             Height = height;
             TileMap = new TileMap(Width, Height);
@@ -111,12 +110,6 @@ namespace DN
             }
         }
 
-
-        void g_Keyboard_KeyDown(object sender, KeyboardKeyEventArgs e)
-        {
-           // BloodSystem.InitEmitter(Hero.Position, Vector2.UnitX, 3, 0.4f, 2);
-        }
-
         public void InsertHero()
         {
             Hero = new Hero(this);
@@ -169,18 +162,20 @@ namespace DN
 
             Camera.MoveTo(Hero.Position);
 
-           // foreach (var gameObject in _gameObjects)
-            //    gameObject.Update(dt);
-
             Parallel.ForEach(_gameObjects, gameObject => gameObject.Update(dt));
             CheckCollisionsWithObjects();
 
-            if (Game.g_Keyboard[Key.Plus])
-                Camera.ScaleOn(0.01f);
-            if (Game.g_Keyboard[Key.Minus])
-                Camera.ScaleOn(-0.01f);
-
-            
+            Vector2 vel = Hero.GetVelocity();
+            if(vel.Y > 10)
+            {
+                if (_scale > 0.5f)
+                    _scale -= dt;
+            }
+            else
+            {
+                _scale = 1f;
+            }
+            Camera.ScaleTo(_scale);
 
             Camera.Update(dt);
             UpdateObjectsEnqueues();
