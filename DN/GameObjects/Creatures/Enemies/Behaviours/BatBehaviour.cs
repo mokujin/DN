@@ -1,6 +1,5 @@
 ﻿using Blueberry;
 using DN.Effects;
-using DN.GameObjects.Weapons;
 using DN.Helpers;
 using OpenTK;
 

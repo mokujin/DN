@@ -100,6 +100,10 @@ namespace GamepadExtension
             return value < 0 ? 0 : value > 1 ? 1 : value;
         }
 
+        private float _elapsed;
+        private float _vibrationTime;
+
+
         public void Vibrate(float leftMotor, float rightMotor)
         {
             Controller.SetVibration(new Vibration
@@ -109,13 +113,31 @@ namespace GamepadExtension
             });
         }
 
-        public void Update()
+        public void Vibrate(float leftMotor, float rightMotor, float time)
+        {
+            Vibrate(leftMotor, rightMotor);
+            _elapsed = 0;
+            _vibrationTime = time;
+        }
+
+        public void Update(float dt)
         {
             ThumbstickState old_l = LeftStick;
             ThumbstickState old_r = RightStick;
 
             // If not connected, nothing to update
             if (!Connected) return;
+
+            if (_vibrationTime > _elapsed)
+            {
+                _elapsed += dt;
+            }
+            else
+            {
+                _elapsed = 0;
+                _vibrationTime = 0;
+                Vibrate(0, 0);
+            }
 
             // If same packet, nothing to update
             State state = Controller.GetState();
@@ -183,6 +205,9 @@ namespace GamepadExtension
             if (OnRightStick != null)
                 if (RightStick.Position != old_r.Position || RightStick.Clicked != old_r.Clicked)
                     OnRightStick(this, RightStick, RightStick.Position - old_r.Position);
+
+
+
             old_state = gamepadState;
         }
 

@@ -1,5 +1,6 @@
 ﻿using Blueberry.Graphics;
 using DN.Effects;
+using DN.GameObjects.Items.Weapons;
 using GamepadExtension;
 using OpenTK;
 using OpenTK.Graphics;
@@ -11,7 +12,6 @@ using System.Text;
 using System.Threading.Tasks;
 using Blueberry;
 using OpenTK.Input;
-using DN.GameObjects.Weapons;
 using System.IO;
 using System.Threading;
 
@@ -22,7 +22,6 @@ namespace DN.GameObjects.Creatures
 
         public LettersInventory Inventory { get; private set; }
 
-        private Weapon _currentWeapon;
         private float _dt = 0;
 
         DustPointEmitter _dustEffect;
@@ -40,17 +39,16 @@ namespace DN.GameObjects.Creatures
 
             Size = new Size(48, 40);
             MaxVelocity = new Vector2(5,15);
-            MaxLadderVelocity = new Vector2(2, 2.5f);
+            MaxLadderVelocity = new Vector2(3, 3.5f);
             LadderFriction = 40f;
             Friction = 5f;
-            this.InvulnerabilityDuration = 1;
+            InvulnerabilityDuration = 1;
 
 
 
-            _currentWeapon = new Sword(gameWorld, this)
+            InHandItem = new MeleeWeapon(gameWorld)
                           {
-                              AttackSpeed = 0.5f,
-                              TimeToFinishAttack = 0.3f,
+                              IntervalDuration = 0.4f,
                               Damage = 1
                           };
 
@@ -58,12 +56,12 @@ namespace DN.GameObjects.Creatures
             _dustEffect.Initialise(60, 1);
 
 
-            Health = 10000;
+            Health = 9;
+
             Direction = Direction.Right;
 
             CollisionWithTiles += OnCollisionWithTiles;
         }
-
 
         private void OnCollisionWithTiles(Vector2 velocity, CollidedCell collidedCell)
         {
@@ -84,11 +82,18 @@ namespace DN.GameObjects.Creatures
             {
                 Jump();
             }
-            if (_currentWeapon != null)
-                if (e.Key == Key.Z)
+
+            if (e.Key == Key.Z)
+            {
+                if (Game.g_Keyboard[Key.Down] && !OnLadder)
+                    PickUpItem();
+                else
                 {
-                    _currentWeapon.StartAttack();
+                    if (InHandItem != null)
+                        InHandItem.DoAction();
+                    StopPickingUpItem();
                 }
+            }
         }
 
 
@@ -99,10 +104,16 @@ namespace DN.GameObjects.Creatures
                 Jump();
             }
 
-            if (_currentWeapon != null)
                 if (e.HasFlag(GamepadButtons.X))
                 {
-                    _currentWeapon.StartAttack();
+                    if (Game.g_Gamepad.DPad.Down && !OnLadder)
+                        PickUpItem();
+                    else
+                    {
+                        if (InHandItem != null)
+                            InHandItem.DoAction();
+                        StopPickingUpItem();
+                    }
                 }
         }
         private void g_Gamepad_OnButtonUp(object sender, GamepadButtons e)
@@ -132,8 +143,6 @@ namespace DN.GameObjects.Creatures
 
             _dt = dt;
 
-            if (_currentWeapon != null)
-                _currentWeapon.Update(dt);
 
             UpdateControlls(dt);
             _dustEffect.Position = new Vector2(Direction == GameObjects.Direction.Left ?Bounds.Right:Bounds.Left, Bounds.Bottom);

@@ -80,13 +80,11 @@ namespace DN.GameObjects.Creatures.Enemies.Behaviours
             if (collidedCell.Direction.X != 0)
             {
                 if (!_sawPlayer)
-                    Creature.Direction = (Direction)(sbyte)((sbyte)(Creature.Direction) * -1);
+                    Creature.Direction = (Direction)((sbyte)(Creature.Direction) * -1);
                 else
                 {
                     Creature.Jump();
-                    //todo: jump
                 }
-
             }
         }
 

@@ -7,11 +7,7 @@ using System.Text;
 
 namespace DN.GameObjects
 {
-    public enum Direction : sbyte
-    {
-        Left = -1,
-        Right = 1
-    }
+
 
     public delegate void TileCollisionEventHandler(Vector2 velocity, CollidedCell collidedCell);
     
@@ -53,7 +49,6 @@ namespace DN.GameObjects
             get { return Collisions.Any(p => p.CellType == CellType.Ladder || p.CellType == CellType.VRope); }
         }
 
-        public Direction Direction{get; set;}
 
         public CollidableGameObject(GameWorld gameWorld)
             :base(gameWorld)
@@ -204,7 +199,7 @@ namespace DN.GameObjects
             List<CollidedCell> tiles = null;
 
             Vector2 startOffset = offset;
-
+          //  Console.WriteLine(startOffset.Y);
             //  if (offset.X != 0)
             {
                 float oldOffset = offset.X;
@@ -301,6 +296,8 @@ namespace DN.GameObjects
                 if(CollisionWithTiles != null)
                     CollisionWithTiles(startOffset, collidedCell);
             }
+            //Console.WriteLine("start: " + startOffset);
+           // Console.WriteLine("Velocity" + Velocity);
         }
 
         protected void CheckOverSpeed(ref float velocity, float maxVelocity)

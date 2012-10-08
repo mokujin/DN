@@ -55,17 +55,18 @@ namespace DN
       
             GL.ClearColor(Color4.Black);
 
-            LoadTextures();
+            LoadContent();
             gameWorld = new GameWorld(20, 20);
 
             Keyboard.KeyRepeat = false;
             base.OnLoad(e);
-            new AudioManager(16, 8, 4096, true);
+
+            new AudioManager(16, 8, 4096, false);
             AudioClip clip = new AudioClip(Path.Combine("Content", "Sounds", "rainfall.ogg"));
             clip.Play();
         }
 
-        private void LoadTextures()
+        private void LoadContent()
         {
             CM.I.LoadTexture("wall_tile", Path.Combine("Content", "Textures", "wall_tile.png"));
             CM.I.LoadTexture("hero_tile", Path.Combine("Content", "Textures", "hero_tile.png"));
@@ -73,6 +74,8 @@ namespace DN
             CM.I.LoadTexture("sword_sprite", Path.Combine("Content", "Textures", "Weapons", "Sword.png"));
             CM.I.LoadTexture("bat_sprite", Path.Combine("Content", "Textures", "Enemies", "Bat.png"));
             CM.I.LoadTexture("troll_sprite", Path.Combine("Content", "Textures", "Enemies", "Troll.png"));
+            CM.I.LoadTexture("heart", Path.Combine("Content", "Textures", "Gui", "heart.png"));
+            CM.I.LoadTexture("potion", Path.Combine("Content", "Textures", "GameObjects", "Potion.png"));
 
             CM.I.LoadFont("Big", Path.Combine("Content", "Fonts", "monofur.ttf"), 48);
             CM.I.LoadFont("Middle", Path.Combine("Content", "Fonts", "monofur.ttf"), 24);
@@ -86,9 +89,10 @@ namespace DN
             if (g_Keyboard[Key.Escape])
                 Exit();
 
+            float dt = (float) e.Time;
+            g_Gamepad.Update(dt);
+            gameWorld.Update(dt);
 
-            g_Gamepad.Update();
-            gameWorld.Update((float)e.Time);
             base.OnUpdateFrame(e);
         }
         

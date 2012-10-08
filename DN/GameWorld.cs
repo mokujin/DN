@@ -6,6 +6,8 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DN.GUI;
+using DN.GameObjects.Items;
 using OpenTK.Graphics;
 using OpenTK.Input;
 using DN.GameObjects.Creatures;
@@ -16,7 +18,6 @@ using DN.GameObjects.Creatures.Enemies;
 using System.IO;
 using DN.Effects;
 using OpenTK.Graphics.OpenGL;
-using DN.GameObjects.Weapons;
 
 namespace DN
 {
@@ -27,6 +28,7 @@ namespace DN
         public int Width{get; private set;}
         public int Height{get; private set;}
         public TileMap TileMap { get; private set; }
+        private GUIManager _guiManager;
 
         public Hero Hero
         {
@@ -41,7 +43,7 @@ namespace DN
         private Queue<GameObject> _deleteObjectsQueue;
 
         public Camera Camera { get; private set; }
-
+        private float _scale = 1.0f;
         private float _alphaEffect = 0;
 
         ParallaxBackground background;
@@ -50,7 +52,6 @@ namespace DN
 
         public GameWorld(int width, int height)
         {
-            Game.g_Keyboard.KeyDown += g_Keyboard_KeyDown;
             Width = width;
             Height = height;
             TileMap = new TileMap(Width, Height);
@@ -95,52 +96,24 @@ namespace DN
 
             for (int i = 0; i < 0; i++)
             {
-                Creature bat = EnemiesFabric.CreateEnemy(this,RandomTool.RandBool()? EnemyType.Troll: EnemyType.Bat);
+                Creature bat = EnemiesFabric.CreateEnemy(this,RandomTool.RandBool()? EnemyType.Bat : EnemyType.Troll);
                 bat.Cell = GetRandomPoint();   
             }
-            
-        }
-
-        void g_Keyboard_KeyDown(object sender, KeyboardKeyEventArgs e)
-        {
-           // BloodSystem.InitEmitter(Hero.Position, Vector2.UnitX, 3, 0.4f, 2);
-        }
-
-        public void InsertHero()
-        {
-            Hero = new Hero(this);
-            Point p = GetRandomPoint();
-            Hero.Position = new Vector2((p.X * 64)+32, (p.Y * 64)+32);
-            Camera.MoveTo(Hero.Position);
-        }
-        public Point GetRandomPoint()
-        {
-            Point p;
-            do
+            for (int i = 0; i < 40; i++)
             {
-                p = new Point(RandomTool.RandInt(0, Width), RandomTool.RandInt(0, Height));
-            } while (!TileMap.IsFree(p));
+                Potion potion = new Potion(this, PotionType.Healing, 3);
+                potion.Cell =GetRandomPoint();
+            }
 
-            return p;
-        }
 
-        public void AddObject(GameObject gameObject)
-        {
-            _addNewObjectsQueue.Enqueue(gameObject);
-        }
-        public void RemoveObject(GameObject gameObject)
-        {
-            _deleteObjectsQueue.Enqueue(gameObject);
-        }
-
-        public float DistanceToObject(GameObject g1, GameObject g2)
-        { 
-            return (float)Math.Sqrt(Math.Pow(g1.X - g2.X,2) + Math.Pow(g1.Y - g2.Y,2));;
-        }
-        public Vector2 DirectionToObject(GameObject g1, GameObject g2)
-        {
-            float angle = (float)Math.Atan2(g1.Y - g2.Y, g1.X - g2.X);
-            return new Vector2(-(float)Math.Cos(angle), -(float)Math.Sin(angle));  
+            _guiManager = new GUIManager();
+            HealthBar healthBar = new HealthBar(Hero)
+                                      {
+                                          Y = Game.g_screenRect.Bottom - 48,
+                                          X = Game.g_screenRect.Left + 48
+                                      };
+            _guiManager.Add(healthBar);
+            
         }
 
         public void Update(float dt)
@@ -149,23 +122,31 @@ namespace DN
 
             Camera.MoveTo(Hero.Position);
 
-           // foreach (var gameObject in _gameObjects)
-            //    gameObject.Update(dt);
-
-            Parallel.ForEach(_gameObjects, gameObject => gameObject.Update(dt));
+            foreach (var gameObject in _gameObjects)
+            {
+                gameObject.Update(dt);
+            }
+         //   Parallel.ForEach(_gameObjects, gameObject => gameObject.Update(dt));
             CheckCollisionsWithObjects();
 
-            if (Game.g_Keyboard[Key.Plus])
-                Camera.ScaleOn(0.01f);
-            if (Game.g_Keyboard[Key.Minus])
-                Camera.ScaleOn(-0.01f);
-
-            
+            Vector2 vel = Hero.GetVelocity();
+            if(vel.Y > 10)
+            {
+                if (_scale > 0.5f)
+                    _scale -= dt;
+                Game.g_Gamepad.Vibrate(0.5f, 0.5f, 0.2f);
+            }
+            else
+            {
+                _scale = 1f;
+            }
+            Camera.ScaleTo(_scale);
 
             Camera.Update(dt);
             UpdateObjectsEnqueues();
 
             background.Update(dt);
+            _guiManager.Update(dt);
 
             if(Hero.IsDead)
             {
@@ -179,11 +160,14 @@ namespace DN
                 _gameObjects.Add(_addNewObjectsQueue.Dequeue());
 
             while (_deleteObjectsQueue.Count > 0)
-                _gameObjects.Remove(_deleteObjectsQueue.Dequeue());
+            {
+                GameObject obj = _deleteObjectsQueue.Dequeue();
+                obj.Destroyed = true;
+                _gameObjects.Remove(obj);
+            }
         }
 
         Texture back = new Texture(Game.g_screenSize);
-
         public void Draw(float dt)
         {
             
@@ -223,9 +207,11 @@ namespace DN
 
                 SpriteBatch.Instance.End();
             }
+            SpriteBatch.Instance.Begin();
+            _guiManager.Draw(dt);
+            SpriteBatch.Instance.End();
 
         }
-
         private void RenderTiles(float dt)
         {
             Rectangle rect = Camera.BoundingRectangle;
@@ -241,15 +227,7 @@ namespace DN
         }
 
 
-        public bool InRange(int x, int y)
-        {
-            return x >= 0 && x < Width && y >= 0 && y < Height;
-        }
 
-        public bool InRange(Point cell)
-        {
-            return cell.X >= 0 && cell.X < Width && cell.Y >= 0 && cell.Y < Height;
-        }
 
         public void CheckCollisionsWithObjects()
         {
@@ -262,22 +240,6 @@ namespace DN
                                                                                              }
                                                                                      }));
         }
-        //internal List<GameObject> GetCollisionsWithObjects(GameObject gameObject)
-        //{
-        //    List<GameObject> list = new List<GameObject>();
-        //    foreach (GameObject gO in _gameObjects)
-        //    {
-        //        if (gO != gameObject)
-        //        {
-        //            if (gO.Bounds.IntersectsWith(gameObject.Bounds))
-        //            {
-        //                list.Add(gO);
-        //            }
-                    
-        //        }
-        //    }
-        //    return list;
-        //}
 
         internal List<CollidedCell> GetCollisionsWithTiles(RectangleF rectangle)
         {
@@ -291,7 +253,7 @@ namespace DN
         {
 
             var tilesToCheck = TileMap.GetRectanglesAround(new Point(rectangle.X / 64,
-                                                                     rectangle.Y / 64));
+                                                                     rectangle.Y / 64), CellType.Free);
 
             var list = new List<CollidedCell>();
             foreach (Rectangle rect in tilesToCheck)
@@ -301,6 +263,78 @@ namespace DN
             }
             return list;
         }
+
+
+        public void InsertHero()
+        {
+            Hero = new Hero(this);
+            Point p = GetRandomPoint();
+            Hero.Position = new Vector2((p.X * 64) + 32, (p.Y * 64) + 32);
+            Hero.CollisionWithTiles += HeroOnCollisionWithTiles;
+            Hero.TakeDamageEvent += HeroOnTakeDamageEvent;
+            Camera.MoveTo(Hero.Position);
+        }
+
+        public Point GetRandomPoint()
+        {
+            Point p;
+            do
+            {
+                p = new Point(RandomTool.RandInt(0, Width), RandomTool.RandInt(0, Height));
+            } while (!TileMap.IsFree(p));
+
+            return p;
+        }
+
+        public void AddObject(GameObject gameObject)
+        {
+            _addNewObjectsQueue.Enqueue(gameObject);
+        }
+        public void RemoveObject(GameObject gameObject)
+        {
+            _deleteObjectsQueue.Enqueue(gameObject);
+        }
+
+        public float DistanceToObject(GameObject g1, GameObject g2)
+        {
+            return (float)Math.Sqrt(Math.Pow(g1.X - g2.X, 2) + Math.Pow(g1.Y - g2.Y, 2)); ;
+        }
+        public Vector2 DirectionToObject(GameObject g1, GameObject g2)
+        {
+            float angle = (float)Math.Atan2(g1.Y - g2.Y, g1.X - g2.X);
+            return new Vector2(-(float)Math.Cos(angle), -(float)Math.Sin(angle));
+        }
+
+        public bool InRange(int x, int y)
+        {
+            return x >= 0 && x < Width && y >= 0 && y < Height;
+        }
+
+        public bool InRange(Point cell)
+        {
+            return cell.X >= 0 && cell.X < Width && cell.Y >= 0 && cell.Y < Height;
+        }
+
+
+        private void HeroOnTakeDamageEvent(GameObject sender, float amount)
+        {
+            Camera.Rumble(0.2f, 4, 4);
+            Game.g_Gamepad.Vibrate(0.6f, 0.6f, 0.2f);
+        }
+        private void HeroOnCollisionWithTiles(Vector2 velocity, CollidedCell collidedCell)
+        {
+
+            if (collidedCell.CellType == CellType.Wall)
+            {
+                if (collidedCell.Direction.Y == 1)
+                    if (velocity.Y >= 10)
+                    {
+                        Camera.Rumble(0.2f, 8, 4);
+                        Game.g_Gamepad.Vibrate(0.8f, 0.8f, 0.2f);
+                    }
+            }
+        }
+
     }
     
 
