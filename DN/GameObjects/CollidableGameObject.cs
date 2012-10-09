@@ -16,8 +16,8 @@ namespace DN.GameObjects
     {
         public event TileCollisionEventHandler CollisionWithTiles;
 
-
         public bool GravityAffected = true;
+        public bool IgnoreWalls = false;
         protected bool ClimbLadder;
 
         protected List<CollidedCell> Collisions;
@@ -193,6 +193,8 @@ namespace DN.GameObjects
 
         private void CheckCollisionsWithTiles(ref Vector2 offset, ref Vector2 position)
         {
+            if (IgnoreWalls)
+                return;
             Collisions.Clear();
             List<CollidedCell> tilesX = null;
             List<CollidedCell> tilesY = null;

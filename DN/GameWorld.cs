@@ -38,7 +38,10 @@ namespace DN
 
         public const float G = 15f; // gravity acceleration;
         public static readonly Vector2 GravityDirection = new Vector2(0, 1);
+        
         private List<GameObject> _gameObjects;
+        private QuadTree<GameObject> _quadTree;
+
         private Queue<GameObject> _addNewObjectsQueue;
         private Queue<GameObject> _deleteObjectsQueue;
 
@@ -56,7 +59,10 @@ namespace DN
             Height = height;
             TileMap = new TileMap(Width, Height);
 
+
             _gameObjects = new List<GameObject>();
+            _quadTree = new QuadTree<GameObject>(new Rectangle(0,0, Width * 64, Height * 64));
+            _quadTree.Rebuild();
             _addNewObjectsQueue = new Queue<GameObject>();
             _deleteObjectsQueue = new Queue<GameObject>();
 
@@ -94,7 +100,7 @@ namespace DN
 
             mback = new MagicBackground();
 
-            for (int i = 0; i < 20; i++)
+            for (int i = 0; i < 3; i++)
             {
                 Creature bat = EnemiesFabric.CreateEnemy(this,RandomTool.RandBool()? EnemyType.Bat : EnemyType.Troll);
                 bat.Cell = GetRandomPoint();   
@@ -113,6 +119,8 @@ namespace DN
                                           X = Game.g_screenRect.Left + 48
                                       };
             _guiManager.Add(healthBar);
+
+            UpdateObjectsEnqueues();
             
         }
 
@@ -126,15 +134,14 @@ namespace DN
             {
                 gameObject.Update(dt);
             }
-         //   Parallel.ForEach(_gameObjects, gameObject => gameObject.Update(dt));
+            //Parallel.ForEach(_gameObjects, gameObject => gameObject.Update(dt));
             CheckCollisionsWithObjects();
-
             Vector2 vel = Hero.GetVelocity();
             if(vel.Y > 10)
             {
                 if (_scale > 0.5f)
                     _scale -= dt;
-                Game.g_Gamepad.Vibrate(0.5f, 0.5f, 0.2f);
+                Game.g_Gamepad.Vibrate(0.0f, 0.1f, 0.2f);
             }
             else
             {
@@ -157,13 +164,18 @@ namespace DN
         private void UpdateObjectsEnqueues()
         {
             while (_addNewObjectsQueue.Count > 0)
-                _gameObjects.Add(_addNewObjectsQueue.Dequeue());
+            {
+                GameObject gameObject = _addNewObjectsQueue.Dequeue();
+                _gameObjects.Add(gameObject);
+                _quadTree.Insert(gameObject);
+            }
 
             while (_deleteObjectsQueue.Count > 0)
             {
                 GameObject obj = _deleteObjectsQueue.Dequeue();
                 obj.Destroyed = true;
                 _gameObjects.Remove(obj);
+                _quadTree.RemoveItem(obj);
             }
         }
 
@@ -181,7 +193,7 @@ namespace DN
             GL.ClearColor(0, 0, 0, 1);
             GL.Clear(ClearBufferMask.ColorBufferBit);
 
-            //mback.Draw();
+            mback.Draw();
             background.Draw(dt);
 
             BloodSystem.DrawBackground(dt);
@@ -231,14 +243,19 @@ namespace DN
 
         public void CheckCollisionsWithObjects()
         {
-            Parallel.ForEach(_gameObjects, gO1 => Parallel.ForEach(_gameObjects, gO2 =>
-                                                                                     {
-                                                                                         if (gO1 != gO2)
-                                                                                             if (gO1.Bounds.IntersectsWith(gO2.Bounds))
-                                                                                             {
-                                                                                                 gO1.CollisionWithObject(gO1, gO2);
-                                                                                             }
-                                                                                     }));
+          //  Parallel.ForEach(_gameObjects, gO1 =>
+            foreach (var gO1 in _gameObjects)
+            {
+                {
+                    List<GameObject> list = _quadTree.Query((gO1 as IQuadTreeItem).Bounds);
+
+                    foreach (var gameObject in list)
+                    {
+                        gameObject.CollisionWithObject(gameObject, gO1);
+                    }
+                }
+            }
+            //   );
         }
 
         internal List<CollidedCell> GetCollisionsWithTiles(RectangleF rectangle)
