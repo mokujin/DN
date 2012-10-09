@@ -61,7 +61,7 @@ namespace DN
             Keyboard.KeyRepeat = false;
             base.OnLoad(e);
 
-            new AudioManager(16, 8, 4096, false);
+            new AudioManager(16, 8, 4096, true);
             AudioClip clip = new AudioClip(Path.Combine("Content", "Sounds", "rainfall.ogg"));
             clip.Play();
         }
