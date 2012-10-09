@@ -22,7 +22,6 @@ namespace Blueberry.Audio
         public int Source { get; private set; }
         public VorbisReader Reader { get; private set; }
         public AudioClip CurrentClip { get; private set; }
-        public bool Ready { get; private set; }
 
         public ALFormat CurrentFormat { get; private set; }
         public int CurrentRate { get; private set; }
@@ -55,7 +54,6 @@ namespace Blueberry.Audio
             BufferSize = bufferSize;
             Reader = null;
             CurrentClip = null;
-            Ready = false;
 
             SegmentBuffer = new float[bufferSize];
             CastBuffer = new short[bufferSize];
@@ -86,45 +84,30 @@ namespace Blueberry.Audio
             AL.SourceStop(Source);
             if(Buffers != null)
                 AL.DeleteBuffers(Buffers);
-
+            AL.DeleteSource(Source);
             Buffers = null;
-            Close();
+            CloseReader();
         }
 
-        /// <summary>
-        /// Determines the format of the given audio clip.
-        /// </summary>
-        /// <param name="clip">The clip to determine the format of.</param>
-        /// <returns>The audio format.</returns>
-        public static ALFormat DetermineFormat(VorbisReader reader)
-        { 
-            // The number of channels is determined by the clip.  The bit depth
-            // however is the choice of the player.  If desired, 8-bit audio
-            // could be supported here.
-            if (reader.Channels == 1)
-            {
-                return ALFormat.Mono16;
-            }
-            else if (reader.Channels == 2)
-            {
-                return ALFormat.Stereo16;
-            }
-            else
-            {
-                throw new NotImplementedException("Only mono and stereo are implemented.  Audio has too many channels.");
-            }
-        }
-
-        /// <summary>
-        /// Determines the rate of the given audio clip.
-        /// </summary>
-        /// <param name="clip">The clip to determine the rate of.</param>
-        /// <returns>The audio rate.</returns>
-        public int DetermineRate(VorbisReader reader)
+        public void Init(AudioClip clip)
         {
-            return reader.SampleRate;
+            ALSourceState state = AL.GetSourceState(Source);
+            if (state == ALSourceState.Playing || state == ALSourceState.Paused)
+            {
+                Stop();
+            }
+            if (clip != CurrentClip)
+            {
+                CloseReader();
+                CurrentClip = clip;
+                OpenReader();
+
+                CurrentFormat = Reader.Channels == 1 ? ALFormat.Mono16 : ALFormat.Stereo16;
+                CurrentRate = Reader.SampleRate;
+            }
         }
-        public static void Check()
+
+        public static void CheckErrors()
         {
             ALError error;
             if ((error = AL.GetError()) != ALError.NoError)
@@ -133,74 +116,82 @@ namespace Blueberry.Audio
         }
         void Empty()
         {
+            AL.SourceStop(Source);
             int queued;
             AL.GetSource(Source, ALGetSourcei.BuffersQueued, out queued);
-            if (queued > 0)
+            try
             {
-                try
+                while (queued > 0)
                 {
-                    AL.SourceUnqueueBuffers(Source, queued);
-                    Check();
+                    int[] buffer = new int[1];
+                    AL.SourceUnqueueBuffers(Source, 1, buffer);
+                    CheckErrors();
+                    queued--;
                 }
-                catch (InvalidOperationException)
+            }
+            catch (InvalidOperationException)
+            {
+                // This is a bug in the OpenAL implementation
+                // Salvage what we can
+                int processed;
+                AL.GetSource(Source, ALGetSourcei.BuffersProcessed, out processed);
+                var salvaged = new int[processed];
+                if (processed > 0)
                 {
-                    // This is a bug in the OpenAL implementation
-                    // Salvage what we can
-                    int processed;
-                    AL.GetSource(Source, ALGetSourcei.BuffersProcessed, out processed);
-                    var salvaged = new int[processed];
-                    if (processed > 0)
-                    {
-                        AL.SourceUnqueueBuffers(Source, processed, salvaged);
-                        Check();
-                    }
-
-                    // Try turning it off again?
-                    AL.SourceStop(Source);
-                    Check();
-
-                    Empty();
+                    AL.SourceUnqueueBuffers(Source, processed, salvaged);
+                    CheckErrors();
                 }
+
+                // Try turning it off again?
+                AL.SourceStop(Source);
+                CheckErrors();
+
+                Empty();
             }
         }
         /// <summary>
         /// Begins playing the given clip.
         /// </summary>
-        /// <param name="clip">The clip to play.</param>
-        public void Play(AudioClip clip)
+        public void Play()
         {
             var state = AL.GetSourceState(Source);
 
             switch (state)
             {
                 case ALSourceState.Playing:
-                    if (clip == CurrentClip)
-                        return;
-                    else
-                    {
-                        Stop();
-                        Ready = false;
-                        Reader.DecodedTime = TimeSpan.Zero;
-                        Empty();
-                        break;
-                    }
+                    return;
                 case ALSourceState.Paused:
                     Resume();
                     return;
                 case ALSourceState.Stopped:
-                    Ready = false;
-                    Reader.DecodedTime = TimeSpan.Zero;
                     Empty();
                     break;
             }
 
-            Prepare(clip);
+            Prepare();
 
             // Start playing the clip
             AL.SourcePlay(Source);
         }
-        private void PreCashe()
+
+        internal void OpenReader()
         {
+            lastStreamPosition = 0;
+            CurrentClip.underlyingStream.Seek(lastStreamPosition, SeekOrigin.Begin);
+            Reader = new VorbisReader(CurrentClip.underlyingStream, false);
+        }
+
+        internal void Prepare()
+        {
+            ALSourceState state = AL.GetSourceState(Source);
+            if (state == ALSourceState.Playing || state == ALSourceState.Paused)
+                Stop();
+            
+            lastStreamPosition = 0;
+            Reader.DecodedTime = TimeSpan.Zero;
+            
+            eof = false;
+
             DequeuUsedBuffers();
             // Buffer initial audio
             int usedBuffers = 0;
@@ -230,26 +221,6 @@ namespace Blueberry.Audio
             }
             AL.SourceQueueBuffers(Source, usedBuffers, Buffers);
         }
-        
-        internal void Prepare(AudioClip clip)
-        {
-            if (Ready && clip == CurrentClip) return;
-            CurrentClip = clip;
-
-            Stop();
-            
-            lastStreamPosition = 0;
-            CurrentClip.underlyingStream.Seek(lastStreamPosition, SeekOrigin.Begin);
-            Reader = new VorbisReader(CurrentClip.underlyingStream, false);
-            Ready = true;
-
-            CurrentFormat = DetermineFormat(Reader);
-            CurrentRate = DetermineRate(Reader);
-
-            eof = false;
-
-            PreCashe();
-        }
 
         public void Pause()
         {
@@ -274,14 +245,13 @@ namespace Blueberry.Audio
             }
         }
 
-        internal void Close()
+        internal void CloseReader()
         {
             if (Reader != null)
             {
                 Reader.Dispose();
                 Reader = null;
             }
-            Ready = false;
         }
 
         /// <summary>
@@ -302,7 +272,8 @@ namespace Blueberry.Audio
         /// </summary>
         public void Update()
         {
-            if (!Playing) return;
+            if (!Playing) return; 
+            
             if (Reader != null)
             {
                 CurrentClip.underlyingStream.Position = lastStreamPosition;

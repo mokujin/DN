@@ -112,7 +112,7 @@ namespace DN.GameObjects
         public virtual void Destroy()
         {
             if(DestroyEvent != null)
-                Destroy();
+                DestroyEvent();
             World.RemoveObject(this);
         }
 

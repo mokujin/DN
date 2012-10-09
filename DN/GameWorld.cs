@@ -94,7 +94,7 @@ namespace DN
 
             mback = new MagicBackground();
 
-            for (int i = 0; i < 0; i++)
+            for (int i = 0; i < 20; i++)
             {
                 Creature bat = EnemiesFabric.CreateEnemy(this,RandomTool.RandBool()? EnemyType.Bat : EnemyType.Troll);
                 bat.Cell = GetRandomPoint();   
