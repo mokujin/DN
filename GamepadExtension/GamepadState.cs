@@ -106,6 +106,7 @@ namespace GamepadExtension
 
         public void Vibrate(float leftMotor, float rightMotor)
         {
+            if (!Connected) return;
             Controller.SetVibration(new Vibration
             {
                 LeftMotorSpeed = (ushort)(Saturate(leftMotor) * ushort.MaxValue),
