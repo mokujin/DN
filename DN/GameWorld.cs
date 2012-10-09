@@ -56,6 +56,7 @@ namespace DN
             Height = height;
             TileMap = new TileMap(Width, Height);
 
+
             _gameObjects = new List<GameObject>();
             _addNewObjectsQueue = new Queue<GameObject>();
             _deleteObjectsQueue = new Queue<GameObject>();
@@ -122,11 +123,11 @@ namespace DN
 
             Camera.MoveTo(Hero.Position);
 
-            foreach (var gameObject in _gameObjects)
-            {
-                gameObject.Update(dt);
-            }
-         //   Parallel.ForEach(_gameObjects, gameObject => gameObject.Update(dt));
+         //   foreach (var gameObject in _gameObjects)
+         //   {
+         //       gameObject.Update(dt);
+         //   }
+            Parallel.ForEach(_gameObjects, gameObject => gameObject.Update(dt));
             CheckCollisionsWithObjects();
 
             Vector2 vel = Hero.GetVelocity();
@@ -145,7 +146,7 @@ namespace DN
             Camera.Update(dt);
             UpdateObjectsEnqueues();
 
-            background.Update(dt);
+          //  background.Update(dt);
             _guiManager.Update(dt);
 
             if(Hero.IsDead)
@@ -182,7 +183,7 @@ namespace DN
             GL.Clear(ClearBufferMask.ColorBufferBit);
 
             //mback.Draw();
-            background.Draw(dt);
+       //     background.Draw(dt);
 
             BloodSystem.DrawBackground(dt);
             if (!Hero.IsDead)

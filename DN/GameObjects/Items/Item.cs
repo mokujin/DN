@@ -28,11 +28,16 @@ namespace DN.GameObjects.Items
             {
                     _creature = value;
                     if (_creature == null)
+                    {
                         GravityAffected = true;
+                        IgnoreWalls = false;
+                    }
                     else
                     {
-                        Velocity = new Vector2(0,0);
+                        Velocity = new Vector2(0, 0);
+                        Position = Creature.Position;
                         GravityAffected = false;
+                        IgnoreWalls = true;
                     }
             }
         }
