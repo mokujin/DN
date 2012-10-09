@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using OpenTK;
 using System.Drawing;
+using Blueberry;
 namespace DN.GameObjects
 {
 
@@ -16,7 +17,7 @@ namespace DN.GameObjects
     public delegate void CollisionEventHandler(GameObject sender, GameObject gameObject);
     public delegate void DestroyEventHandler();
 
-    public abstract class GameObject
+    public abstract class GameObject:IQuadTreeItem
     {
         public event CollisionEventHandler CollisionWithObjects;
 
@@ -75,6 +76,14 @@ namespace DN.GameObjects
             set { _size.Width = value.Width; _size.Height = value.Height; }
         }
 
+        Rectangle IQuadTreeItem.Bounds
+        {
+            get 
+            {
+                return new Rectangle((int)Bounds.X, (int)Bounds.Y, (int)Bounds.Width, (int)Bounds.Height);
+            }
+        }
+
         public virtual RectangleF Bounds
         {
             get
@@ -82,6 +91,7 @@ namespace DN.GameObjects
                 return new RectangleF((X - Size.Width / 2), (Y - Size.Height / 2), Size.Width, Size.Height);
             }
         }
+
         public float Left { get { return Bounds.Left; } set { X = value + Size.Width / 2; } }
         public float Right { get { return Bounds.Right; } set { X = value - Size.Width / 2; } }
         public float Top { get { return Bounds.Top; } set { Y = value + Size.Height / 2; } }
@@ -122,5 +132,10 @@ namespace DN.GameObjects
          //   CheckCollisionsWithObjects(ref offset, ref position);
         }
 
+
+
+        public event PositionChangeHandler OnPositionChange;
+
+        public event RemoveFromSceneHandler OnRemoveFromScene;
     }
 }
