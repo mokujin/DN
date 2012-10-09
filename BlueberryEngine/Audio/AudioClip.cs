@@ -25,7 +25,8 @@ namespace Blueberry.Audio
         {
             underlyingStream = File.OpenRead(fileName);
             StaticChanel = new AudioChannel(AudioManager.Instance.BuffersPerChannel, AudioManager.Instance.BytesPerBuffer);
-            StaticChanel.Prepare(this);
+            StaticChanel.Init(this);
+            //StaticChanel.Prepare();
             AudioManager.Instance.StaticClips.Add(this);
             //rawClip = new VorbisFile(fileName);
 
@@ -40,7 +41,8 @@ namespace Blueberry.Audio
         {
             underlyingStream = inputStream;
             StaticChanel = new AudioChannel(AudioManager.Instance.BuffersPerChannel, AudioManager.Instance.BytesPerBuffer);
-            StaticChanel.Prepare(this);
+            StaticChanel.Init(this);
+            //StaticChanel.Prepare();
             AudioManager.Instance.StaticClips.Add(this);
             //rawClip = new VorbisFile(inputStream);
             //Cache(64 * 1024);
@@ -83,7 +85,7 @@ namespace Blueberry.Audio
         }
         public void Play()
         {
-            StaticChanel.Play(this);
+            StaticChanel.Play();
         }
         public void Pause()
         {

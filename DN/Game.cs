@@ -35,6 +35,7 @@ namespace DN
         #endregion
         private GameWorld gameWorld;
         AudioContext audioContext;
+        AudioClip clip;
 
         public Game()
             : base(g_screenSize.Width, g_screenSize.Height, GraphicsMode.Default, "Devil's nightmare")
@@ -56,7 +57,7 @@ namespace DN
             GL.ClearColor(Color4.Black);
 
             LoadContent();
-            gameWorld = new GameWorld(20, 20);
+            gameWorld = new GameWorld(30, 30);
 
             Keyboard.KeyRepeat = false;
             base.OnLoad(e);
@@ -88,7 +89,6 @@ namespace DN
         {
             if (g_Keyboard[Key.Escape])
                 Exit();
-
             float dt = (float) e.Time;
             g_Gamepad.Update(dt);
             gameWorld.Update(dt);

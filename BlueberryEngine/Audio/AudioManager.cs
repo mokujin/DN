@@ -121,11 +121,10 @@ namespace Blueberry.Audio
 
                     if (channel.IsFree)
                     {
-                        channel.Play(clip);
+                        channel.Init(clip);
+                        channel.Play();
                         return;
                     }
-                
-
             }
         }
 

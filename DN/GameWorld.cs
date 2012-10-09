@@ -161,7 +161,15 @@ namespace DN
                 _alphaEffect += dt;
             }
         }
-
+        Color[] colors = { Color.Red, Color.Green, Color.Yellow, Color.Violet, Color.Pink, Color.White, Color.Black, Color.Blue, Color.Brown };
+        private void VisualizeQuadTree()
+        {
+            List<QuadTreeNode<GameObject>> nodes = _quadTree.Nodes;
+            foreach (var n in nodes)
+            {
+                SpriteBatch.Instance.OutlineRectangle(n.Area, colors[n.Generation]);
+            }
+        }
         private void UpdateObjectsEnqueues()
         {
             while (_addNewObjectsQueue.Count > 0)
@@ -222,6 +230,9 @@ namespace DN
             }
             SpriteBatch.Instance.Begin();
             _guiManager.Draw(dt);
+            SpriteBatch.Instance.End();
+            SpriteBatch.Instance.Begin(Camera.GetViewMatrix());
+            VisualizeQuadTree();
             SpriteBatch.Instance.End();
 
         }
