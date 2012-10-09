@@ -373,12 +373,12 @@ namespace Blueberry
 
         public void ScaleTo(float scale)
         {
-            //_nextScale = Math.Max(scale, 0);
+            _nextScale = Math.Max(scale, 0);
         }
 
         public void ScaleOn(float amount)
         {
-            //_nextScale = Math.Max(_nextScale + amount, 0);
+            _nextScale = Math.Max(_nextScale + amount, 0);
         }
 
         public void RotateTo(float angle)

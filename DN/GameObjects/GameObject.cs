@@ -108,8 +108,12 @@ namespace DN.GameObjects
             Vector2 offset = Vector2.Zero;
 
             CheckCollisions(ref offset,ref pos);
-
-            Position = pos;
+            if (Position != pos)
+            {
+                Position = pos;
+                if (OnPositionChange != null)
+                    OnPositionChange(this);
+            }
         }
         public abstract void Draw(float dt);
 
