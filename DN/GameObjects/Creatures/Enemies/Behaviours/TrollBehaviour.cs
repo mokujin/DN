@@ -75,7 +75,7 @@ namespace DN.GameObjects.Creatures.Enemies.Behaviours
             }
         }
 
-        private void Creature_CollisionWithTiles(OpenTK.Vector2 velocity, CollidedCell collidedCell)
+        private void Creature_CollisionWithTiles(CollidableGameObject velocity, CollidedCell collidedCell)
         {
             if (collidedCell.Direction.X != 0)
             {
@@ -105,15 +105,7 @@ namespace DN.GameObjects.Creatures.Enemies.Behaviours
             }
             else
             {
-                Vector2 dir;
-                if (Hero.X > Creature.X)
-                {
-                    dir = new Vector2(1, 0);
-                }
-                else
-                {
-                    dir = new Vector2(-1, 0);
-                }
+                Vector2 dir = Hero.X > Creature.X ? new Vector2(1, 0) : new Vector2(-1, 0);
                 Creature.Move(dir, Creature.Acceleration * dt);
             }
         }

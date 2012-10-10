@@ -63,7 +63,7 @@ namespace DN.GameObjects.Creatures
             CollisionWithTiles += OnCollisionWithTiles;
         }
 
-        private void OnCollisionWithTiles(Vector2 velocity, CollidedCell collidedCell)
+        private void OnCollisionWithTiles(CollidableGameObject sender, CollidedCell collidedCell)
         {
 
         }

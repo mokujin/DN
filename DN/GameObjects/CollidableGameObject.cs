@@ -9,7 +9,7 @@ namespace DN.GameObjects
 {
 
 
-    public delegate void TileCollisionEventHandler(Vector2 velocity, CollidedCell collidedCell);
+    public delegate void TileCollisionEventHandler(CollidableGameObject sender, CollidedCell collidedCell);
     
     //dunno how to name it
     public abstract class CollidableGameObject:GameObject
@@ -296,7 +296,7 @@ namespace DN.GameObjects
             foreach (var collidedCell in Collisions)
             {
                 if(CollisionWithTiles != null)
-                    CollisionWithTiles(startOffset, collidedCell);
+                    CollisionWithTiles(this, collidedCell);
             }
             //Console.WriteLine("start: " + startOffset);
            // Console.WriteLine("Velocity" + Velocity);

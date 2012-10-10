@@ -234,7 +234,7 @@ namespace DN
             _guiManager.Draw(dt);
             SpriteBatch.Instance.End();
             SpriteBatch.Instance.Begin(Camera.GetViewMatrix());
-            VisualizeQuadTree();
+            //VisualizeQuadTree();
             SpriteBatch.Instance.End();
 
         }
@@ -353,13 +353,13 @@ namespace DN
             Camera.Rumble(0.2f, 4, 4);
             Game.g_Gamepad.Vibrate(0.6f, 0.6f, 0.2f);
         }
-        private void HeroOnCollisionWithTiles(Vector2 velocity, CollidedCell collidedCell)
+        private void HeroOnCollisionWithTiles(CollidableGameObject sender, CollidedCell collidedCell)
         {
 
             if (collidedCell.CellType == CellType.Wall)
             {
                 if (collidedCell.Direction.Y == 1)
-                    if (velocity.Y >= 10)
+                    if (sender.GetVelocity().Y >= 10)
                     {
                         Camera.Rumble(0.2f, 8, 4);
                         Game.g_Gamepad.Vibrate(0.8f, 0.8f, 0.2f);
