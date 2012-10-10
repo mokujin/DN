@@ -6,7 +6,7 @@ namespace Blueberry
 {
     public static class RandomTool
     {
-        public static Random random = new Random();
+        public static Random random = new Random((int)DateTime.Now.Ticks);
 
         public static int RandInt(int min, int max)
         {
