@@ -63,7 +63,7 @@ namespace DN
             base.OnLoad(e);
 
             new AudioManager(16, 8, 4096, true);
-            clip = new AudioClip(Path.Combine("Content", "Sounds", "rainfall.ogg"));
+            AudioClip clip = new AudioClip(Path.Combine("Content", "Sounds", "rainfall.ogg"));
             clip.Play();
         }
 

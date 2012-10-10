@@ -100,11 +100,12 @@ namespace DN
 
             mback = new MagicBackground();
 
-            for (int i = 0; i < 1; i++)
+            for (int i = 0; i < 100; i++)
             {
                 Creature bat = EnemiesFabric.CreateEnemy(this,RandomTool.RandBool()? EnemyType.Bat : EnemyType.Troll);
                 bat.Cell = GetRandomPoint();   
             }
+
             for (int i = 0; i < 1; i++)
             {
                 Potion potion = new Potion(this, PotionType.Healing, 3);
@@ -121,7 +122,6 @@ namespace DN
             _guiManager.Add(healthBar);
 
             UpdateObjectsEnqueues();
-            
         }
 
         public void Update(float dt)
@@ -130,11 +130,12 @@ namespace DN
 
             Camera.MoveTo(Hero.Position);
 
-            foreach (var gameObject in _gameObjects)
-            {
-                gameObject.Update(dt);
-            }
-            //Parallel.ForEach(_gameObjects, gameObject => gameObject.Update(dt));
+         //   foreach (var gameObject in _gameObjects)
+           // {
+          //      gameObject.Update(dt);
+            //}
+            Parallel.ForEach(_gameObjects, gameObject => gameObject.Update(dt));
+            _quadTree.Rebuild();
             CheckCollisionsWithObjects();
             Vector2 vel = Hero.GetVelocity();
             if(vel.Y > 10)
@@ -150,6 +151,7 @@ namespace DN
             Camera.ScaleTo(_scale);
 
             Camera.Update(dt);
+
             UpdateObjectsEnqueues();
 
             background.Update(dt);
@@ -255,8 +257,8 @@ namespace DN
 
         public void CheckCollisionsWithObjects()
         {
-          //  Parallel.ForEach(_gameObjects, gO1 =>
-            foreach (var gO1 in _gameObjects)
+            Parallel.ForEach(_gameObjects, gO1 =>
+         //   foreach (var gO1 in _gameObjects)
             {
                 {
                     List<GameObject> list = _quadTree.Query((gO1 as IQuadTreeItem).Bounds);
@@ -268,7 +270,7 @@ namespace DN
                     }
                 }
             }
-            //   );
+               );
         }
 
         internal List<CollidedCell> GetCollisionsWithTiles(RectangleF rectangle)
