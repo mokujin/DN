@@ -53,12 +53,6 @@ namespace DN.GameObjects.Creatures.Enemies
 
         private void OnCollision(GameObject sender, GameObject gameObject)
         {
-            //if (gameObject is Weapon)
-            //{
-            //    var weapon = gameObject as Weapon;
-            //    if (weapon.Attacking)
-            //        TakeDamage(weapon.Damage, weapon.Direction, weapon.Damage * 20, true, 1.0f, 6);
-            //}
             if (gameObject is Hero)
             {
                 var hero = (Hero)gameObject;
@@ -69,7 +63,20 @@ namespace DN.GameObjects.Creatures.Enemies
             else if(gameObject is Enemy)
             {
                 var enemy = (Enemy) gameObject;
-                Move(enemy.X > X ? new Vector2(-1, 0) : new Vector2(1, 0), Acceleration*_dt);
+                Vector2 moveDir;
+                if (enemy.X > X)
+                {
+                    moveDir = new Vector2(-1, 0);
+                }
+                else if (enemy.X < X)
+                {
+                    moveDir = new Vector2(1, 0);
+                }
+                else
+                {
+                    moveDir = new Vector2(RandomTool.RandInt(1) * RandomTool.RandSign(), 0);
+                }
+                Move(moveDir, Acceleration*_dt);
             }
         }
 
