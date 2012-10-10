@@ -70,15 +70,7 @@ namespace DN
             Camera.ScaleTo(1f);
             Camera.MoveSpeed = 7;
             
-            var lg = new LevelGenerator
-                         {
-                             RoomsMaxWidth = 10,
-                             RoomsMaxHeight = 15,
-                             RoomCount = 0,
-                             Scale = 0.5f,
-                             WallSmoothing = 100f
-                         };
-            lg.Generate(this);
+
             /*
             for (int i = 0; i < width; i++)
             {
@@ -91,7 +83,6 @@ namespace DN
             */
             //TileMap.PrintDebug();
             // Console.ReadKey();
-            InsertHero();
 
             background = new ParallaxBackground(this);
             BloodSystem = new BloodSystem(this);
@@ -100,28 +91,21 @@ namespace DN
 
             mback = new MagicBackground();
 
-            for (int i = 0; i < 300; i++)
-            {
-                Creature bat = EnemiesFabric.CreateEnemy(this,RandomTool.RandBool()? EnemyType.Bat : EnemyType.Troll);
-                bat.Cell = GetRandomPoint();   
-            }
-
-            for (int i = 0; i < 1; i++)
-            {
-                Potion potion = new Potion(this, PotionType.Healing, 3);
-                potion.Cell =GetRandomPoint();
-            }
 
 
-            _guiManager = new GUIManager();
-            HealthBar healthBar = new HealthBar(Hero)
-                                      {
-                                          Y = Game.g_screenRect.Bottom - 48,
-                                          X = Game.g_screenRect.Left + 48
-                                      };
-            _guiManager.Add(healthBar);
 
             UpdateObjectsEnqueues();
+        }
+
+        public void InitGui()
+        {
+            _guiManager = new GUIManager();
+            HealthBar healthBar = new HealthBar(Hero)
+            {
+                Y = Game.g_screenRect.Bottom - 48,
+                X = Game.g_screenRect.Left + 48
+            };
+            _guiManager.Add(healthBar);
         }
 
         public void Update(float dt)
@@ -134,9 +118,8 @@ namespace DN
             {
                gameObject.Update(dt);
             }
-          //  Parallel.ForEach(_gameObjects, gameObject => gameObject.Update(dt));
+            //  Parallel.ForEach(_gameObjects, gameObject => gameObject.Update(dt));
             CheckCollisionsWithObjects();
-
             Vector2 vel = Hero.GetVelocity();
             if(vel.Y > 10)
             {
@@ -257,8 +240,8 @@ namespace DN
 
         public void CheckCollisionsWithObjects()
         {
-            Parallel.ForEach(_gameObjects, gO1 =>
-         //   foreach (var gO1 in _gameObjects)
+           // Parallel.ForEach(_gameObjects, gO1 =>
+            foreach (var gO1 in _gameObjects)
             {
                 {
                     List<GameObject> list = _quadTree.Query((gO1 as IQuadTreeItem).Bounds);
@@ -270,7 +253,7 @@ namespace DN
                     }
                 }
             }
-               );
+             //  );
         }
 
         internal List<CollidedCell> GetCollisionsWithTiles(RectangleF rectangle)

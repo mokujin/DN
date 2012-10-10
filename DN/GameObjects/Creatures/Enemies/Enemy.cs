@@ -82,7 +82,7 @@ namespace DN.GameObjects.Creatures.Enemies
 
         private void CreateLettersOnDestroyEvent()
         {
-            var letter = new Letter(World, (char)RandomTool.RandByte(97, 122))
+            new Letter(World, (char)RandomTool.RandByte(97, 122))
                              {
                                  Cell = Cell
                              };
