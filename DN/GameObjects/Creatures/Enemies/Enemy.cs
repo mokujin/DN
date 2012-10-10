@@ -77,7 +77,7 @@ namespace DN.GameObjects.Creatures.Enemies
         {
             var letter = new Letter(World, (char)RandomTool.RandByte(97, 122))
                              {
-                                 Position = Position
+                                 Cell = Cell
                              };
         }
 
@@ -85,7 +85,7 @@ namespace DN.GameObjects.Creatures.Enemies
         {
             var deadBody = new DeadBody(World)
                                     {
-                                        Position = Position,
+                                        Cell = Cell,
                                         Sprite = Sprite,
                                         MaxVelocity = MaxVelocity,
                                         MaxLadderVelocity = MaxVelocity,

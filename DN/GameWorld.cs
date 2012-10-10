@@ -130,13 +130,13 @@ namespace DN
 
             Camera.MoveTo(Hero.Position);
 
-         //   foreach (var gameObject in _gameObjects)
-           // {
-          //      gameObject.Update(dt);
-            //}
-            Parallel.ForEach(_gameObjects, gameObject => gameObject.Update(dt));
-            _quadTree.Rebuild();
+            foreach (var gameObject in _gameObjects)
+            {
+               gameObject.Update(dt);
+            }
+          //  Parallel.ForEach(_gameObjects, gameObject => gameObject.Update(dt));
             CheckCollisionsWithObjects();
+
             Vector2 vel = Hero.GetVelocity();
             if(vel.Y > 10)
             {
