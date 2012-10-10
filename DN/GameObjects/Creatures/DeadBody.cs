@@ -27,8 +27,8 @@ namespace DN.GameObjects.Creatures
         {
             base.Update(dt);
             _alpha -= dt / 10;
-            if(_alpha <= 0)
-                World.RemoveObject(this);
+            if (_alpha <= 0)
+                Destroy();
 
          //   if (!OnGround)
                 _rotation += dt * RandomTool.RandFloat() * 10;

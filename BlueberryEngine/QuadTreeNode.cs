@@ -531,7 +531,7 @@ namespace Blueberry
 
         /// <summary>Удаляет элемент из узла</summary>
         /// <param name="item">Элемент для удаления</param>
-        public void RemoveItem(T item)
+        public bool RemoveItem(T item)
         {
             // Находим и удаляем элемент
             if (NodeContent.Contains(item))
@@ -539,7 +539,16 @@ namespace Blueberry
                 item.OnPositionChange -= new PositionChangeHandler(ItemMove);
                 item.OnRemoveFromScene -= new RemoveFromSceneHandler(ItemRemove);
                 NodeContent.Remove(item);
+                return true;
             }
+            else if (Area.Contains(item.Bounds))
+            {
+                if (leftBottomNode.RemoveItem(item)) return true;
+                if ( rightBottomNode.RemoveItem(item)) return true;
+                if ( leftTopNode.RemoveItem(item)) return true;
+                if (rightTopNode.RemoveItem(item)) return true;
+            }
+            return false;
         }
 
         /// <summary>Удаляет элемент из узла по его индексу</summary>

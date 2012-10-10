@@ -62,7 +62,7 @@ namespace DN
 
             _gameObjects = new List<GameObject>();
             _quadTree = new QuadTree<GameObject>(new Rectangle(0,0, Width * 64, Height * 64));
-            _quadTree.Rebuild();
+            _quadTree.MaxGeneration = 4;
             _addNewObjectsQueue = new Queue<GameObject>();
             _deleteObjectsQueue = new Queue<GameObject>();
 
@@ -100,12 +100,12 @@ namespace DN
 
             mback = new MagicBackground();
 
-            for (int i = 0; i < 3; i++)
+            for (int i = 0; i < 1; i++)
             {
                 Creature bat = EnemiesFabric.CreateEnemy(this,RandomTool.RandBool()? EnemyType.Bat : EnemyType.Troll);
                 bat.Cell = GetRandomPoint();   
             }
-            for (int i = 0; i < 40; i++)
+            for (int i = 0; i < 1; i++)
             {
                 Potion potion = new Potion(this, PotionType.Healing, 3);
                 potion.Cell =GetRandomPoint();
@@ -175,7 +175,8 @@ namespace DN
             {
                 GameObject gameObject = _addNewObjectsQueue.Dequeue();
                 _gameObjects.Add(gameObject);
-                _quadTree.Insert(gameObject);
+                if(!gameObject.IgnoreCollisions)
+                    _quadTree.Insert(gameObject);
             }
 
             while (_deleteObjectsQueue.Count > 0)
@@ -183,7 +184,7 @@ namespace DN
                 GameObject obj = _deleteObjectsQueue.Dequeue();
                 obj.Destroyed = true;
                 _gameObjects.Remove(obj);
-                _quadTree.RemoveItem(obj);
+             //   obj.CollisionsOff();//.RemoveItem(obj);
             }
         }
 
@@ -201,7 +202,7 @@ namespace DN
             GL.ClearColor(0, 0, 0, 1);
             GL.Clear(ClearBufferMask.ColorBufferBit);
 
-            mback.Draw();
+            mback.Draw(dt);
             background.Draw(dt);
 
             BloodSystem.DrawBackground(dt);
@@ -262,7 +263,8 @@ namespace DN
 
                     foreach (var gameObject in list)
                     {
-                        gameObject.CollisionWithObject(gameObject, gO1);
+                        if(gameObject != gO1)
+                            gameObject.CollisionWithObject(gameObject, gO1);
                     }
                 }
             }

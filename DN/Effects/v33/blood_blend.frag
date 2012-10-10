@@ -16,7 +16,7 @@ void main(void)
 	if(tex2color.r > 0 && tex1color.r > 0)
 		color = vec4(tex2color.rgb, tex1color.a);
 	else
-		color = tex1color;
+		color = vec4(tex1color.rgb, (tex1color.r == 0.0 && tex1color.g == 0.0 && tex1color.b == 0.0)?0.0: tex1color.a);
 	 
 	//color = vec4(ftexcoord, 1, 0.5); //texture(colorTexture, ftexcoord) * 0.1;
 }

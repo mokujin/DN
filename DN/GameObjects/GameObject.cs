@@ -53,6 +53,8 @@ namespace DN.GameObjects
             {
                 _x = value.X;
                 _y = value.Y;
+                if (OnPositionChange != null)
+                    OnPositionChange(this);
             }
         }
 
@@ -108,12 +110,7 @@ namespace DN.GameObjects
             Vector2 offset = Vector2.Zero;
 
             CheckCollisions(ref offset,ref pos);
-            if (Position != pos)
-            {
-                Position = pos;
-                if (OnPositionChange != null)
-                    OnPositionChange(this);
-            }
+            
         }
         public abstract void Draw(float dt);
 
@@ -127,9 +124,14 @@ namespace DN.GameObjects
         {
             if(DestroyEvent != null)
                 DestroyEvent();
+            CollisionsOff();
             World.RemoveObject(this);
         }
-
+        public void CollisionsOff()
+        {
+            if (OnRemoveFromScene != null)
+            OnRemoveFromScene(this);
+        }
         protected virtual void CheckCollisions(ref Vector2 offset, ref Vector2 position)
         {
             if (IgnoreCollisions) return;
