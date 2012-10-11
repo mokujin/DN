@@ -16,6 +16,7 @@ using OpenTK.Audio;
 using OggStream;
 using Blueberry.Audio;
 using System.Threading;
+using Blueberry.Diagnostics;
 
 
 namespace DN
@@ -59,6 +60,8 @@ namespace DN
             LoadContent();
             gameWorld = new GameWorld(30, 30);
 
+            new DiagnosticsCenter();
+
             Keyboard.KeyRepeat = false;
             base.OnLoad(e);
 
@@ -89,10 +92,11 @@ namespace DN
         {
             if (g_Keyboard[Key.Escape])
                 Exit();
+            if (g_Keyboard[Key.Tilde]) if (DiagnosticsCenter.Instance.Visible) DiagnosticsCenter.Instance.Hide(); else DiagnosticsCenter.Instance.Show();
             float dt = (float) e.Time;
             g_Gamepad.Update(dt);
             gameWorld.Update(dt);
-
+            DiagnosticsCenter.Instance.Update(dt);
             base.OnUpdateFrame(e);
         }
         
@@ -103,8 +107,9 @@ namespace DN
          //   SpriteBatch.Instance.Begin();
         //    SpriteBatch.Instance.OutlineRectangle(new RectangleF(5,5,10,40),  Color.White, 10f, 1f, new Vector2(0.5f, 0.5f));
          //   SpriteBatch.Instance.End();
-            
-            gameWorld.Draw((float) e.Time);
+            float dt = (float)e.Time;
+            gameWorld.Draw(dt);
+            DiagnosticsCenter.Instance.Draw(dt);
             SwapBuffers();
             base.OnRenderFrame(e);
 

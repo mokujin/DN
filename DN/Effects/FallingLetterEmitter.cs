@@ -76,10 +76,11 @@ namespace DN.Effects
                 LetterParticle particle = this._particles[currentIndex] as LetterParticle;
 
                 SpriteBatch.Instance.PrintText(font, particle.letter.ToString(), particle.Position, particle.Colour, particle.Rotation, particle.Scale);
-                SpriteBatch.Instance.PrintText(font, current, Position,new Color4(ReleaseColour.Red.Minimum, ReleaseColour.Green.Maximum, ReleaseColour.Blue.Minimum, ReleaseOpacity.Maximum),RandomTool.RandFloat( ReleaseRotation),RandomTool.RandFloat( ReleaseScale));
+                
                 //SpriteBatch.Instance.FillCircle(particle.Position, 5, Color4.White, 10);
                 currentIndex = (currentIndex + 1) % this.Budget;
             }
+            SpriteBatch.Instance.PrintText(font, current, Position, new Color4(ReleaseColour.Red.Minimum, ReleaseColour.Green.Maximum, ReleaseColour.Blue.Minimum, ReleaseOpacity.Maximum), RandomTool.RandFloat(ReleaseRotation), RandomTool.RandFloat(ReleaseScale));
             if (time_to_change_current <= 0)
             {
                 current = LetterParticle.aviableLetters[RandomTool.RandInt(0, LetterParticle.aviableLetters.Length)].ToString();

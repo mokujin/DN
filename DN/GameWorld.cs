@@ -100,7 +100,7 @@ namespace DN
 
             mback = new MagicBackground();
 
-            for (int i = 0; i < 100; i++)
+            for (int i = 0; i < 20; i++)
             {
                 Creature bat = EnemiesFabric.CreateEnemy(this,RandomTool.RandBool()? EnemyType.Bat : EnemyType.Troll);
                 bat.Cell = GetRandomPoint();   
@@ -234,7 +234,7 @@ namespace DN
             _guiManager.Draw(dt);
             SpriteBatch.Instance.End();
             SpriteBatch.Instance.Begin(Camera.GetViewMatrix());
-            VisualizeQuadTree();
+            //VisualizeQuadTree();
             SpriteBatch.Instance.End();
 
         }
