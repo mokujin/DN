@@ -8,10 +8,16 @@ using Blueberry;
 namespace DN.GameObjects
 {
 
-    public enum Direction : sbyte
+    public enum HDirection : sbyte
     {
         Left = -1,
         Right = 1
+    }
+
+    public enum VDirection : sbyte
+    {
+        Up = -1,
+        Down = 1
     }
 
     public delegate void CollisionEventHandler(GameObject sender, GameObject gameObject);
@@ -27,7 +33,8 @@ namespace DN.GameObjects
         protected GameWorld World;
         public event DestroyEventHandler DestroyEvent;
 
-        public Direction Direction { get; set; }
+        public HDirection HDirection { get; set; }
+        public VDirection VDirection { get; set; }
 
         private float _x, _y;
         
@@ -132,6 +139,14 @@ namespace DN.GameObjects
             if (OnRemoveFromScene != null)
             OnRemoveFromScene(this);
         }
+
+        public Vector2 GetVectorDirectionFromDirection()
+        {
+            Vector2 dir = new Vector2((sbyte)HDirection, (sbyte)VDirection);
+            dir.Normalize();
+            return dir;
+        }
+
         protected virtual void CheckCollisions(ref Vector2 offset, ref Vector2 position)
         {
             if (IgnoreCollisions) return;

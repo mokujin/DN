@@ -46,19 +46,21 @@ namespace DN.GameObjects.Creatures
 
 
 
-            InHandItem = new MeleeWeapon(gameWorld)
+            InHandItem = new Bow(gameWorld)
                           {
-                              IntervalDuration = 0.4f,
-                              Damage = 1
+                              IntervalDuration = 2.0f,
+                              Damage = 1,
+                              ProjectiveSpeed = 5
+
                           };
 
             _dustEffect = new DustPointEmitter(Position, Vector2.UnitX, 2f);
             _dustEffect.Initialise(60, 1);
 
 
-            Health = 10000;
+            Health = 9;
 
-            Direction = Direction.Right;
+            HDirection = HDirection.Right;
 
             CollisionWithTiles += OnCollisionWithTiles;
         }
@@ -74,6 +76,10 @@ namespace DN.GameObjects.Creatures
             if(e.Key == Key.X)
             {
                 StopJump();
+            }
+            else if (e.Key == Key.Z)
+            {
+                InHandItem.FinishAction();
             }
         }
         void g_Keyboard_KeyDown(object sender, KeyboardKeyEventArgs e)
@@ -145,7 +151,7 @@ namespace DN.GameObjects.Creatures
 
 
             UpdateControlls(dt);
-            _dustEffect.Position = new Vector2(Direction == GameObjects.Direction.Left ?Bounds.Right:Bounds.Left, Bounds.Bottom);
+            _dustEffect.Position = new Vector2(HDirection == GameObjects.HDirection.Left ?Bounds.Right:Bounds.Left, Bounds.Bottom);
             _dustEffect.Update(dt);
         }
 
@@ -154,7 +160,7 @@ namespace DN.GameObjects.Creatures
             if (LeftKeyPressed())
             {
                 Move(new Vector2(-1, 0), 10*dt);
-                Direction = Direction.Left;
+                HDirection = HDirection.Left;
                 if (OnGround)
                 {
                     _dustEffect.Direction = Vector2.UnitX;// MathUtils.RotateVector2(-Vector2.UnitY, 0.2f);
@@ -167,7 +173,7 @@ namespace DN.GameObjects.Creatures
             if (RightKeyPressed())
             {
                 Move(new Vector2(1, 0), 10*dt);
-                Direction = Direction.Right;
+                HDirection = HDirection.Right;
                 if (OnGround)
                 {
                     _dustEffect.Direction = -Vector2.UnitX;//MathUtils.RotateVector2(-Vector2.UnitY, -0.2f);

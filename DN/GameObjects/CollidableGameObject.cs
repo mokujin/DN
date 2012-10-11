@@ -107,13 +107,17 @@ namespace DN.GameObjects
             Vector2 vel = Velocity;
             if (!OnLadder || !ClimbLadder)
             {
-                CheckOverSpeed(ref vel.X, MaxVelocity.X);
-                CheckOverSpeed(ref vel.Y, MaxVelocity.Y);
+                if(MaxVelocity.X != 0)
+                    CheckOverSpeed(ref vel.X, MaxVelocity.X);
+                if(MaxVelocity.Y != 0)
+                    CheckOverSpeed(ref vel.Y, MaxVelocity.Y);
             }
             else
             {
-                CheckOverSpeed(ref vel.X, MaxLadderVelocity.X);
-                CheckOverSpeed(ref vel.Y, MaxLadderVelocity.Y);
+                if (MaxLadderVelocity.X != 0)
+                    CheckOverSpeed(ref vel.X, MaxLadderVelocity.X);
+                if (MaxLadderVelocity.Y != 0)
+                    CheckOverSpeed(ref vel.Y, MaxLadderVelocity.Y);
             }
             Velocity = vel;
         }
@@ -138,7 +142,8 @@ namespace DN.GameObjects
             {
                 if (GravityAffected)
                 {
-                    Move(GameWorld.GravityDirection, GameWorld.G * dt);
+                    if(Velocity.Y < MaxVelocity.Y)
+                        Move(GameWorld.GravityDirection, GameWorld.G * dt, false);
                 }
                 if (OnGround)
                     UpdateFriction(ref Velocity.X, Friction, dt);

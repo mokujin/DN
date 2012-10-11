@@ -72,6 +72,11 @@
     <Compile Include="GameObjects\GameObject.cs" />
     <Compile Include="GameObjects\Items\Item.cs" />
     <Compile Include="GameObjects\Items\Potion.cs" />
+    <Compile Include="GameObjects\Items\Weapons\Bow.cs" />
+    <Compile Include="GameObjects\Items\Weapons\Projectives\Arrow.cs" />
+    <Compile Include="GameObjects\Items\Weapons\Projectives\Projective.cs" />
+    <Compile Include="GameObjects\Items\Weapons\Projectives\ProjectiveFactory.cs" />
+    <Compile Include="GameObjects\Items\Weapons\RangeWeapon.cs" />
     <Compile Include="GameObjects\Letter.cs" />
     <Compile Include="GameObjects\Items\Weapons\MeleeWeapon.cs" />
     <Compile Include="GameObjects\Items\Weapons\Weapon.cs" />
@@ -170,6 +175,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Textures\wall_tile.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Textures\Weapons\arrow.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Textures\Weapons\Sword.png">

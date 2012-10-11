@@ -164,7 +164,7 @@ namespace DN.GameObjects.Creatures
             if(InHandItem != null)
             {
                 InHandItem.Position = this.Position;
-                InHandItem.Direction = Direction;
+                InHandItem.HDirection = HDirection;
                 InHandItem.Update(dt);
             }
         }
@@ -176,13 +176,13 @@ namespace DN.GameObjects.Creatures
             Health += amount;
         }
 
-        public bool TakeDamage(float amount, Direction direction, float push = 0.0f, bool createBlood = false, float bloodSpeed = 0.0f, int bloodCount = 0)
+        public bool TakeDamage(float amount, HDirection direction, float push = 0.0f, bool createBlood = false, float bloodSpeed = 0.0f, int bloodCount = 0)
         {
             if (InvulnerabilityDuration <= _invulnerabilityDuration_dt)
             {
                 Health -= amount;
                 if(push > 0)
-                    Move(direction == Direction.Right ? new Vector2(1, 0) : new Vector2(-1, 0), push, true);
+                    Move(direction == HDirection.Right ? new Vector2(1, 0) : new Vector2(-1, 0), push, true);
                 _invulnerabilityDuration_dt = 0;
 
                 Vector2 vel = Velocity;

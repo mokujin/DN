@@ -63,7 +63,8 @@ namespace DN.GameObjects.Items
         public override void Destroy()
         {
             base.Destroy();
-            Creature.DropItem();
+            if(Creature != null)
+                Creature.DropItem();
         }
 
         public virtual void DoAction()
@@ -73,6 +74,11 @@ namespace DN.GameObjects.Items
             IntervalTimer.Run();
             PerfermingTimer.Run();
         }
+        public virtual void FinishAction()
+        {
+
+        }
+
 
         public override void Update(float dt)
         {

@@ -11,7 +11,7 @@ namespace DN.GameObjects.Items.Weapons
         private float _rotation = 0;
         private float Dir
         {
-            get { return Direction == Direction.Right ? 1 : -1; }
+            get { return HDirection == HDirection.Right ? 1 : -1; }
         }
 
 
@@ -62,7 +62,7 @@ namespace DN.GameObjects.Items.Weapons
                 if(creature != Creature)
                 if (DoingAction)
                 {
-                    if(creature.TakeDamage(Damage, Direction, Damage*20, true, 1.0f, 6))
+                    if(creature.TakeDamage(Damage, HDirection, Damage*20, true, 1.0f, 6))
                     {
                         if (!_hitRegistered) CM.I.Sound("swordA").PlayDynamic();
                         _hitRegistered = true;

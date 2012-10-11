@@ -56,7 +56,7 @@ namespace DN.GameObjects.Creatures.Enemies
             if (gameObject is Hero)
             {
                 var hero = (Hero)gameObject;
-                var t = hero.TakeDamage(1, Direction, 5);
+                var t = hero.TakeDamage(1, HDirection, 5);
                 if (t)
                     MoveInOppositeDirection();
             }
@@ -92,7 +92,7 @@ namespace DN.GameObjects.Creatures.Enemies
         {
             var deadBody = new DeadBody(World)
                                     {
-                                        Cell = Cell,
+                                        Position = Position,
                                         Sprite = Sprite,
                                         MaxVelocity = MaxVelocity,
                                         MaxLadderVelocity = MaxVelocity,
