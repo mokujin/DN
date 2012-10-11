@@ -40,15 +40,11 @@ namespace Blueberry.Graphics
         int voffset;
         int ioffset;
 
+        int stride;
         public int Stride
         {
             get
             {
-                int stride = 0;
-                for (int i = 0; i < declarations.Count; i++)
-                {
-                    stride += declarations[i].elements;
-                }
                 return stride;
             }
         }
@@ -79,6 +75,7 @@ namespace Blueberry.Graphics
             indexData = new int[capacity * 3];
             voffset = 0;
             ioffset = 0;
+            stride = 0;
         }
 
         public void Dispose()
@@ -99,34 +96,29 @@ namespace Blueberry.Graphics
         public void DeclareNextAttribute(string name, int elements)
         {
             declarations.Add(new VertexDeclaration() { name = name, elements = elements });
+            stride += elements;
         }
         public void ClearAttributeDeclarations()
         {
             declarations.Clear();
+            stride = 0;
         }
         public void AddVertex(params float[] data)
         {
             CheckForOverflowVertexBuffer();
-            int stride = Stride;
+            int n = data.Length;
             for (int i = 0; i < stride; i++)
-            {
-                if (data.Length <= i)
-                    vertexData[voffset++] = 0.0f;
-                else
-                    vertexData[voffset++] = data[i];
-            }
+                vertexData[voffset++] = n <= i ? 0.0f : data[i];
+
         }
 
         public void AddVertices(int count, params float[] data)
         {
-            int stride = Stride;
+            CheckForOverflowVertexBuffer(count);
+            int n = data.Length;
             for (int i = 0; i < count * stride; i++)
             {
-                CheckForOverflowVertexBuffer();
-                if (data.Length <= i)
-                    vertexData[voffset++] = 0.0f;
-                else
-                    vertexData[voffset++] = data[i];
+                vertexData[voffset++] = n <= i ? 0.0f : data[i];
             }
         }
 
@@ -175,7 +167,7 @@ namespace Blueberry.Graphics
                 int location = GL.GetAttribLocation(shader.Handle, declarations[i].name);
                 if (location != -1)
                 {
-                    GL.VertexAttribPointer(location, declarations[i].elements, VertexAttribPointerType.Float, false, Stride * sizeof(float), off);
+                    GL.VertexAttribPointer(location, declarations[i].elements, VertexAttribPointerType.Float, false, stride * sizeof(float), off);
                     GL.EnableVertexAttribArray(location);
                 }
                 off += declarations[i].elements * sizeof(float);
@@ -203,9 +195,9 @@ namespace Blueberry.Graphics
             ioffset = 0;
         }
 
-        private void CheckForOverflowVertexBuffer()
+        private void CheckForOverflowVertexBuffer(int add = 1)
         {
-            int sum = voffset + Stride;
+            int sum = voffset + (stride * add);
             int length = vertexData.Length;
 
             if (sum > length)

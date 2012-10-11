@@ -313,14 +313,17 @@ namespace Blueberry.Graphics
             item.indices[3] = offset + 3;
             item.indices[4] = offset + 1;
             item.indices[5] = offset + 2;
-
-            vbuffer.AddVertex(x + dx * cos - dy * sin, y + dx * sin + dy * cos,
-                                color.R, color.G, color.B, color.A, texCoordTL.X, texCoordTL.Y);
-            vbuffer.AddVertex(x + (dx + width) * cos - dy * sin, y + (dx + width) * sin + dy * cos,
-                                color.R, color.G, color.B, color.A, texCoordBR.X, texCoordTL.Y);
-            vbuffer.AddVertex(x + (dx + width) * cos - (dy + height) * sin, y + (dx + width) * sin + (dy + height) * cos,
-                                color.R, color.G, color.B, color.A, texCoordBR.X, texCoordBR.Y);
-            vbuffer.AddVertex(x + dx * cos - (dy + height) * sin, y + dx * sin + (dy + height) * cos,
+            //              first
+            vbuffer.AddVertices(4, x + dx * cos - dy * sin, y + dx * sin + dy * cos,
+                                color.R, color.G, color.B, color.A, texCoordTL.X, texCoordTL.Y,
+            //              second
+                                x + (dx + width) * cos - dy * sin, y + (dx + width) * sin + dy * cos,
+                                color.R, color.G, color.B, color.A, texCoordBR.X, texCoordTL.Y,
+            //              third
+                                x + (dx + width) * cos - (dy + height) * sin, y + (dx + width) * sin + (dy + height) * cos,
+                                color.R, color.G, color.B, color.A, texCoordBR.X, texCoordBR.Y,
+            //              fourth
+                                x + dx * cos - (dy + height) * sin, y + dx * sin + (dy + height) * cos,
                                 color.R, color.G, color.B, color.A, texCoordTL.X, texCoordBR.Y);
 
             #endregion Add vertices

@@ -56,7 +56,7 @@ namespace DN.GameObjects.Creatures
             _dustEffect.Initialise(60, 1);
 
 
-            Health = 10000;
+            Health = 36;
 
             Direction = Direction.Right;
 
