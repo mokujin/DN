@@ -46,7 +46,7 @@ namespace DN.GameObjects.Creatures.Enemies.Behaviours
 
         }
 
-        private void Creature_CollisionWithTiles(Vector2 velocity, CollidedCell collidedCell)
+        private void Creature_CollisionWithTiles(CollidableGameObject sender, CollidedCell collidedCell)
         {
             if (collidedCell.CellType == CellType.Wall)
                 ChangeDirectionTimer.Finish();

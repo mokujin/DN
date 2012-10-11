@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DN.LevelGeneration;
 using OpenTK;
 using Blueberry;
 using Blueberry.Graphics;
@@ -49,25 +50,53 @@ namespace DN
 
         protected override void OnLoad(EventArgs e)
         {
-            audioContext = new AudioContext();
+
+            GL.ClearColor(Color4.Black);
 
             g_Keyboard = Keyboard;
             g_Mouse = Mouse;
             g_Gamepad = new GamepadState(GamepadIndex.One);
-      
-            GL.ClearColor(Color4.Black);
 
-            LoadContent();
             gameWorld = new GameWorld(30, 30);
+            Thread worldCreationThread = new Thread(CreateWorld);
+
+            worldCreationThread.Start();
+
+            audioContext = new AudioContext();
+            LoadContent();
 
             new DiagnosticsCenter();
 
+
             Keyboard.KeyRepeat = false;
+
             base.OnLoad(e);
 
             new AudioManager(16, 8, 4096, true);
+
             AudioClip clip = new AudioClip(Path.Combine("Content", "Sounds", "rainfall.ogg"));
             clip.Play();
+
+            while(worldCreationThread.IsAlive)
+            {
+                Thread.Sleep(1);
+            }
+        }
+
+        private void CreateWorld()
+        {
+
+            var lg = new LevelGenerator
+            {
+                RoomsMaxWidth = 10,
+                RoomsMaxHeight = 15,
+                RoomCount = 0,
+                Scale = 0.5f,
+                WallSmoothing = 0.5f
+            };
+            lg.Generate(gameWorld);
+            gameWorld.InsertHero();
+            gameWorld.InitGui();
         }
 
         private void LoadContent()

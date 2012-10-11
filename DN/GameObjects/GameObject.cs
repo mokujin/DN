@@ -94,10 +94,10 @@ namespace DN.GameObjects
             }
         }
 
-        public float Left { get { return Bounds.Left; } set { X = value + Size.Width / 2; } }
-        public float Right { get { return Bounds.Right; } set { X = value - Size.Width / 2; } }
-        public float Top { get { return Bounds.Top; } set { Y = value + Size.Height / 2; } }
-        public float Bottom { get { return Bounds.Bottom; } set { Y = value - Size.Height / 2; } }
+        public float Left { get { return Bounds.Left; }}
+        public float Right { get { return Bounds.Right; }}
+        public float Top { get { return Bounds.Top; } }
+        public float Bottom { get { return Bounds.Bottom; }}
 
         public GameObject(GameWorld gameWorld)
         {
