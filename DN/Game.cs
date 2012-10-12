@@ -18,6 +18,7 @@ using OggStream;
 using Blueberry.Audio;
 using System.Threading;
 using Blueberry.Diagnostics;
+using Blueberry.Graphics.Fonts;
 
 
 namespace DN
@@ -38,7 +39,7 @@ namespace DN
         private GameWorld gameWorld;
         AudioContext audioContext;
         AudioClip clip;
-
+        BitmapFont font;
         public Game()
             : base(g_screenSize.Width, g_screenSize.Height, GraphicsMode.Default, "Devil's nightmare")
         {
@@ -67,7 +68,7 @@ namespace DN
 
             new DiagnosticsCenter();
 
-
+            font = new BitmapFont(new Font("Consolas", 14));
             Keyboard.KeyRepeat = false;
 
             base.OnLoad(e);
@@ -112,6 +113,9 @@ namespace DN
 
             CM.I.LoadFont("Big", Path.Combine("Content", "Fonts", "monofur.ttf"), 48);
             CM.I.LoadFont("Middle", Path.Combine("Content", "Fonts", "monofur.ttf"), 24);
+            CM.I.LoadFont("Small", Path.Combine("Content", "Fonts", "monofur.ttf"), 14);
+            CM.I.LoadFont("speculum16", Path.Combine("Content", "Fonts", "speculum.ttf"), 16);
+            CM.I.LoadFont("consolas32", Path.Combine("Content", "Fonts", "consola.ttf"), 32);
 
             CM.I.LoadSound("swordA", Path.Combine("Content", "Sounds", "steelsword.ogg"));
             CM.I.LoadSound("swordB", Path.Combine("Content", "Sounds", "wv-sword.ogg"));
@@ -139,6 +143,7 @@ namespace DN
             float dt = (float)e.Time;
             gameWorld.Draw(dt);
             DiagnosticsCenter.Instance.Draw(dt);
+
             SwapBuffers();
             base.OnRenderFrame(e);
 

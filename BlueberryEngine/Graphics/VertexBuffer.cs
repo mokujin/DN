@@ -124,13 +124,10 @@ namespace Blueberry.Graphics
 
         public void AddIndices(params int[] data)
         {
+            CheckForOverflowIndexBuffer(data.Length);
             for (int i = 0; i < data.Length; i++)
             {
-                CheckForOverflowIndexBuffer();
-                if (indexData.Length <= i)
-                    return;
-                else
-                    indexData[ioffset++] = data[i];
+                indexData[ioffset++] = data[i];
             }
         }
 
@@ -206,9 +203,9 @@ namespace Blueberry.Graphics
                 Array.Resize<float>(ref vertexData, length / 2);
         }
 
-        private void CheckForOverflowIndexBuffer()
+        private void CheckForOverflowIndexBuffer(int add = 1)
         {
-            int sum = ioffset + 1;
+            int sum = ioffset + add;
             int length = indexData.Length;
 
             if (sum > length)

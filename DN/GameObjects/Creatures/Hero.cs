@@ -124,9 +124,13 @@ namespace DN.GameObjects.Creatures
             }
         }
 
+        #region Procedural animations
+        //Blueberry.Graphics.Fonts.BitmapFont _font = CM.I.Font("consolas32");
 
+        #endregion
         public override void Draw(float dt)
         {
+            //SpriteBatch.Instance.dr
             SpriteBatch.Instance.DrawTexture(CM.I.tex("hero_tile"),
                                              Position,
                                              Rectangle.Empty,

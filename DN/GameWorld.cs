@@ -185,6 +185,7 @@ namespace DN
             GL.Clear(ClearBufferMask.ColorBufferBit);
 
             mback.Draw(dt);
+            
             background.Draw(dt);
 
             BloodSystem.DrawBackground(dt);

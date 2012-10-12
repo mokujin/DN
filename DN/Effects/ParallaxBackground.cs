@@ -15,8 +15,6 @@ namespace DN.Effects
     public class ParallaxBackground
     {
         private GameWorld world;
-        private BitmapFont font;
-
         FallingLetterEmitter[] emitters;
         const int emitter_count = 20;
 
@@ -31,7 +29,7 @@ namespace DN.Effects
            
 
             this.world = world;
-            font = new BitmapFont(Path.Combine("Content", "Fonts", "monofur.ttf"), 25);
+            
         }
         public void Update(float dt)
         {

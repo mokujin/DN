@@ -153,6 +153,7 @@ namespace Blueberry.Diagnostics
                     start = ++i;
                 }
             }
+            
             SpriteBatch.Instance.End();
 
         }
