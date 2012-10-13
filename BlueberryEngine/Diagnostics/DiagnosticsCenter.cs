@@ -34,7 +34,10 @@ namespace Blueberry.Diagnostics
         DebugGraph upsGraph;
         DebugGraph udtGraph;
         DebugGraph fdtGraph;
+        DebugGraph memoryGraph;
         List<DebugGraph> graphs;
+        long memory;
+        float memoryCounter = 0;
 
         public DiagnosticsCenter()
         {
@@ -49,7 +52,9 @@ namespace Blueberry.Diagnostics
             upsGraph = new DebugGraph(new Rectangle(120, 80, 200, 40)) { ValuesByX = 20, ApproximateGraduation = 1 };
             fdtGraph = new DebugGraph(new Rectangle(120, 130, 200, 60)) { ValuesByX = 120, ApproximateGraduation = 0.01f };
             udtGraph = new DebugGraph(new Rectangle(120, 200, 200, 60)) { ValuesByX = 120, ApproximateGraduation = 0.01f };
-            graphs.Add(fpsGraph); graphs.Add(upsGraph); graphs.Add(fdtGraph); graphs.Add(udtGraph); 
+            memoryGraph = new DebugGraph(new Rectangle(220, 270, 200, 60)) { ValuesByX = 40, ApproximateGraduation = 8f };
+
+            graphs.Add(fpsGraph); graphs.Add(upsGraph); graphs.Add(fdtGraph); graphs.Add(udtGraph); graphs.Add(memoryGraph);
             Init();
         }
 
@@ -66,21 +71,22 @@ namespace Blueberry.Diagnostics
         private void Init()
         {
             instance = this;
-            drawArea.Width = 400;
+            drawArea.Width = 450;
+            drawArea.Height = 450;
         }
         public void UpdateBuffer()
         {
             buffer.Clear();
-            int maxW = 0;
+            //int maxW = 0;
             for (int i = 0; i < objects.Count; i++)
             {
                 buffer.Append("["+objects[i].DebugName+"]");
                 buffer.Append(';');
                 string s = objects[i].DebugInfo();
-                if(s.Length > maxW) maxW = s.Length;
+                //if(s.Length > maxW) maxW = s.Length;
                 buffer.Append(s);
             }
-            drawArea.Height = (int)(font.MonoSpaceWidth * maxW + 20);
+            //drawArea.Width = (int)(font.MonoSpaceWidth * maxW + 20);
             if (state == PanelState.hide)
                 drawArea.Y = -drawArea.Height - 10;
         }
@@ -96,6 +102,14 @@ namespace Blueberry.Diagnostics
                 ups_counter = 0;
                 upsGraph.AddValue(ups);
             }
+            memoryCounter += dt;
+            if (memoryCounter >= 0.5f)
+            {
+                memoryCounter = 0;
+                memory = GC.GetTotalMemory(false);
+                memoryGraph.AddValue(memory);
+            }
+
             UpdateBuffer();
             foreach (var item in graphs)
                 item.Update(dt);
@@ -124,6 +138,7 @@ namespace Blueberry.Diagnostics
                     drawArea.Y = MathUtils.Lerp(drawArea.Y, -drawArea.Height - 10, dt*8);
                 }
             }
+            
         }
 
         private enum PanelState { shown, hide, showing, hiding }
@@ -185,7 +200,7 @@ namespace Blueberry.Diagnostics
 
         public string DebugInfo()
         {
-            return "FPS: " + fps + "; ;UPS: " + ups + "; ;fdt: ; ; ;udt: ;";
+            return "FPS: " + fps + "; ;UPS: " + ups + "; ;fdt: ; ; ;udt: ; ; ;Memory: "+memory+";";
         }
 
         public string DebugName
