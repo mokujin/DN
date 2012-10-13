@@ -11,7 +11,7 @@ using System.Text;
 
 namespace DN.Effects
 {
-    class DustPointEmitter : Emitter
+    public class DustPointEmitter : Emitter
     {
         public Vector2 Position { get; set; }
         public Vector2 Direction { get; set; }

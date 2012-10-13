@@ -28,15 +28,28 @@ namespace Blueberry.Diagnostics
         int fps_counter, ups_counter;
         float update_time_counter;
         float draw_time_counter;
-        BitmapFont font;
+        static internal BitmapFont font;
         RectangleF drawArea;
+        DebugGraph fpsGraph;
+        DebugGraph upsGraph;
+        DebugGraph udtGraph;
+        DebugGraph fdtGraph;
+        List<DebugGraph> graphs;
 
         public DiagnosticsCenter()
         {
             objects = new List<IDiagnosable>();
             Add(this);
             buffer = new StringBuilder(1024);
-            font = new BitmapFont(new Font("Consolas", 14));
+            if(font == null)
+                font = new BitmapFont(new Font("Consolas", 14));
+            graphs = new List<DebugGraph>();
+
+            fpsGraph = new DebugGraph(new Rectangle(120, 30, 200, 40)) { ValuesByX = 20, ApproximateGraduation = 1 };
+            upsGraph = new DebugGraph(new Rectangle(120, 80, 200, 40)) { ValuesByX = 20, ApproximateGraduation = 1 };
+            fdtGraph = new DebugGraph(new Rectangle(120, 130, 200, 60)) { ValuesByX = 120, ApproximateGraduation = 0.01f };
+            udtGraph = new DebugGraph(new Rectangle(120, 200, 200, 60)) { ValuesByX = 120, ApproximateGraduation = 0.01f };
+            graphs.Add(fpsGraph); graphs.Add(upsGraph); graphs.Add(fdtGraph); graphs.Add(udtGraph); 
             Init();
         }
 
@@ -73,7 +86,7 @@ namespace Blueberry.Diagnostics
         }
         public void Update(float dt)
         {
-            
+            udtGraph.AddValue(dt);
             update_time_counter += dt;
             ups_counter++;
             if (update_time_counter >= 1)
@@ -81,8 +94,12 @@ namespace Blueberry.Diagnostics
                 update_time_counter -= 1;
                 ups = ups_counter;
                 ups_counter = 0;
+                upsGraph.AddValue(ups);
             }
             UpdateBuffer();
+            foreach (var item in graphs)
+                item.Update(dt);
+
             if (state == PanelState.showing)
             {
                 if(Math.Abs(drawArea.Y - 10) < 0.1f)
@@ -130,6 +147,7 @@ namespace Blueberry.Diagnostics
         
         public void Draw(float dt)
         {
+            fdtGraph.AddValue(dt);
             draw_time_counter += dt;
             fps_counter++;
             if (draw_time_counter >= 1f)
@@ -137,11 +155,12 @@ namespace Blueberry.Diagnostics
                 draw_time_counter -= 1f;
                 fps = fps_counter;
                 fps_counter = 0;
+                fpsGraph.AddValue(fps);
             }
             if (state == PanelState.hide) return;
 
             SpriteBatch.Instance.Begin();
-            SpriteBatch.Instance.FillRectangle(drawArea, new OpenTK.Graphics.Color4(0, 0, 0, 0.3f));
+            SpriteBatch.Instance.FillRectangle(drawArea, new OpenTK.Graphics.Color4(0, 0, 0, 0.5f));
 
             int start = 0, line = 0;
             for (int i = 0; i < buffer.Length; i++)
@@ -153,7 +172,8 @@ namespace Blueberry.Diagnostics
                     start = ++i;
                 }
             }
-            
+            foreach (var item in graphs)
+                item.Draw(dt, drawArea.X, drawArea.Y);
             SpriteBatch.Instance.End();
 
         }
@@ -165,7 +185,7 @@ namespace Blueberry.Diagnostics
 
         public string DebugInfo()
         {
-            return "FPS: " + fps + ";UPS: " + ups + ";";
+            return "FPS: " + fps + "; ;UPS: " + ups + "; ;fdt: ; ; ;udt: ;";
         }
 
         public string DebugName

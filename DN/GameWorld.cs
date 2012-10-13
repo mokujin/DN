@@ -109,7 +109,7 @@ namespace DN
         {
             BloodSystem.Update(dt);
 
-            Camera.MoveTo(Hero.Position);
+            Camera.MoveTo(Hero.Position);//Hero.Direction == Direction.Left ? new Vector2(Hero.Position.X - 100, Hero.Position.Y) : new Vector2(Hero.Position.X + 100, Hero.Position.Y));
 
             foreach (var gameObject in _gameObjects)
             {
@@ -344,6 +344,7 @@ namespace DN
                     {
                         Camera.Rumble(0.2f, 8, 4);
                         Game.g_Gamepad.Vibrate(0.8f, 0.8f, 0.2f);
+                        //Hero.DustEffect.Trigger(
                     }
             }
         }

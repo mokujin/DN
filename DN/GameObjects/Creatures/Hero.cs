@@ -24,7 +24,7 @@ namespace DN.GameObjects.Creatures
 
         private float _dt = 0;
 
-        DustPointEmitter _dustEffect;
+        public readonly DustPointEmitter DustEffect;
 
         public Hero(GameWorld gameWorld):base(gameWorld)
         {
@@ -52,8 +52,8 @@ namespace DN.GameObjects.Creatures
                               Damage = 1
                           };
 
-            _dustEffect = new DustPointEmitter(Position, Vector2.UnitX, 2f);
-            _dustEffect.Initialise(60, 1);
+            DustEffect = new DustPointEmitter(Position, Vector2.UnitX, 2f);
+            DustEffect.Initialise(60, 1);
 
 
             Health = 36;
@@ -137,7 +137,7 @@ namespace DN.GameObjects.Creatures
                                              Invulnerable ? new Color4(255, 1, 1, RandomTool.RandByte(255)) : Color4.White);
             //SpriteBatch.Instance.OutlineRectangle(Bounds, Color.White); // debug draw
 
-            _dustEffect.Draw(dt);
+            DustEffect.Draw(dt);
         }
 
 
@@ -149,8 +149,8 @@ namespace DN.GameObjects.Creatures
 
 
             UpdateControlls(dt);
-            _dustEffect.Position = new Vector2(Direction == GameObjects.Direction.Left ?Bounds.Right:Bounds.Left, Bounds.Bottom);
-            _dustEffect.Update(dt);
+            DustEffect.Position = new Vector2(Direction == GameObjects.Direction.Left ?Bounds.Right:Bounds.Left, Bounds.Bottom);
+            DustEffect.Update(dt);
         }
 
         private void UpdateControlls(float dt)
@@ -161,11 +161,10 @@ namespace DN.GameObjects.Creatures
                 Direction = Direction.Left;
                 if (OnGround)
                 {
-                    _dustEffect.Direction = Vector2.UnitX;// MathUtils.RotateVector2(-Vector2.UnitY, 0.2f);
+                    DustEffect.Direction = Vector2.UnitX;
                     float q = 1/(Velocity.Length*5);
-                    _dustEffect.TriggerInterval = q;
-                    //_dustEffect.ReleaseOpacity = q/3;
-                    _dustEffect.Trigger(dt);
+                    DustEffect.TriggerInterval = q;
+                    DustEffect.Trigger(dt);
                 }
             }
             if (RightKeyPressed())
@@ -174,11 +173,10 @@ namespace DN.GameObjects.Creatures
                 Direction = Direction.Right;
                 if (OnGround)
                 {
-                    _dustEffect.Direction = -Vector2.UnitX;//MathUtils.RotateVector2(-Vector2.UnitY, -0.2f);
+                    DustEffect.Direction = -Vector2.UnitX;
                     float q = 1/ (Velocity.Length * 5f);
-                    _dustEffect.TriggerInterval = q;
-                    //_dustEffect.ReleaseOpacity = q/3;
-                    _dustEffect.Trigger(dt);
+                    DustEffect.TriggerInterval = q;
+                    DustEffect.Trigger(dt);
                 }
             }
 
