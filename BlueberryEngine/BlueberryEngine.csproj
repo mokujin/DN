@@ -56,6 +56,9 @@
     <Compile Include="Audio\AudioChannel.cs" />
     <Compile Include="Audio\AudioClip.cs" />
     <Compile Include="Audio\AudioManager.cs" />
+    <Compile Include="Diagnostics\DebugGraph.cs" />
+    <Compile Include="Diagnostics\DiagnosticsCenter.cs" />
+    <Compile Include="Diagnostics\IDiagnosable.cs" />
     <Compile Include="FloatAnimation.cs" />
     <Compile Include="IAnimation.cs" />
     <Compile Include="IntAnimation.cs" />

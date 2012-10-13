@@ -15,7 +15,6 @@ namespace DN.Effects
     {
         public Vector2 Position { get; set; }
         public Vector2 Direction { get; set; }
-        private static BitmapFont font;
         private float triggerInterval;
         private float temp = 0;
 
@@ -25,8 +24,6 @@ namespace DN.Effects
             Position = position;
             Direction = direction;
             this.triggerInterval = triggerInterval;
-            if(font == null)
-                font = new BitmapFont(Path.Combine("Content", "Fonts", "monofur.ttf"), 16);
             
             ReleaseQuantity = 1;
             ReleaseSpeed = 0;
@@ -63,26 +60,25 @@ namespace DN.Effects
             force = Vector2.Zero;
         }
 
-        string current = "0";
+        char current = '0';
         float time_to_change_current = 0.01f;
         public override void Draw(float dt)
         {
             var currentIndex = this.ActiveIndex;
             var currentParticleCount = this.ActiveParticlesCount;
-
+            BitmapFont f = CM.I.Font("speculum16");
             for (var i = 0; i < currentParticleCount; i++)
             {
                 // Extract the particle from the buffer...
                 LetterParticle particle = this._particles[currentIndex] as LetterParticle;
 
-                SpriteBatch.Instance.PrintText(font, particle.letter.ToString(), particle.Position, particle.Colour, particle.Rotation, particle.Scale);
-                SpriteBatch.Instance.PrintText(font, current, Position,new Color4(ReleaseColour.Red.Minimum, ReleaseColour.Green.Maximum, ReleaseColour.Blue.Minimum, ReleaseOpacity.Maximum),RandomTool.RandFloat( ReleaseRotation),RandomTool.RandFloat( ReleaseScale));
-                //SpriteBatch.Instance.FillCircle(particle.Position, 5, Color4.White, 10);
+                SpriteBatch.Instance.PrintSymbol(f, particle.letter, particle.Position, particle.Colour, particle.Rotation, particle.Scale);
                 currentIndex = (currentIndex + 1) % this.Budget;
             }
+            SpriteBatch.Instance.PrintSymbol(f, current, Position, new Color4(ReleaseColour.Red.Minimum, ReleaseColour.Green.Maximum, ReleaseColour.Blue.Minimum, ReleaseOpacity.Maximum), RandomTool.RandFloat(ReleaseRotation), RandomTool.RandFloat(ReleaseScale));
             if (time_to_change_current <= 0)
             {
-                current = LetterParticle.aviableLetters[RandomTool.RandInt(0, LetterParticle.aviableLetters.Length)].ToString();
+                current = LetterParticle.aviableLetters[RandomTool.RandInt(0, LetterParticle.aviableLetters.Length)];
                 time_to_change_current = 0.01f;
             }
             else

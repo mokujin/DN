@@ -91,9 +91,6 @@ namespace DN
 
             mback = new MagicBackground();
 
-
-
-
             UpdateObjectsEnqueues();
         }
 
@@ -112,7 +109,7 @@ namespace DN
         {
             BloodSystem.Update(dt);
 
-            Camera.MoveTo(Hero.Position);
+            Camera.MoveTo(Hero.Position);//Hero.Direction == Direction.Left ? new Vector2(Hero.Position.X - 100, Hero.Position.Y) : new Vector2(Hero.Position.X + 100, Hero.Position.Y));
 
             foreach (var gameObject in _gameObjects)
             {
@@ -188,6 +185,7 @@ namespace DN
             GL.Clear(ClearBufferMask.ColorBufferBit);
 
             mback.Draw(dt);
+            
             background.Draw(dt);
 
             BloodSystem.DrawBackground(dt);
@@ -347,6 +345,7 @@ namespace DN
                     {
                         Camera.Rumble(0.2f, 8, 4);
                         Game.g_Gamepad.Vibrate(0.8f, 0.8f, 0.2f);
+                        //Hero.DustEffect.Trigger(
                     }
             }
         }

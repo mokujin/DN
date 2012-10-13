@@ -11,24 +11,22 @@ using System.Text;
 
 namespace DN.Effects
 {
-    class DustPointEmitter : Emitter
+    public class DustPointEmitter : Emitter
     {
         public Vector2 Position { get; set; }
         public Vector2 Direction { get; set; }
         public float Dispersion { get; set; }
-        private BitmapFont font;
 
         public DustPointEmitter(Vector2 position, Vector2 direction, float dispersion):base()
         {
             Position = position;
             Direction = direction;
             Dispersion = dispersion;
-            font = new BitmapFont(Path.Combine("Content", "Fonts", "monofur.ttf"), 14);
             
             ReleaseQuantity = 1;
             ReleaseSpeed = new Range(5, 10);
             ReleaseScale = 0.8f;
-            ReleaseColour = Color4.White;
+            ReleaseColour = Color4.Gray;
             ReleaseOpacity = 0.8f;
         }
         public override void Initialise()
@@ -67,13 +65,13 @@ namespace DN.Effects
         {
             var currentIndex = this.ActiveIndex;
             var currentParticleCount = this.ActiveParticlesCount;
-
+            BitmapFont f = CM.I.Font("Small");
             for (var i = 0; i < currentParticleCount; i++)
             {
                 // Extract the particle from the buffer...
                 DustParticle particle = this._particles[currentIndex] as DustParticle;
 
-                SpriteBatch.Instance.PrintText(font, particle.letter, particle.Position, particle.Colour, particle.Rotation, particle.Scale);
+                SpriteBatch.Instance.PrintText(f, particle.letter, particle.Position, particle.Colour, particle.Rotation, particle.Scale);
                 currentIndex = (currentIndex + 1) % this.Budget;
             }
             base.Draw(dt);
