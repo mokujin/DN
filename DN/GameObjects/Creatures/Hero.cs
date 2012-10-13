@@ -1,6 +1,7 @@
 ﻿using Blueberry.Graphics;
 using DN.Effects;
 using DN.GameObjects.Items.Weapons;
+using DN.Helpers;
 using GamepadExtension;
 using OpenTK;
 using OpenTK.Graphics;
@@ -50,15 +51,14 @@ namespace DN.GameObjects.Creatures
                           {
                               IntervalDuration = 2.0f,
                               Damage = 1,
-                              ProjectiveSpeed = 5
-
+                              ProjectiveSpeed = 8,
                           };
 
             _dustEffect = new DustPointEmitter(Position, Vector2.UnitX, 2f);
             _dustEffect.Initialise(60, 1);
 
 
-            Health = 9;
+            Health = 30;
 
             HDirection = HDirection.Right;
 
@@ -151,7 +151,7 @@ namespace DN.GameObjects.Creatures
 
 
             UpdateControlls(dt);
-            _dustEffect.Position = new Vector2(HDirection == GameObjects.HDirection.Left ?Bounds.Right:Bounds.Left, Bounds.Bottom);
+            _dustEffect.Position = new Vector2(HDirection == HDirection.Left ?Bounds.Right:Bounds.Left, Bounds.Bottom);
             _dustEffect.Update(dt);
         }
 
@@ -182,6 +182,18 @@ namespace DN.GameObjects.Creatures
                     //_dustEffect.ReleaseOpacity = q/3;
                     _dustEffect.Trigger(dt);
                 }
+            }
+            if (UpKeyPressed())
+            {
+                VDirection = VDirection.Up;
+            }
+            else if (DownKeyPressed())
+            {
+                VDirection = VDirection.Down;
+            }
+            else
+            {
+                VDirection = VDirection.No;
             }
 
 

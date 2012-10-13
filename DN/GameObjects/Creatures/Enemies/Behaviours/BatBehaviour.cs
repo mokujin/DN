@@ -58,7 +58,7 @@ namespace DN.GameObjects.Creatures.Enemies.Behaviours
 
             if (!SawPlayer)
                 if (GameWorld.DistanceToObject(Creature, Hero) < 500)
-                    if (LineOfSight.Get(GameWorld.TileMap, Creature.Cell, Hero.Cell))
+                    if (FunctionHelper.GetLineOfSight(GameWorld.TileMap, Creature.Cell, Hero.Cell))
                         SawPlayer = true;
 
             if (SawPlayer)

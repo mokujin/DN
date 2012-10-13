@@ -38,7 +38,7 @@ namespace DN.GameObjects.Creatures.Enemies
         {
             base.Update(dt);
             if(!IsDead)
-                _behaviour.Update(dt);
+                _behaviour.Update(dt/2);
             _dt = dt;
         }
 
@@ -64,11 +64,11 @@ namespace DN.GameObjects.Creatures.Enemies
             {
                 var enemy = (Enemy) gameObject;
                 Vector2 moveDir;
-                if (enemy.X > X)
+                if (enemy.Position.X > Position.X)
                 {
                     moveDir = new Vector2(-1, 0);
                 }
-                else if (enemy.X < X)
+                else if (enemy.Position.X < Position.X)
                 {
                     moveDir = new Vector2(1, 0);
                 }

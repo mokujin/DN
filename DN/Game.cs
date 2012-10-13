@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DN.GameObjects.Creatures.Enemies;
 using DN.LevelGeneration;
 using OpenTK;
 using Blueberry;
@@ -93,6 +94,14 @@ namespace DN
             lg.Generate(gameWorld);
             gameWorld.InsertHero();
             gameWorld.InitGui();
+            for (int i = 0; i < 1; i++)
+            {
+                Enemy enemy = EnemiesFabric.CreateEnemy(gameWorld, EnemyType.Bat);
+                enemy.Cell = gameWorld.GetRandomPoint();
+                gameWorld.AddObject(enemy);
+            }
+
+  
         }
 
         private void LoadContent()
@@ -106,6 +115,8 @@ namespace DN
             CM.I.LoadTexture("heart", Path.Combine("Content", "Textures", "Gui", "heart.png"));
             CM.I.LoadTexture("potion", Path.Combine("Content", "Textures", "GameObjects", "Potion.png"));
             CM.I.LoadTexture("arrow_sprite", Path.Combine("Content", "Textures", "Weapons", "arrow.png"));
+            CM.I.LoadTexture("bow_sprite", Path.Combine("Content", "Textures", "Weapons", "Bow.png"));
+
 
             CM.I.LoadFont("Big", Path.Combine("Content", "Fonts", "monofur.ttf"), 48);
             CM.I.LoadFont("Middle", Path.Combine("Content", "Fonts", "monofur.ttf"), 24);

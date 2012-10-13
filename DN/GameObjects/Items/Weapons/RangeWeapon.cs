@@ -20,10 +20,40 @@ namespace DN.GameObjects.Items.Weapons
             get { return _projectiveSpeed; }
             set { _projectiveSpeed = value; } 
         }
-        private ProjectiveType projectiveType;
+
+        protected virtual Vector2 ProjectivePosition
+        {
+            get { return new Vector2(Position.X + 32, Position.Y); }
+        }
+
+        protected Projective CurrentProjective;
+
+        protected ProjectiveType projectiveType;
 
         public RangeWeapon(GameWorld gameWorld) : base(gameWorld)
         {
+            CreateNewProjective();
+            IntervalTimer.TickEvent += IntervalTimerTickEvent;
+        }
+
+        private void IntervalTimerTickEvent()
+        {
+            CreateNewProjective();
+        }
+
+        protected void CreateNewProjective()
+        {
+            CurrentProjective = ProjectiveFactory.Create(World, projectiveType);
+            CurrentProjective.IgnoreWalls = true;
+            CurrentProjective.IgnoreCollisions = true;
+            CurrentProjective.GravityAffected = false;
+        }
+
+        public override void Update(float dt)
+        {
+            base.Update(dt);
+            if(CurrentProjective != null)
+                CurrentProjective.Position = ProjectivePosition;
         }
 
         public override void DoAction()
@@ -31,19 +61,25 @@ namespace DN.GameObjects.Items.Weapons
             if (DoingAction)
                 return;
             base.DoAction();
-
-
         }
 
         public override void FinishAction()
         {
             if (!DoingAction)
                 return;
+            if (Creature == null)
+                return;
             base.FinishAction();
+
             Vector2 dir = Creature.GetVectorDirectionFromDirection();
 
-            ProjectiveFactory.Create(World, projectiveType,Creature.Position,
-               dir, ProjectiveSpeed);
+            CurrentProjective.Move(dir, ProjectiveSpeed);
+            CurrentProjective.Move(new Vector2(0, -1), 2, false);// small hack
+            CurrentProjective.Damage = Damage;
+            CurrentProjective.IgnoreWalls = false;
+            CurrentProjective.IgnoreCollisions = false;
+            CurrentProjective.GravityAffected = true;
+            CurrentProjective = null;
         }
     }
 }

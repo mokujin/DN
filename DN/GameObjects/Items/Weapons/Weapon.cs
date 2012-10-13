@@ -10,7 +10,16 @@ namespace DN.GameObjects.Items.Weapons
             get;
             set;
         }
+        protected int HDir
+        {
+            get { return (int)HDirection; }
+        }
+        protected int VDir
+        {
+            get { return (int) VDirection; }
+        }
 
+        protected bool HitRegistered = false;
 
         public Weapon(GameWorld gameWorld)
             :base(gameWorld)
@@ -26,6 +35,7 @@ namespace DN.GameObjects.Items.Weapons
         public override void DoAction()
         {
             base.DoAction();
+            HitRegistered = false;
         }
     }
 }

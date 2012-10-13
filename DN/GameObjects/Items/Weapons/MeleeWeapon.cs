@@ -9,17 +9,12 @@ namespace DN.GameObjects.Items.Weapons
     {
         private float _offset = -2;
         private float _rotation = 0;
-        private float Dir
-        {
-            get { return HDirection == HDirection.Right ? 1 : -1; }
-        }
-
 
         public override RectangleF Bounds
         {
             get
             {
-                return new RectangleF((X - Size.Width / 2 + _offset * Dir * 1.5f), (Y - Size.Height / 2), Size.Width, Size.Height);
+                return new RectangleF((Position.X - Size.Width / 2 + _offset * HDir * 1.5f), (Position.Y - Size.Height / 2), Size.Width, Size.Height);
             }
         }
 
@@ -43,17 +38,16 @@ namespace DN.GameObjects.Items.Weapons
         {
             SpriteBatch.Instance.DrawTexture(CM.I.tex("sword_sprite"),
                                              new RectangleF(
-                                                 X + _offset * Dir
-                                                 ,Y, Size.Width, Size.Height),
+                                                 Position.X + _offset * HDir
+                                                 , Position.Y, Size.Width, Size.Height),
                                              RectangleF.Empty,
                                              Color.White,
-                                             Dir * _rotation,
-                                             Dir == -1 ? new Vector2(1f, 0.5f): new Vector2(0,0.5f),
+                                             HDir * _rotation,
+                                             HDir == -1 ? new Vector2(1f, 0.5f): new Vector2(0,0.5f),
                                              false, false);
           //  SpriteBatch.Instance.OutlineRectangle(Bounds, Color4.White);
         }
 
-        private bool _hitRegistered = false;
         private void OnCollision(GameObject sender, GameObject gameObject)
         {
             if (gameObject is Creature)
@@ -64,8 +58,8 @@ namespace DN.GameObjects.Items.Weapons
                 {
                     if(creature.TakeDamage(Damage, HDirection, Damage*20, true, 1.0f, 6))
                     {
-                        if (!_hitRegistered) CM.I.Sound("swordA").PlayDynamic();
-                        _hitRegistered = true;
+                        if (!HitRegistered) CM.I.Sound("swordA").PlayDynamic();
+                        HitRegistered = true;
                     }
                 }
             }
@@ -78,7 +72,7 @@ namespace DN.GameObjects.Items.Weapons
             _offset = 0;
             _rotation = 4.71f;
             CM.I.Sound("swordB").PlayDynamic();
-            _hitRegistered = false;
+            HitRegistered = false;
             base.DoAction();
         }
 

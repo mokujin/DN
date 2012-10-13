@@ -160,7 +160,7 @@ namespace DN
             {
                 GameObject gameObject = _addNewObjectsQueue.Dequeue();
                 _gameObjects.Add(gameObject);
-                if(!gameObject.IgnoreCollisions)
+              //  if(!gameObject.IgnoreCollisions)
                     _quadTree.Insert(gameObject);
             }
 
@@ -249,7 +249,8 @@ namespace DN
                     foreach (var gameObject in list)
                     {
                         if(gameObject != gO1)
-                            gameObject.CollisionWithObject(gameObject, gO1);
+                            if(!gameObject.IgnoreCollisions && !gO1.IgnoreCollisions)
+                                gameObject.CollisionWithObject(gameObject, gO1);
                     }
                 }
             }
@@ -312,11 +313,11 @@ namespace DN
 
         public float DistanceToObject(GameObject g1, GameObject g2)
         {
-            return (float)Math.Sqrt(Math.Pow(g1.X - g2.X, 2) + Math.Pow(g1.Y - g2.Y, 2)); ;
+            return (float)Math.Sqrt(Math.Pow(g1.Position.X - g2.Position.X, 2) + Math.Pow(g1.Position.Y - g2.Position.Y, 2)); ;
         }
         public Vector2 DirectionToObject(GameObject g1, GameObject g2)
         {
-            float angle = (float)Math.Atan2(g1.Y - g2.Y, g1.X - g2.X);
+            float angle = (float)Math.Atan2(g1.Position.Y - g2.Position.Y, g1.Position.X - g2.Position.X);
             return new Vector2(-(float)Math.Cos(angle), -(float)Math.Sin(angle));
         }
 

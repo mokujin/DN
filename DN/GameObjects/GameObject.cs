@@ -17,7 +17,8 @@ namespace DN.GameObjects
     public enum VDirection : sbyte
     {
         Up = -1,
-        Down = 1
+        Down = 1,
+        No = 0,
     }
 
     public delegate void CollisionEventHandler(GameObject sender, GameObject gameObject);
@@ -38,20 +39,7 @@ namespace DN.GameObjects
 
         private float _x, _y;
         
-        public float X
-        {
-            get { return _x; }
-            set { _x = value;
-            }
-        }
-        public float Y
-        {
-            get { return _y; }
-            set
-            {
-                _y = value;
-            }
-        }
+
 
         public Vector2 Position
         {
@@ -69,7 +57,7 @@ namespace DN.GameObjects
         {
             get 
             {
-                return new Point((int)(X / 64),(int)( Y / 64)); 
+                return new Point((int)(Position.X / 64),(int)( Position.Y / 64)); 
             }
             set 
             {
@@ -97,8 +85,13 @@ namespace DN.GameObjects
         {
             get
             {
-                return new RectangleF((X - Size.Width / 2), (Y - Size.Height / 2), Size.Width, Size.Height);
+                return new RectangleF((Position.X - Size.Width / 2), (Position.Y - Size.Height / 2), Size.Width, Size.Height);
             }
+        }
+
+        public Vector2 Center
+        {
+            get {return new Vector2(Position.X + Size.Width, Position.Y + Size.Height);}
         }
 
         public float Left { get { return Bounds.Left; }}

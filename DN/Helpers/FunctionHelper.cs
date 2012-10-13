@@ -1,17 +1,25 @@
 ﻿using System;
 using System.Drawing;
+using OpenTK;
 
 namespace DN.Helpers
 { 
-    // I guess it's quite stupid to have one class for one method. In future must be moved somewhere else
-    static class LineOfSight
+    static public class FunctionHelper
     {
-        static internal bool Get(TileMap tileMap, Point startCell, Point endCell)
+        static public float GetDirectionFromVelocity(Vector2 velocity)
         {
-            return Get(tileMap, startCell.X, startCell.Y, endCell.X, endCell.Y);
+            velocity.Normalize();
+          //  float t1 = (float)Math.Acos(velocity.X / Math.Sqrt(velocity.X * velocity.X + velocity.Y * velocity.Y));
+            float t1 = (float)Math.Atan2(velocity.Y, velocity.X);
+            return t1;
         }
 
-        static internal bool Get(TileMap tileMap, float x1, float y1, float x2, float y2)
+        static public bool GetLineOfSight(TileMap tileMap, Point startCell, Point endCell)
+        {
+            return GetLineOfSight(tileMap, startCell.X, startCell.Y, endCell.X, endCell.Y);
+        }
+
+        static public bool GetLineOfSight(TileMap tileMap, float x1, float y1, float x2, float y2)
         {
             float deltaX = Math.Abs(x2 - x1);
             float deltaY = Math.Abs(y2 - y1);
@@ -40,5 +48,15 @@ namespace DN.Helpers
                 }
             }
         }
+        static public sbyte GetSign(float number)
+        {
+            if (number < 0)
+                return -1;
+            if (number > 0)
+                return 1;
+            else 
+                return 0;
+        }
+
     }
 }

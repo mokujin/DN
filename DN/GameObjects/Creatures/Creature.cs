@@ -148,7 +148,7 @@ namespace DN.GameObjects.Creatures
 
             if (_jump)
             {
-                if (Y < _jumpStartY - JumpHeight || ClimbLadder)
+                if (Position.Y < _jumpStartY - JumpHeight || ClimbLadder)
                 {
                     _jump = false;
                 }
@@ -165,6 +165,7 @@ namespace DN.GameObjects.Creatures
             {
                 InHandItem.Position = this.Position;
                 InHandItem.HDirection = HDirection;
+                InHandItem.VDirection = VDirection;
                 InHandItem.Update(dt);
             }
         }
@@ -203,7 +204,7 @@ namespace DN.GameObjects.Creatures
             {
                 _jump = true;
                 ClimbLadder = false;
-                _jumpStartY = Y;
+                _jumpStartY = Position.Y;
             }
         }
         public void StopJump()

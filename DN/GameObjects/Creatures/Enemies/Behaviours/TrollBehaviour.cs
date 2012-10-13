@@ -93,7 +93,7 @@ namespace DN.GameObjects.Creatures.Enemies.Behaviours
 
             if (!_sawPlayer)
             {
-                if (LineOfSight.Get(GameWorld.TileMap, Creature.Cell, Hero.Cell))
+                if (FunctionHelper.GetLineOfSight(GameWorld.TileMap, Creature.Cell, Hero.Cell))
                 {
                     _sawPlayer = true;
                 }
@@ -105,7 +105,7 @@ namespace DN.GameObjects.Creatures.Enemies.Behaviours
             }
             else
             {
-                Vector2 dir = Hero.X > Creature.X ? new Vector2(1, 0) : new Vector2(-1, 0);
+                Vector2 dir = Hero.Position.X > Creature.Position.X ? new Vector2(1, 0) : new Vector2(-1, 0);
                 Creature.Move(dir, Creature.Acceleration * dt);
             }
         }
