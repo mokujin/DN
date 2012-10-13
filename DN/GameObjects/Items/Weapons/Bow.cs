@@ -153,7 +153,7 @@ namespace DN.GameObjects.Items.Weapons
                                  RectangleF.Empty,
                                  Color.White,
                                  _bowDirection , new Vector2(0.5f, 0.5f),
-                                 false, false);
+                                 VDir == 1, HDir == -1);
 
 
       //      SpriteBatch.Instance.DrawLine(StringXposition, Position.Y,
