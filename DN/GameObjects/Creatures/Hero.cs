@@ -1,6 +1,7 @@
 ﻿using Blueberry.Graphics;
 using DN.Effects;
 using DN.GameObjects.Items.Weapons;
+using DN.Helpers;
 using GamepadExtension;
 using OpenTK;
 using OpenTK.Graphics;
@@ -23,8 +24,10 @@ namespace DN.GameObjects.Creatures
         public LettersInventory Inventory { get; private set; }
 
         private float _dt = 0;
-
+        
         public readonly DustPointEmitter DustEffect;
+
+        private Texture _texture = CM.I.tex("hero_tile");
 
         public Hero(GameWorld gameWorld):base(gameWorld)
         {
@@ -46,11 +49,13 @@ namespace DN.GameObjects.Creatures
 
 
 
-            InHandItem = new MeleeWeapon(gameWorld)
-                          {
-                              IntervalDuration = 0.4f,
-                              Damage = 1
-                          };
+            SetItem(new Bow(gameWorld)
+                        {
+                            IntervalDuration = 1.5f,
+                            Damage = 3,
+                            ProjectiveSpeed = 1,
+                            Cell = this.Cell
+                        });
 
             DustEffect = new DustPointEmitter(Position, Vector2.UnitX, 2f);
             DustEffect.Initialise(60, 1);
@@ -58,7 +63,7 @@ namespace DN.GameObjects.Creatures
 
             Health = 36;
 
-            Direction = Direction.Right;
+            HDirection = HDirection.Right;
 
             CollisionWithTiles += OnCollisionWithTiles;
         }
@@ -79,6 +84,11 @@ namespace DN.GameObjects.Creatures
             if(e.Key == Key.X)
             {
                 StopJump();
+            }
+            else if (e.Key == Key.Z)
+            {
+                if(InHandItem != null)
+                    InHandItem.FinishAction();
             }
         }
         void g_Keyboard_KeyDown(object sender, KeyboardKeyEventArgs e)
@@ -136,7 +146,7 @@ namespace DN.GameObjects.Creatures
         public override void Draw(float dt)
         {
             //SpriteBatch.Instance.dr
-            SpriteBatch.Instance.DrawTexture(CM.I.tex("hero_tile"),
+            SpriteBatch.Instance.DrawTexture(_texture,
                                              Position,
                                              Rectangle.Empty,
                                              Invulnerable ? new Color4(255, 1, 1, RandomTool.RandByte(255)) : Color4.White);
@@ -149,12 +159,10 @@ namespace DN.GameObjects.Creatures
         public override void Update(float dt)
         {
             base.Update(dt);
-
             _dt = dt;
 
-
             UpdateControlls(dt);
-            DustEffect.Position = new Vector2(Direction == GameObjects.Direction.Left ?Bounds.Right:Bounds.Left, Bounds.Bottom);
+            DustEffect.Position = new Vector2(HDirection == HDirection.Left ?Bounds.Right:Bounds.Left, Bounds.Bottom);
             DustEffect.Update(dt);
         }
 
@@ -163,7 +171,7 @@ namespace DN.GameObjects.Creatures
             if (LeftKeyPressed())
             {
                 Move(new Vector2(-1, 0), 10*dt);
-                Direction = Direction.Left;
+                HDirection = HDirection.Left;
                 if (OnGround)
                 {
                     DustEffect.Direction = Vector2.UnitX;
@@ -175,7 +183,7 @@ namespace DN.GameObjects.Creatures
             if (RightKeyPressed())
             {
                 Move(new Vector2(1, 0), 10*dt);
-                Direction = Direction.Right;
+                HDirection = HDirection.Right;
                 if (OnGround)
                 {
                     DustEffect.Direction = -Vector2.UnitX;
@@ -183,6 +191,18 @@ namespace DN.GameObjects.Creatures
                     DustEffect.TriggerInterval = q;
                     DustEffect.Trigger(dt);
                 }
+            }
+            if (UpKeyPressed())
+            {
+                VDirection = VDirection.Up;
+            }
+            else if (DownKeyPressed())
+            {
+                VDirection = VDirection.Down;
+            }
+            else
+            {
+                VDirection = VDirection.No;
             }
 
 

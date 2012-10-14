@@ -8,10 +8,17 @@ using Blueberry;
 namespace DN.GameObjects
 {
 
-    public enum Direction : sbyte
+    public enum HDirection : sbyte
     {
         Left = -1,
         Right = 1
+    }
+
+    public enum VDirection : sbyte
+    {
+        Up = -1,
+        Down = 1,
+        No = 0,
     }
 
     public delegate void CollisionEventHandler(GameObject sender, GameObject gameObject);
@@ -27,24 +34,12 @@ namespace DN.GameObjects
         protected GameWorld World;
         public event DestroyEventHandler DestroyEvent;
 
-        public Direction Direction { get; set; }
+        public HDirection HDirection { get; set; }
+        public VDirection VDirection { get; set; }
 
         private float _x, _y;
         
-        public float X
-        {
-            get { return _x; }
-            set { _x = value;
-            }
-        }
-        public float Y
-        {
-            get { return _y; }
-            set
-            {
-                _y = value;
-            }
-        }
+
 
         public Vector2 Position
         {
@@ -62,7 +57,7 @@ namespace DN.GameObjects
         {
             get 
             {
-                return new Point((int)(X / 64),(int)( Y / 64)); 
+                return new Point((int)(Position.X / 64),(int)( Position.Y / 64)); 
             }
             set 
             {
@@ -90,8 +85,13 @@ namespace DN.GameObjects
         {
             get
             {
-                return new RectangleF((X - Size.Width / 2), (Y - Size.Height / 2), Size.Width, Size.Height);
+                return new RectangleF((Position.X - Size.Width / 2), (Position.Y - Size.Height / 2), Size.Width, Size.Height);
             }
+        }
+
+        public Vector2 Center
+        {
+            get {return new Vector2(Position.X + Size.Width, Position.Y + Size.Height);}
         }
 
         public float Left { get { return Bounds.Left; }}
@@ -132,6 +132,14 @@ namespace DN.GameObjects
             if (OnRemoveFromScene != null)
             OnRemoveFromScene(this);
         }
+
+        public Vector2 GetVectorDirectionFromDirection()
+        {
+            Vector2 dir = new Vector2((sbyte)HDirection, (sbyte)VDirection);
+            dir.Normalize();
+            return dir;
+        }
+
         protected virtual void CheckCollisions(ref Vector2 offset, ref Vector2 position)
         {
             if (IgnoreCollisions) return;

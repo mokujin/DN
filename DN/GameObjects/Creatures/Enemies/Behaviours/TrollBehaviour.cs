@@ -45,14 +45,14 @@ namespace DN.GameObjects.Creatures.Enemies.Behaviours
             _waitTimer.Duration = 7;
             _waitTimer.TickEvent += OnWaitTimerTickEvent;
 
-            Creature.Direction = RandomTool.RandBool() ? Direction.Right: Direction.Left;
+            Creature.HDirection = RandomTool.RandBool() ? HDirection.Right: HDirection.Left;
             Creature.CollisionWithTiles += Creature_CollisionWithTiles;
 
         }
 
         private void OnMoveTimerUpdateEvent(float dt)
         {
-            Creature.Move(new Vector2((sbyte)Creature.Direction, 0), Creature.Acceleration * dt);
+            Creature.Move(new Vector2((sbyte)Creature.HDirection, 0), Creature.Acceleration * dt);
         }
 
         private void OnWaitTimerTickEvent()
@@ -66,7 +66,7 @@ namespace DN.GameObjects.Creatures.Enemies.Behaviours
             {
                 _moveTimer.Run();
                 _moveTimer.Duration = RandomTool.RandInt(1, 4);
-                Creature.Direction = RandomTool.RandBool() ? Direction.Right : Direction.Left;
+                Creature.HDirection = RandomTool.RandBool() ? HDirection.Right : HDirection.Left;
             }
             else
             {
@@ -80,7 +80,7 @@ namespace DN.GameObjects.Creatures.Enemies.Behaviours
             if (collidedCell.Direction.X != 0)
             {
                 if (!_sawPlayer)
-                    Creature.Direction = (Direction)((sbyte)(Creature.Direction) * -1);
+                    Creature.HDirection = (HDirection)((sbyte)(Creature.HDirection) * -1);
                 else
                 {
                     Creature.Jump();
@@ -93,7 +93,7 @@ namespace DN.GameObjects.Creatures.Enemies.Behaviours
 
             if (!_sawPlayer)
             {
-                if (LineOfSight.Get(GameWorld.TileMap, Creature.Cell, Hero.Cell))
+                if (FunctionHelper.GetLineOfSight(GameWorld.TileMap, Creature.Cell, Hero.Cell))
                 {
                     _sawPlayer = true;
                 }
@@ -105,7 +105,7 @@ namespace DN.GameObjects.Creatures.Enemies.Behaviours
             }
             else
             {
-                Vector2 dir = Hero.X > Creature.X ? new Vector2(1, 0) : new Vector2(-1, 0);
+                Vector2 dir = Hero.Position.X > Creature.Position.X ? new Vector2(1, 0) : new Vector2(-1, 0);
                 Creature.Move(dir, Creature.Acceleration * dt);
             }
         }

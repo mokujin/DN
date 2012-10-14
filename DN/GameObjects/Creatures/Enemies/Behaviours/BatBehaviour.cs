@@ -58,14 +58,14 @@ namespace DN.GameObjects.Creatures.Enemies.Behaviours
 
             if (!SawPlayer)
                 if (GameWorld.DistanceToObject(Creature, Hero) < 500)
-                    if (LineOfSight.Get(GameWorld.TileMap, Creature.Cell, Hero.Cell))
+                    if (FunctionHelper.GetLineOfSight(GameWorld.TileMap, Creature.Cell, Hero.Cell))
                         SawPlayer = true;
 
             if (SawPlayer)
             {
                 _direction = GameWorld.DirectionToObject(Creature, Hero);
                 Creature.Move(_direction, Creature.Acceleration * dt);
-                Creature.Direction = _direction.X > 0 ? Direction.Right : Direction.Left;
+                Creature.HDirection = _direction.X > 0 ? HDirection.Right : HDirection.Left;
             }
             else
             {
@@ -76,16 +76,11 @@ namespace DN.GameObjects.Creatures.Enemies.Behaviours
         private void OnTimerTick()
         {
             _direction = RandomTool.NextUnitVector2();
-            Creature.Direction = _direction.X > 0 ? Direction.Right : Direction.Left;
+            Creature.HDirection = _direction.X > 0 ? HDirection.Right : HDirection.Left;
         }
         private void OnTimerUpdate(float dt)
         {
             Creature.Move(_direction, Creature.Acceleration * dt);
         }
-
-
-        
-        //just for test
-        
     }
 }

@@ -37,12 +37,9 @@ namespace DN.GameObjects.Creatures
             {
                 return _inHandItem;
             }
-            set
+            private set
             {
-                if(_inHandItem != null)
-                    _inHandItem.Creature = null;
                 _inHandItem = value;
-                _inHandItem.Creature = this;
             }
         }
 
@@ -105,11 +102,18 @@ namespace DN.GameObjects.Creatures
             }
         }
 
+        public void SetItem(Item item)
+        {
+            DropItem();
+            _inHandItem = item;
+            _inHandItem.SetOwner(this);
+        }
+
         public void DropItem()
         {
             if(_inHandItem == null) 
                 return;
-            _inHandItem.Creature = null;
+            _inHandItem.SetOwner(null);
             _inHandItem = null;
         }
 
@@ -119,7 +123,7 @@ namespace DN.GameObjects.Creatures
                 return;
 
             _inHandItem = item;
-            _inHandItem.Creature = this;
+            _inHandItem.SetOwner(this);
         }
 
         public void PickUpItem()
@@ -138,7 +142,7 @@ namespace DN.GameObjects.Creatures
             if(IsDead)
             {
                 if (_inHandItem != null)
-                    _inHandItem.Creature = null;
+                    _inHandItem.SetOwner(null);
                 Destroy();
                 return;
             }
@@ -148,7 +152,7 @@ namespace DN.GameObjects.Creatures
 
             if (_jump)
             {
-                if (Y < _jumpStartY - JumpHeight || ClimbLadder)
+                if (Position.Y < _jumpStartY - JumpHeight || ClimbLadder)
                 {
                     _jump = false;
                 }
@@ -163,9 +167,14 @@ namespace DN.GameObjects.Creatures
 
             if(InHandItem != null)
             {
+                if(InHandItem.Creature == null)
+                {
+                    DropItem();
+                }
                 InHandItem.Position = this.Position;
-                InHandItem.Direction = Direction;
-                InHandItem.Update(dt);
+                InHandItem.HDirection = HDirection;
+                InHandItem.VDirection = VDirection;
+               // InHandItem.Update(dt);
             }
         }
 
@@ -176,13 +185,13 @@ namespace DN.GameObjects.Creatures
             Health += amount;
         }
 
-        public bool TakeDamage(float amount, Direction direction, float push = 0.0f, bool createBlood = false, float bloodSpeed = 0.0f, int bloodCount = 0)
+        public bool TakeDamage(float amount, HDirection direction, float push = 0.0f, bool createBlood = false, float bloodSpeed = 0.0f, int bloodCount = 0)
         {
             if (InvulnerabilityDuration <= _invulnerabilityDuration_dt)
             {
                 Health -= amount;
                 if(push > 0)
-                    Move(direction == Direction.Right ? new Vector2(1, 0) : new Vector2(-1, 0), push, true);
+                    Move(direction == HDirection.Right ? new Vector2(1, 0) : new Vector2(-1, 0), push, true);
                 _invulnerabilityDuration_dt = 0;
 
                 Vector2 vel = Velocity;
@@ -203,7 +212,7 @@ namespace DN.GameObjects.Creatures
             {
                 _jump = true;
                 ClimbLadder = false;
-                _jumpStartY = Y;
+                _jumpStartY = Position.Y;
             }
         }
         public void StopJump()

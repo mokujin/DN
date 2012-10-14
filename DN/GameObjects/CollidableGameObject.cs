@@ -18,6 +18,7 @@ namespace DN.GameObjects
 
         public bool GravityAffected = true;
         public bool IgnoreWalls = false;
+        public bool Freeze = false;
         protected bool ClimbLadder;
 
         protected List<CollidedCell> Collisions;
@@ -107,13 +108,17 @@ namespace DN.GameObjects
             Vector2 vel = Velocity;
             if (!OnLadder || !ClimbLadder)
             {
-                CheckOverSpeed(ref vel.X, MaxVelocity.X);
-                CheckOverSpeed(ref vel.Y, MaxVelocity.Y);
+                if(MaxVelocity.X != 0)
+                    CheckOverSpeed(ref vel.X, MaxVelocity.X);
+                if(MaxVelocity.Y != 0)
+                    CheckOverSpeed(ref vel.Y, MaxVelocity.Y);
             }
             else
             {
-                CheckOverSpeed(ref vel.X, MaxLadderVelocity.X);
-                CheckOverSpeed(ref vel.Y, MaxLadderVelocity.Y);
+                if (MaxLadderVelocity.X != 0)
+                    CheckOverSpeed(ref vel.X, MaxLadderVelocity.X);
+                if (MaxLadderVelocity.Y != 0)
+                    CheckOverSpeed(ref vel.Y, MaxLadderVelocity.Y);
             }
             Velocity = vel;
         }
@@ -133,37 +138,40 @@ namespace DN.GameObjects
 
         private void UpdateParametrs(float dt)
         {
-
-            if (!OnLadder ||!ClimbLadder)
+            if (!Freeze)
             {
-                if (GravityAffected)
+                if (!OnLadder || !ClimbLadder)
                 {
-                    Move(GameWorld.GravityDirection, GameWorld.G * dt);
+                    if (GravityAffected)
+                    {
+                        if (Velocity.Y < MaxVelocity.Y)
+                            Move(GameWorld.GravityDirection, GameWorld.G*dt, false);
+                    }
+                    if (OnGround)
+                        UpdateFriction(ref Velocity.X, Friction, dt);
+                    ClimbLadder = false;
                 }
-                if (OnGround)
-                    UpdateFriction(ref Velocity.X, Friction, dt);
-                ClimbLadder = false;
+                else
+                {
+                    UpdateFriction(ref Velocity.Y, LadderFriction, dt);
+                    UpdateFriction(ref Velocity.X, LadderFriction, dt);
+                }
+
+                Vector2 pos = Position;
+
+                Vector2 vel = Velocity*dt*50; // i guess it is dirty hack
+
+                CheckCollisions(ref vel, ref pos);
+
+                Position = pos;
+
+                if (vel.X == 0)
+                    Velocity.X = 0;
+                if (vel.Y == 0)
+                    Velocity.Y = 0;
+
+                Position += vel;
             }
-            else
-            {
-                UpdateFriction(ref Velocity.Y, LadderFriction, dt);
-                UpdateFriction(ref Velocity.X, LadderFriction, dt);
-            }
-
-            Vector2 pos = Position;
-            
-            Vector2 vel = Velocity * dt * 50;// i guess it is dirty hack
-
-            CheckCollisions(ref vel, ref pos);
-
-            Position = pos;
-
-            if (vel.X == 0)
-                Velocity.X = 0;
-            if (vel.Y == 0)
-                Velocity.Y = 0;
-
-            Position += vel;
         }
 
         private void UpdateFriction(ref float vel, float friction, float dt)

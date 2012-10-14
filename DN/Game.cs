@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DN.GameObjects.Creatures.Enemies;
 using DN.LevelGeneration;
 using OpenTK;
 using Blueberry;
@@ -83,6 +84,14 @@ namespace DN
             {
                 Thread.Sleep(1);
             }
+            gameWorld.InsertHero();
+            gameWorld.InitGui();
+            for (int i = 0; i < 30; i++)
+            {
+                Enemy enemy = EnemiesFabric.CreateEnemy(gameWorld, EnemyType.Bat);
+                enemy.Cell = gameWorld.GetRandomPoint();
+            }
+            gameWorld.InitTextures();
         }
 
         private void CreateWorld()
@@ -97,13 +106,6 @@ namespace DN
                 WallSmoothing = 0.5f
             };
             lg.Generate(gameWorld);
-            gameWorld.InsertHero();
-            gameWorld.InitGui();
-            for (int i = 0; i < 30; i++)
-            {
-                Enemy enemy = EnemiesFabric.CreateEnemy(gameWorld, RandomTool.RandBool() ? EnemyType.Bat : EnemyType.Troll);
-                enemy.Cell = gameWorld.GetRandomPoint();
-            }
         }
 
         private void LoadContent()
@@ -116,6 +118,9 @@ namespace DN
             CM.I.LoadTexture("troll_sprite", Path.Combine("Content", "Textures", "Enemies", "Troll.png"));
             CM.I.LoadTexture("heart", Path.Combine("Content", "Textures", "Gui", "heart.png"));
             CM.I.LoadTexture("potion", Path.Combine("Content", "Textures", "GameObjects", "Potion.png"));
+            CM.I.LoadTexture("arrow_sprite", Path.Combine("Content", "Textures", "Weapons", "arrow.png"));
+            CM.I.LoadTexture("bow_sprite", Path.Combine("Content", "Textures", "Weapons", "Bow.png"));
+
 
             CM.I.LoadFont("Big", Path.Combine("Content", "Fonts", "monofur.ttf"), 48);
             CM.I.LoadFont("Middle", Path.Combine("Content", "Fonts", "monofur.ttf"), 24);
