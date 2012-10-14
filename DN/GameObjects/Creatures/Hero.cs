@@ -49,9 +49,9 @@ namespace DN.GameObjects.Creatures
 
             SetItem(new Bow(gameWorld)
                         {
-                            IntervalDuration = 2.0f,
-                            Damage = 1,
-                            ProjectiveSpeed = 8,
+                            IntervalDuration = 1.5f,
+                            Damage = 3,
+                            ProjectiveSpeed = 1,
                             Cell = this.Cell
                         });
 

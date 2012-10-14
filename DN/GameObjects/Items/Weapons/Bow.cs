@@ -13,7 +13,7 @@ namespace DN.GameObjects.Items.Weapons
 {
     public class Bow : RangeWeapon
     {
-        public float tensionGrowingSpeed = 10;
+        public float tensionGrowingSpeed = 30;
 
         public float MaxTension = 18;
         public float MinTension = 2;
@@ -30,8 +30,8 @@ namespace DN.GameObjects.Items.Weapons
         {
             get
             {
-                return new Vector2(base.ProjectivePosition.X + (16 - _tension + Size.Width*2f)*HDir,
-                                   base.ProjectivePosition.Y);
+                return new Vector2(base.ProjectivePosition.X + _bowPosition.X + (-_tension)*HDir,
+                                   base.ProjectivePosition.Y + _bowPosition.Y - _tension * (float)Math.Sin(_bowDirection));
             }
         }
 
@@ -53,7 +53,6 @@ namespace DN.GameObjects.Items.Weapons
             {
                 return Creature != null
                            ? new Vector2((sbyte) Creature.HDirection*(Size.Width + 32),
-
                                             Creature.VDirection != 0?
                                          (sbyte) Creature.VDirection*(Size.Height/2): 1)
                            : new Vector2(0, 0);
@@ -62,7 +61,7 @@ namespace DN.GameObjects.Items.Weapons
 
         private float NextBowDirection
         {
-            get { return FunctionHelper.GetDirectionFromVelocity(new Vector2(HDir, VDir)); }
+            get { return FunctionHelper.Vector2ToRadians(new Vector2(HDir, VDir)); }
         }
 
 
@@ -86,6 +85,8 @@ namespace DN.GameObjects.Items.Weapons
             base.Update(dt);
             UpdatePosition(dt);
             UpdateDirection(dt);
+            if(CurrentProjective != null)
+                CurrentProjective.SetMove(FunctionHelper.RadiansToVector2(_bowDirection), false);
 
         }
 
@@ -117,7 +118,6 @@ namespace DN.GameObjects.Items.Weapons
 
             if (nextBowDirection != _bowDirection)
             {
-
                 sbyte dir = FunctionHelper.GetSign(_bowDirection - NextBowDirection);
 
                 _bowDirection += dir * dt * 2;
@@ -151,6 +151,7 @@ namespace DN.GameObjects.Items.Weapons
             if (!DoingAction)
                 return;
             base.FinishAction();
+            _tension = MinTension;
             PerfermingTimer.Stop();
         }
         private void OnPerfemingTimerUpdate(float dt)
@@ -173,12 +174,6 @@ namespace DN.GameObjects.Items.Weapons
                                  Color.White,
                                  _bowDirection , new Vector2(0.5f, 0.5f),
                                  VDir == 1, HDir == -1);
-
-
-      //      SpriteBatch.Instance.DrawLine(StringXposition, Position.Y,
-          //                                Position.X + Size.Width * HDir, Position.Y + Size.Height / 2, Color4.White, 1.0f);
-
-
         }
     }
 }

@@ -61,7 +61,7 @@ namespace DN.GameObjects.Items.Weapons.Projectives
         public override void Draw(float dt)
         {
             SpriteBatch.Instance.DrawTexture(CM.I.tex(Sprite), Bounds, RectangleF.Empty, Color4.White,
-                GravityAffected ? FunctionHelper.GetDirectionFromVelocity(Velocity) : 0.0f, new Vector2(0.5f, 0.5f));
+               FunctionHelper.Vector2ToRadians(Velocity), new Vector2(0.5f, 0.5f), VDir == 1, HDir == -1);
         }
 
     }

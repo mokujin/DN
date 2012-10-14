@@ -6,12 +6,17 @@ namespace DN.Helpers
 { 
     static public class FunctionHelper
     {
-        static public float GetDirectionFromVelocity(Vector2 velocity)
+        static public float Vector2ToRadians(Vector2 velocity)
         {
             velocity.Normalize();
           //  float t1 = (float)Math.Acos(velocity.X / Math.Sqrt(velocity.X * velocity.X + velocity.Y * velocity.Y));
             float t1 = (float)Math.Atan2(velocity.Y, velocity.X);
             return t1;
+        }
+
+        static public Vector2 RadiansToVector2(float radians)
+        {
+            return new Vector2((float)Math.Cos(radians), (float)Math.Sin(radians));
         }
 
         static public bool GetLineOfSight(TileMap tileMap, Point startCell, Point endCell)

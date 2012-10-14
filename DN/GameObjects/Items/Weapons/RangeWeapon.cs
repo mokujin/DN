@@ -47,13 +47,16 @@ namespace DN.GameObjects.Items.Weapons
             CurrentProjective.IgnoreWalls = true;
             CurrentProjective.IgnoreCollisions = true;
             CurrentProjective.GravityAffected = false;
+            CurrentProjective.Freeze = true;
         }
 
         public override void Update(float dt)
         {
             base.Update(dt);
-            if(CurrentProjective != null)
+            if (CurrentProjective != null)
+            {
                 CurrentProjective.Position = ProjectivePosition;
+            }
         }
 
         public override void DoAction()
@@ -73,13 +76,14 @@ namespace DN.GameObjects.Items.Weapons
 
             Vector2 dir = Creature.GetVectorDirectionFromDirection();
 
-            CurrentProjective.Move(dir, ProjectiveSpeed);
+            CurrentProjective.Move(dir, ProjectiveSpeed, false);
             CurrentProjective.Move(new Vector2(0, -1), 2, false);// small hack
             CurrentProjective.SetOwner(Creature, false);
             CurrentProjective.Damage = Damage;
             CurrentProjective.IgnoreWalls = false;
             CurrentProjective.IgnoreCollisions = false;
             CurrentProjective.GravityAffected = true;
+            CurrentProjective.Freeze = false;
 
             CurrentProjective = null;
         }
