@@ -24,8 +24,10 @@ namespace DN.GameObjects.Creatures
         public LettersInventory Inventory { get; private set; }
 
         private float _dt = 0;
-
+        
         public readonly DustPointEmitter DustEffect;
+
+        private Texture _texture = CM.I.tex("hero_tile");
 
         public Hero(GameWorld gameWorld):base(gameWorld)
         {
@@ -139,7 +141,7 @@ namespace DN.GameObjects.Creatures
         public override void Draw(float dt)
         {
             //SpriteBatch.Instance.dr
-            SpriteBatch.Instance.DrawTexture(CM.I.tex("hero_tile"),
+            SpriteBatch.Instance.DrawTexture(_texture,
                                              Position,
                                              Rectangle.Empty,
                                              Invulnerable ? new Color4(255, 1, 1, RandomTool.RandByte(255)) : Color4.White);

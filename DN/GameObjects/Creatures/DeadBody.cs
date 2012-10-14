@@ -12,7 +12,17 @@ namespace DN.GameObjects.Creatures
 {
     class DeadBody:CollidableGameObject
     {
-        public string Sprite;
+        private string _sprite;
+        private Texture _texture;
+        public string Sprite
+        {
+            get { return _sprite; }
+            set
+            {
+                _sprite = value;
+                _texture = CM.I.tex(_sprite);
+            }
+        }
 
         private float _alpha = 0.5f;
         private float _rotation = 0;
@@ -36,9 +46,9 @@ namespace DN.GameObjects.Creatures
 
         public override void Draw(float dt)
         {
-            Texture tex = CM.I.tex(Sprite);
-            SpriteBatch.Instance.DrawTexture(tex,
-                                             new RectangleF(Position.X, Position.Y, tex.Size.Width, tex.Size.Height),
+
+            SpriteBatch.Instance.DrawTexture(_texture,
+                                             new RectangleF(Position.X, Position.Y, _texture.Size.Width, _texture.Size.Height),
                                              RectangleF.Empty,
                                              new Color4(1, 1, 1, _alpha), _rotation, new Vector2(0.5f, 0.5f), false,
                                              false);

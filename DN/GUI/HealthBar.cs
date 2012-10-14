@@ -12,6 +12,7 @@ namespace DN.GUI
     public class HealthBar : GUIObject
     {
         private Creature _creature;
+        Texture heart = CM.I.tex("heart");
 
         public HealthBar(Creature creature)
         {
@@ -26,7 +27,7 @@ namespace DN.GUI
         {
             float c;
             int i;
-            Texture heart = CM.I.tex("heart");
+
             for (i = 3; i < _creature.Health; i += 3)
             {
                 SpriteBatch.Instance.DrawTexture(heart, X + 36*i/3, Y, 32, 32, Rectangle.Empty, Color.White);

@@ -104,6 +104,10 @@ namespace DN
             };
             _guiManager.Add(healthBar);
         }
+        public void InitTextures()
+        {
+            TileMap.InitTextures();
+        }
 
         public void Update(float dt)
         {
@@ -219,6 +223,8 @@ namespace DN
             SpriteBatch.Instance.End();
 
         }
+
+
         private void RenderTiles(float dt)
         {
             Rectangle rect = Camera.BoundingRectangle;

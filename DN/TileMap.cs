@@ -20,6 +20,8 @@ namespace DN
 
     public class TileMap
     {
+        private Texture _wallTile;
+        private Texture _stairTile;
         private CellType[,] _map;
 
         public CellType this[int i, int j]
@@ -36,6 +38,12 @@ namespace DN
             Width = width;
             Height = height;
             _map = new CellType[Width, Height];
+        }
+
+        public void InitTextures()
+        {
+            _wallTile = CM.I.tex("wall_tile");
+            _stairTile = CM.I.tex("stair_tile");
         }
         
         public void FillWith(CellType cellType)
@@ -86,7 +94,7 @@ namespace DN
 
         public void Draw(Rectangle region)
         {
-            Size ts = CM.I.tex("wall_tile").Size;
+            Size ts = _wallTile.Size;
             for (int i = Math.Max(0, region.Left); i < Math.Min(region.Right, Width); i++)
             {
                 for (int j = Math.Max(0, region.Top); j < Math.Min(region.Bottom, Height); j++)
@@ -94,13 +102,13 @@ namespace DN
                     switch(_map[i,j])
                     {
                         case CellType.Wall:
-                            SpriteBatch.Instance.DrawTexture(CM.I.tex("wall_tile"), i * ts.Width, j * ts.Height, ts.Width, ts.Height, Rectangle.Empty, Color.White, 0, 0, 0);
+                            SpriteBatch.Instance.DrawTexture(_wallTile, i * ts.Width, j * ts.Height, ts.Width, ts.Height, Rectangle.Empty, Color.White, 0, 0, 0);
                             break;
                         case CellType.Ladder:
-                            SpriteBatch.Instance.DrawTexture(CM.I.tex("stair_tile"), i * ts.Width, j * ts.Height, ts.Width, ts.Height, Rectangle.Empty, Color.White, 0, 0, 0);
+                            SpriteBatch.Instance.DrawTexture(_stairTile, i * ts.Width, j * ts.Height, ts.Width, ts.Height, Rectangle.Empty, Color.White, 0, 0, 0);
                             break;
                         case CellType.VRope:
-                            SpriteBatch.Instance.DrawTexture(CM.I.tex("stair_tile"), i * ts.Width, j * ts.Height, ts.Width, ts.Height, Rectangle.Empty, Color.Brown, 0, 0, 0);
+                            SpriteBatch.Instance.DrawTexture(_stairTile, i * ts.Width, j * ts.Height, ts.Width, ts.Height, Rectangle.Empty, Color.Brown, 0, 0, 0);
                             break;
                     }
                 }

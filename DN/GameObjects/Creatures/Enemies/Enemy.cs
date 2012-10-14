@@ -13,7 +13,18 @@ namespace DN.GameObjects.Creatures.Enemies
 {
     public class Enemy:Creature
     {
-        public string Sprite;
+        private string _sprite;
+        private Texture _texture;
+        public string Sprite
+        {
+            get { return _sprite; }
+            set
+            {
+                _sprite = value;
+                _texture = CM.I.tex(_sprite);
+            }
+        }
+    
         private float _dt;
         IBehaviour _behaviour;
 
@@ -46,7 +57,7 @@ namespace DN.GameObjects.Creatures.Enemies
         {
             if(Sprite != null)
                 if(!IsDead)
-                    SpriteBatch.Instance.DrawTexture(CM.I.tex(Sprite),
+                    SpriteBatch.Instance.DrawTexture(_texture,
                                             Position,
                                             Invulnerable?new Color4(1,1,1,RandomTool.RandFloat()): Color.White);
         }

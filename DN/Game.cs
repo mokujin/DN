@@ -83,6 +83,14 @@ namespace DN
             {
                 Thread.Sleep(1);
             }
+            gameWorld.InsertHero();
+            gameWorld.InitGui();
+            for (int i = 0; i < 30; i++)
+            {
+                Enemy enemy = EnemiesFabric.CreateEnemy(gameWorld, EnemyType.Bat);
+                enemy.Cell = gameWorld.GetRandomPoint();
+            }
+            gameWorld.InitTextures();
         }
 
         private void CreateWorld()
@@ -97,15 +105,6 @@ namespace DN
                 WallSmoothing = 0.5f
             };
             lg.Generate(gameWorld);
-            gameWorld.InsertHero();
-            gameWorld.InitGui();
-            for (int i = 0; i < 1; i++)
-            {
-                Enemy enemy = EnemiesFabric.CreateEnemy(gameWorld, EnemyType.Bat);
-                enemy.Cell = gameWorld.GetRandomPoint();
-            }
-
-  
         }
 
         private void LoadContent()
