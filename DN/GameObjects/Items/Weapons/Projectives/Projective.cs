@@ -19,6 +19,7 @@ namespace DN.GameObjects.Items.Weapons.Projectives
             set;
         }
 
+        private float _angle = 0;
         public String Sprite;
 
         public Projective(GameWorld gameWorld)
@@ -30,7 +31,12 @@ namespace DN.GameObjects.Items.Weapons.Projectives
             Size = new Size(64,16);
             //MaxVelocity = new Vector2(0,15);
         }
-
+        public override void Update(float dt)
+        {
+            base.Update(dt);
+            Console.WriteLine(Velocity);
+            _angle = FunctionHelper.Vector2ToRadians(Velocity);
+        }
         public void Init(Vector2 direction, float acceleration)
         {
             Move(direction, acceleration, false);
@@ -61,7 +67,8 @@ namespace DN.GameObjects.Items.Weapons.Projectives
         public override void Draw(float dt)
         {
             SpriteBatch.Instance.DrawTexture(CM.I.tex(Sprite), Bounds, RectangleF.Empty, Color4.White,
-               FunctionHelper.Vector2ToRadians(Velocity), new Vector2(0.5f, 0.5f), VDir == 1, HDir == -1);
+               _angle, new Vector2(0.5f, 0.5f), VDir == 1, HDir == -1);
+           // SpriteBatch.Instance.OutlineRectangle(Bounds, Color.White); // debug draw
         }
 
     }

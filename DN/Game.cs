@@ -86,7 +86,7 @@ namespace DN
             }
             gameWorld.InsertHero();
             gameWorld.InitGui();
-            for (int i = 0; i < 30; i++)
+            for (int i = 0; i < 0; i++)
             {
                 Enemy enemy = EnemiesFabric.CreateEnemy(gameWorld, EnemyType.Bat);
                 enemy.Cell = gameWorld.GetRandomPoint();

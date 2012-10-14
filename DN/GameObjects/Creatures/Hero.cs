@@ -243,7 +243,8 @@ namespace DN.GameObjects.Creatures
                     {
                         ClimbLadder = true;
                     }
-                    Move(Game.g_Gamepad.LeftStick.Position, 100 * dt);
+                    if(ClimbLadder)
+                        Move(Game.g_Gamepad.LeftStick.Position, 100 * dt);
                 }
             }
         }
