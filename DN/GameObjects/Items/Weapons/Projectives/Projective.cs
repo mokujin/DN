@@ -34,7 +34,6 @@ namespace DN.GameObjects.Items.Weapons.Projectives
         public override void Update(float dt)
         {
             base.Update(dt);
-            Console.WriteLine(Velocity);
             _angle = FunctionHelper.Vector2ToRadians(Velocity);
         }
         public void Init(Vector2 direction, float acceleration)
