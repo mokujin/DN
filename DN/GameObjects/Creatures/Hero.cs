@@ -137,6 +137,11 @@ namespace DN.GameObjects.Creatures
             {
                 StopJump();
             }
+            else if (e.HasFlag(GamepadButtons.X))
+            {
+                if (InHandItem != null)
+                    InHandItem.FinishAction();
+            }
         }
 
         #region Procedural animations
@@ -187,7 +192,7 @@ namespace DN.GameObjects.Creatures
                 if (OnGround)
                 {
                     DustEffect.Direction = -Vector2.UnitX;
-                    float q = 1/ (Velocity.Length * 5f);
+                    float q = 1/(Velocity.Length*5f);
                     DustEffect.TriggerInterval = q;
                     DustEffect.Trigger(dt);
                 }
@@ -215,7 +220,7 @@ namespace DN.GameObjects.Creatures
                     {
                         if (Velocity.Y >= 0 || ClimbLadder)
                         {
-                            Move(new Vector2(0, -1), 100 * dt);
+                            Move(new Vector2(0, -1), 100*dt);
                             ClimbLadder = true;
                         }
                     }
@@ -223,18 +228,18 @@ namespace DN.GameObjects.Creatures
                     {
                         if (ClimbLadder)
                         {
-                            Move(new Vector2(0, 1), 100 * dt);
+                            Move(new Vector2(0, 1), 100*dt);
                         }
                     }
 
                     if (LeftKeyPressed() && ClimbLadder)
                     {
-                        Move(new Vector2(-1, 0), 100 * dt);
+                        Move(new Vector2(-1, 0), 100*dt);
                     }
 
                     else if (RightKeyPressed() && ClimbLadder)
                     {
-                        Move(new Vector2(1, 0), 100 * dt);
+                        Move(new Vector2(1, 0), 100*dt);
                     }
                 }
                 else
@@ -243,9 +248,15 @@ namespace DN.GameObjects.Creatures
                     {
                         ClimbLadder = true;
                     }
-                    if(ClimbLadder)
-                        Move(Game.g_Gamepad.LeftStick.Position, 100 * dt);
+                    if (ClimbLadder)
+                        Move(Game.g_Gamepad.LeftStick.Position, 100*dt);
                 }
+            }
+
+            if (Game.g_Gamepad.LeftStick.Position != Vector2.Zero)
+            {
+                VDirection = (VDirection)(Game.g_Gamepad.LeftStick.Position.Y > 0 ? 1 : -1);
+                HDirection = (HDirection)(Game.g_Gamepad.LeftStick.Position.X > 0 ? 1 : -1);
             }
         }
 
