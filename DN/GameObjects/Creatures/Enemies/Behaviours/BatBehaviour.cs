@@ -82,10 +82,5 @@ namespace DN.GameObjects.Creatures.Enemies.Behaviours
         {
             Creature.Move(_direction, Creature.Acceleration * dt);
         }
-
-
-        
-        //just for test
-        
     }
 }

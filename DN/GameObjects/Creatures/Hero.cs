@@ -152,12 +152,10 @@ namespace DN.GameObjects.Creatures
         public override void Update(float dt)
         {
             base.Update(dt);
-
             _dt = dt;
 
-
             UpdateControlls(dt);
-            DustEffect.Position = new Vector2(HDirection == GameObjects.HDirection.Left ?Bounds.Right:Bounds.Left, Bounds.Bottom);
+            DustEffect.Position = new Vector2(HDirection == HDirection.Left ?Bounds.Right:Bounds.Left, Bounds.Bottom);
             DustEffect.Update(dt);
         }
 

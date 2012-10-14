@@ -103,7 +103,6 @@ namespace DN
             {
                 Enemy enemy = EnemiesFabric.CreateEnemy(gameWorld, EnemyType.Bat);
                 enemy.Cell = gameWorld.GetRandomPoint();
-                gameWorld.AddObject(enemy);
             }
 
   

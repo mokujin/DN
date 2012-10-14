@@ -38,7 +38,7 @@ namespace DN.GameObjects.Creatures.Enemies
         {
             base.Update(dt);
             if(!IsDead)
-                _behaviour.Update(dt/2);
+                _behaviour.Update(dt);
             _dt = dt;
         }
 
