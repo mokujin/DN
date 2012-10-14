@@ -3,6 +3,7 @@ using Blueberry.Graphics.Fonts;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 
@@ -182,7 +183,7 @@ namespace Blueberry.Diagnostics
             {
                 if (buffer[i] == ';')
                 {
-                    SpriteBatch.Instance.PrintText(font, buffer.ToString(start, i - start), drawArea.Left + 10, drawArea.Top + 10 + line * font.LineSpacing, Color.White);
+                    SpriteBatch.Instance.PrintText(font, buffer.ToString(start, i - start), drawArea.Left + 10, drawArea.Top + 10 + line * font.LineSpacing, Color.White,0,0.8f);
                     line++;
                     start = ++i;
                 }
@@ -200,7 +201,8 @@ namespace Blueberry.Diagnostics
 
         public string DebugInfo()
         {
-            return "FPS: " + fps + "; ;UPS: " + ups + "; ;fdt: ; ; ;udt: ; ; ;Memory: "+memory+";";
+            
+            return "FPS: " + fps + "; ;UPS: " + ups + "; ;fdt: ; ; ;udt: ; ; ;Memory: "+memory.ToString("N1",CultureInfo.InvariantCulture)+";";
         }
 
         public string DebugName

@@ -33,7 +33,7 @@ namespace DN.GameObjects.Creatures
             Game.g_Keyboard.KeyDown += g_Keyboard_KeyDown;
             Game.g_Keyboard.KeyUp += g_Keyboard_KeyUp;
             Game.g_Keyboard.KeyRepeat = true;
-
+            Game.g_Gamepad.OnLeftStick += g_Gamepad_OnLeftStick;
 
             Inventory = new LettersInventory();
 
@@ -61,6 +61,11 @@ namespace DN.GameObjects.Creatures
             Direction = Direction.Right;
 
             CollisionWithTiles += OnCollisionWithTiles;
+        }
+
+        void g_Gamepad_OnLeftStick(object sender, GamepadState.ThumbstickState e, Vector2 delta)
+        {
+            //Move(e.Position, 10 * dt);
         }
 
         private void OnCollisionWithTiles(CollidableGameObject sender, CollidedCell collidedCell)
@@ -184,30 +189,41 @@ namespace DN.GameObjects.Creatures
 
             if (OnLadder && !OnGround)
             {
-                if (UpKeyPressed())
+                if (Game.g_Gamepad.LeftStick.Position == Vector2.Zero)
                 {
-                    if (Velocity.Y >= 0 || ClimbLadder)
+                    if (UpKeyPressed())
                     {
-                        Move(new Vector2(0, -1),  100*dt);
+                        if (Velocity.Y >= 0 || ClimbLadder)
+                        {
+                            Move(new Vector2(0, -1), 100 * dt);
+                            ClimbLadder = true;
+                        }
+                    }
+                    else if (DownKeyPressed())
+                    {
+                        if (ClimbLadder)
+                        {
+                            Move(new Vector2(0, 1), 100 * dt);
+                        }
+                    }
+
+                    if (LeftKeyPressed() && ClimbLadder)
+                    {
+                        Move(new Vector2(-1, 0), 100 * dt);
+                    }
+
+                    else if (RightKeyPressed() && ClimbLadder)
+                    {
+                        Move(new Vector2(1, 0), 100 * dt);
+                    }
+                }
+                else
+                {
+                    if (Game.g_Gamepad.LeftStick.Position.Y < 0 && (Velocity.Y >= 0 || ClimbLadder))
+                    {
                         ClimbLadder = true;
                     }
-                }
-                if (DownKeyPressed())
-                {
-                    if (ClimbLadder)
-                    {
-                       Move(new Vector2(0, 1), 100 * dt);
-                    }
-                }
-
-                if (LeftKeyPressed() && ClimbLadder)
-                {
-                    Move(new Vector2(-1, 0), 100 * dt);
-                }
-
-                if (RightKeyPressed() && ClimbLadder)
-                {
-                    Move(new Vector2(1, 0), 100 * dt);
+                    Move(Game.g_Gamepad.LeftStick.Position, 100 * dt);
                 }
             }
         }
@@ -224,12 +240,12 @@ namespace DN.GameObjects.Creatures
 
         private static bool RightKeyPressed()
         {
-            return Game.g_Gamepad.DPad.Right || Game.g_Keyboard[Key.Right];
+            return Game.g_Gamepad.DPad.Right || Game.g_Keyboard[Key.Right] || Game.g_Gamepad.LeftStick.Position.X > 0;
         }
 
         private static bool LeftKeyPressed()
         {
-            return Game.g_Gamepad.DPad.Left || Game.g_Keyboard[Key.Left];
+            return Game.g_Gamepad.DPad.Left || Game.g_Keyboard[Key.Left] || Game.g_Gamepad.LeftStick.Position.X < 0;
         }
     }
 }

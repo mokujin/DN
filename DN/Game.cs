@@ -19,6 +19,7 @@ using Blueberry.Audio;
 using System.Threading;
 using Blueberry.Diagnostics;
 using Blueberry.Graphics.Fonts;
+using DN.GameObjects.Creatures.Enemies;
 
 
 namespace DN
@@ -58,7 +59,7 @@ namespace DN
             g_Mouse = Mouse;
             g_Gamepad = new GamepadState(GamepadIndex.One);
 
-            gameWorld = new GameWorld(30, 30);
+            gameWorld = new GameWorld(100, 100);
             Thread worldCreationThread = new Thread(CreateWorld);
 
             worldCreationThread.Start();
@@ -98,6 +99,11 @@ namespace DN
             lg.Generate(gameWorld);
             gameWorld.InsertHero();
             gameWorld.InitGui();
+            for (int i = 0; i < 30; i++)
+            {
+                Enemy enemy = EnemiesFabric.CreateEnemy(gameWorld, RandomTool.RandBool() ? EnemyType.Bat : EnemyType.Troll);
+                enemy.Cell = gameWorld.GetRandomPoint();
+            }
         }
 
         private void LoadContent()
