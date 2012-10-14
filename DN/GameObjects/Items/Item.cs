@@ -24,21 +24,9 @@ namespace DN.GameObjects.Items
         public Creature Creature
         {
             get { return _creature; }
-            set
+            protected set
             {
                     _creature = value;
-                    if (_creature == null)
-                    {
-                        GravityAffected = true;
-                        IgnoreWalls = false;
-                    }
-                    else
-                    {
-                        Velocity = new Vector2(0, 0);
-                        Position = Creature.Position;
-                        GravityAffected = false;
-                        IgnoreWalls = true;
-                    }
             }
         }
 
@@ -58,13 +46,31 @@ namespace DN.GameObjects.Items
             MaxVelocity = new Vector2(10, 10);
             Friction = 1.0f;
         }
+        public virtual void SetOwner(Creature creature, bool changeParameters = true)
+        {
+            _creature = creature;
 
+            if(!changeParameters) return;
+
+            if (_creature == null)
+            {
+                GravityAffected = true;
+                IgnoreWalls = false;
+            }
+            else
+            {
+                Velocity = new Vector2(0, 0);
+                Position = Creature.Position;
+                GravityAffected = false;
+                IgnoreWalls = true;
+            }
+        }
 
         public override void Destroy()
         {
             base.Destroy();
-            if(Creature != null)
-                Creature.DropItem();
+           // if(Creature != null)
+           //     Creature.DropItem();
         }
 
         public virtual void DoAction()

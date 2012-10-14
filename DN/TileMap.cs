@@ -72,9 +72,9 @@ namespace DN
         {
             List<Rectangle> rects = new List<Rectangle>();
 
-            for (int i = p.X - 1; i <= p.X + 1; i++)
+            for (int i =Math.Max(0, p.X - 1); i <= p.X + 1; i++)
             {
-                for (int j = p.Y - 1; j <= p.Y + 1; j++)
+                for (int j = Math.Max(0, p.Y - 1); j <= p.Y + 1; j++)
                 {
                     if (_map[i, j] != cellType)
                         rects.Add(GetRect(i, j));

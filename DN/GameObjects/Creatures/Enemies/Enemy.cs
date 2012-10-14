@@ -84,7 +84,8 @@ namespace DN.GameObjects.Creatures.Enemies
         {
             new Letter(World, (char)RandomTool.RandByte(97, 122))
                              {
-                                 Cell = Cell
+                                 Cell = Cell,
+                                 IgnoreCollisions = false
                              };
         }
 

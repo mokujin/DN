@@ -37,12 +37,9 @@ namespace DN.GameObjects.Creatures
             {
                 return _inHandItem;
             }
-            set
+            private set
             {
-                if(_inHandItem != null)
-                    _inHandItem.Creature = null;
                 _inHandItem = value;
-                _inHandItem.Creature = this;
             }
         }
 
@@ -105,11 +102,18 @@ namespace DN.GameObjects.Creatures
             }
         }
 
+        public void SetItem(Item item)
+        {
+            DropItem();
+            _inHandItem = item;
+            _inHandItem.SetOwner(this);
+        }
+
         public void DropItem()
         {
             if(_inHandItem == null) 
                 return;
-            _inHandItem.Creature = null;
+            _inHandItem.SetOwner(null);
             _inHandItem = null;
         }
 
@@ -119,7 +123,7 @@ namespace DN.GameObjects.Creatures
                 return;
 
             _inHandItem = item;
-            _inHandItem.Creature = this;
+            _inHandItem.SetOwner(this);
         }
 
         public void PickUpItem()
@@ -138,7 +142,7 @@ namespace DN.GameObjects.Creatures
             if(IsDead)
             {
                 if (_inHandItem != null)
-                    _inHandItem.Creature = null;
+                    _inHandItem.SetOwner(null);
                 Destroy();
                 return;
             }
@@ -163,10 +167,14 @@ namespace DN.GameObjects.Creatures
 
             if(InHandItem != null)
             {
+                if(InHandItem.Creature == null)
+                {
+                    DropItem();
+                }
                 InHandItem.Position = this.Position;
                 InHandItem.HDirection = HDirection;
                 InHandItem.VDirection = VDirection;
-                InHandItem.Update(dt);
+               // InHandItem.Update(dt);
             }
         }
 

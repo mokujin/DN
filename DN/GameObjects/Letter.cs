@@ -44,7 +44,7 @@ namespace DN.GameObjects
         {
             base.Update(dt);
 
-            if (IgnoreCollisions)
+            if (IgnoreWalls)
             {
                 Move(World.DirectionToObject(this, World.Hero), 20*dt);
             }
@@ -52,7 +52,8 @@ namespace DN.GameObjects
             {
                 if (World.DistanceToObject(World.Hero, this) < 100)
                 {
-                    IgnoreCollisions = true;
+                   // IgnoreCollisions = false;
+                    IgnoreWalls = true;
                     GravityAffected = false;
                 }
             }

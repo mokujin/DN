@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System.Diagnostics;
+using System.Drawing;
 using Blueberry.Graphics;
 using DN.Helpers;
 using System;
@@ -83,10 +84,17 @@ namespace DN.GameObjects.Items.Weapons
         public override void Update(float dt)
         {
             base.Update(dt);
+            UpdatePosition(dt);
+            UpdateDirection(dt);
+
+        }
+
+        private void UpdatePosition(float dt)
+        {
             Vector2 nextBowPosition = NextBowPosition;
             if (_bowPosition.X != nextBowPosition.X)
             {
-                _bowPosition.X += nextBowPosition.X / Math.Abs(nextBowPosition.X) * dt * 400;
+                _bowPosition.X += nextBowPosition.X/Math.Abs(nextBowPosition.X)*dt*400;
                 if (Math.Abs(_bowPosition.X) > Math.Abs(nextBowPosition.X))
                 {
                     _bowPosition.X = nextBowPosition.X;
@@ -94,29 +102,40 @@ namespace DN.GameObjects.Items.Weapons
             }
             if (_bowPosition.Y != nextBowPosition.Y)
             {
-
-
-                _bowPosition.Y += nextBowPosition.Y / Math.Abs(nextBowPosition.Y) * dt * 400;
+                _bowPosition.Y += nextBowPosition.Y/Math.Abs(nextBowPosition.Y)*dt*400;
                 if (Math.Abs(_bowPosition.Y) > Math.Abs(nextBowPosition.Y))
                 {
                     _bowPosition.Y = nextBowPosition.Y;
                 }
             }
+        }
+
+        private void UpdateDirection(float dt)
+        {
 
             float nextBowDirection = NextBowDirection;
 
-            if(nextBowDirection != _bowDirection)
+            if (nextBowDirection != _bowDirection)
             {
-                float dir = FunctionHelper.GetSign(nextBowDirection - _bowDirection);
-                if (dir == 0)
-                    dir = 1;
-                _bowDirection += dir*dt * 10;
-                if(FunctionHelper.GetSign(nextBowDirection - _bowDirection) != dir)
+
+                sbyte dir = FunctionHelper.GetSign(_bowDirection - NextBowDirection);
+
+                _bowDirection += dir * dt * 2;
+
+                if (_bowDirection > (float)Math.PI * 2)
+                {
+                    _bowDirection = _bowDirection - ((float)Math.PI * 2);
+                }
+                else if(_bowDirection < 0)
+                {
+                    _bowDirection = ((float)Math.PI * 2) + _bowDirection;
+                }
+
+                if (FunctionHelper.GetSign(nextBowDirection - _bowDirection) != dir)
                 {
                     _bowDirection = nextBowDirection;
                 }
             }
-
         }
 
 

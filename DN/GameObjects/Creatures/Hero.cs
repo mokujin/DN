@@ -47,12 +47,13 @@ namespace DN.GameObjects.Creatures
 
 
 
-            InHandItem = new Bow(gameWorld)
-                          {
-                              IntervalDuration = 2.0f,
-                              Damage = 1,
-                              ProjectiveSpeed = 8,
-                          };
+            SetItem(new Bow(gameWorld)
+                        {
+                            IntervalDuration = 2.0f,
+                            Damage = 1,
+                            ProjectiveSpeed = 8,
+                            Cell = this.Cell
+                        });
 
             DustEffect = new DustPointEmitter(Position, Vector2.UnitX, 2f);
             DustEffect.Initialise(60, 1);
@@ -79,7 +80,8 @@ namespace DN.GameObjects.Creatures
             }
             else if (e.Key == Key.Z)
             {
-                InHandItem.FinishAction();
+                if(InHandItem != null)
+                    InHandItem.FinishAction();
             }
         }
         void g_Keyboard_KeyDown(object sender, KeyboardKeyEventArgs e)

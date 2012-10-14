@@ -75,10 +75,12 @@ namespace DN.GameObjects.Items.Weapons
 
             CurrentProjective.Move(dir, ProjectiveSpeed);
             CurrentProjective.Move(new Vector2(0, -1), 2, false);// small hack
+            CurrentProjective.SetOwner(Creature, false);
             CurrentProjective.Damage = Damage;
             CurrentProjective.IgnoreWalls = false;
             CurrentProjective.IgnoreCollisions = false;
             CurrentProjective.GravityAffected = true;
+
             CurrentProjective = null;
         }
     }
