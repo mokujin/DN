@@ -255,7 +255,21 @@ namespace DN.GameObjects.Creatures
 
             if (Game.g_Gamepad.LeftStick.Position != Vector2.Zero)
             {
-                VDirection = (VDirection)(Game.g_Gamepad.LeftStick.Position.Y > 0 ? 1 : -1);
+                Vector2 pos = Game.g_Gamepad.LeftStick.Position;
+                if (pos.Y > 0.5f)
+                {
+                    VDirection = VDirection.Down;
+                }
+                else if(pos.Y < -0.5f)
+                {
+                    VDirection = VDirection.Up;
+                }
+                else
+                {
+                    VDirection = VDirection.No;
+                }
+
+             //   VDirection = (VDirection)(Game.g_Gamepad.LeftStick.Position.Y > 0 ? 1 : -1);
                 HDirection = (HDirection)(Game.g_Gamepad.LeftStick.Position.X > 0 ? 1 : -1);
             }
         }

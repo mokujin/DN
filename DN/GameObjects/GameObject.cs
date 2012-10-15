@@ -81,6 +81,11 @@ namespace DN.GameObjects
             }
         }
 
+        public virtual RectangleF DrawingBounds
+        {
+            get { return Bounds;}
+        }
+
         public virtual RectangleF Bounds
         {
             get
