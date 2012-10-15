@@ -94,6 +94,10 @@
     <Compile Include="PathFinding\Path.cs" />
     <Compile Include="PathFinding\WayPoint.cs" />
     <Compile Include="LevelGeneration\ResourseMap.cs" />
+    <Compile Include="States\GameState.cs" />
+    <Compile Include="States\LevelGenerationState.cs" />
+    <Compile Include="States\PlayState.cs" />
+    <Compile Include="States\StateManager.cs" />
     <Compile Include="TileMap.cs" />
     <Compile Include="LevelGeneration\Miner.cs" />
     <Compile Include="LevelGeneration\LevelGenerator.cs" />

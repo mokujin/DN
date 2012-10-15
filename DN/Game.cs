@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using DN.GameObjects.Creatures.Enemies;
 using DN.LevelGeneration;
+using DN.States;
 using OpenTK;
 using Blueberry;
 using Blueberry.Graphics;
@@ -42,11 +43,9 @@ namespace DN
         public static MouseDevice g_Mouse;
         public static GamepadState g_Gamepad;
         #endregion
-        private GameWorld gameWorld;
-        private LevelGenerator levelGenerator;
-        AudioContext audioContext;
-        AudioClip clip;
-        BitmapFont font;
+
+        private StateManager _stateManager;
+
         public Game()
             : base(g_screenSize.Width, g_screenSize.Height, GraphicsMode.Default, "Devil's nightmare")
         {
@@ -55,85 +54,30 @@ namespace DN
 
         }
 
-        private void GKeyboardOnKeyDown(object sender, KeyboardKeyEventArgs e)
-        {
-            levelGenerator.Skip = true;
-        }
+
 
         protected override void OnLoad(EventArgs e)
         {
 
             GL.ClearColor(Color4.Black);
-
+            LoadContent();
             g_Keyboard = Keyboard;
             g_Mouse = Mouse;
             g_Gamepad = new GamepadState(GamepadIndex.One);
 
-            g_Keyboard.KeyDown += GKeyboardOnKeyDown;
+            _stateManager = new StateManager();
+            _stateManager.SetState(new LevelGenerationState(_stateManager));
 
 
 
-            audioContext = new AudioContext();
-            LoadContent();
-            CreateWorld();
-            new DiagnosticsCenter();
-
-            font = new BitmapFont(new Font("Consolas", 14));
             Keyboard.KeyRepeat = false;
 
-            base.OnLoad(e);
-
-            new AudioManager(16, 8, 4096, true);
-
-            AudioClip clip = new AudioClip(Path.Combine("Content", "Sounds", "rainfall.ogg"));
-            clip.Play();
-
 
         }
 
-        private void OnFinishGeneration()
-        {
-            gameWorld.InsertHero();
-            gameWorld.InitGui();
-            for (int i = 0; i < 0; i++)
-            {
-                Enemy enemy = EnemiesFabric.CreateEnemy(gameWorld, EnemyType.Bat);
-                enemy.Cell = gameWorld.GetRandomPoint();
-            }
-            gameWorld.InitTextures();
-        }
-
-        private void CreateWorld()
-        {
-            gameWorld = new GameWorld(100, 100);
-            levelGenerator = new LevelGenerator
-            {
-                RoomsMaxWidth = 10,
-                RoomsMaxHeight = 15,
-                RoomCount = 0,
-                Scale = 0.5f,
-                WallSmoothing = 0.5f
-            };
-            levelGenerator.GenerationFinishedEvent += OnFinishGeneration;
-            levelGenerator.Generate(gameWorld);
-        }
 
         private void LoadContent()
         {
-            CM.I.LoadTexture("wall_tile", Path.Combine("Content", "Textures", "wall_tile.png"));
-            CM.I.LoadTexture("hero_tile", Path.Combine("Content", "Textures", "hero_tile.png"));
-            CM.I.LoadTexture("stair_tile", Path.Combine("Content", "Textures", "stair_tile.png"));
-            CM.I.LoadTexture("sword_sprite", Path.Combine("Content", "Textures", "Weapons", "Sword.png"));
-            CM.I.LoadTexture("bat_sprite", Path.Combine("Content", "Textures", "Enemies", "Bat.png"));
-            CM.I.LoadTexture("troll_sprite", Path.Combine("Content", "Textures", "Enemies", "Troll.png"));
-            CM.I.LoadTexture("heart", Path.Combine("Content", "Textures", "Gui", "heart.png"));
-            CM.I.LoadTexture("potion", Path.Combine("Content", "Textures", "GameObjects", "Potion.png"));
-            CM.I.LoadTexture("arrow_sprite", Path.Combine("Content", "Textures", "Weapons", "arrow.png"));
-            CM.I.LoadTexture("bow_sprite", Path.Combine("Content", "Textures", "Weapons", "Bow.png"));
-            CM.I.LoadTexture("mini_wall", Path.Combine("Content", "Textures", "LevelGeneration", "mini_wall.png"));
-            CM.I.LoadTexture("mini_ladder", Path.Combine("Content", "Textures", "LevelGeneration", "mini_ladder.png"));
-            CM.I.LoadTexture("mini_miner", Path.Combine("Content", "Textures", "LevelGeneration", "mini_miner.png"));
-
             CM.I.LoadFont("Big", Path.Combine("Content", "Fonts", "monofur.ttf"), 48);
             CM.I.LoadFont("Middle", Path.Combine("Content", "Fonts", "monofur.ttf"), 24);
             CM.I.LoadFont("Small", Path.Combine("Content", "Fonts", "monofur.ttf"), 14);
@@ -149,20 +93,8 @@ namespace DN
             float dt = (float)e.Time;
             if (g_Keyboard[Key.Escape])
                 Exit();
-            if (!levelGenerator.Finished)
-            {
-                levelGenerator.Update(dt);
-                goto exit;
-            }
+            _stateManager.Update(dt);
 
-            if (g_Keyboard[Key.Tilde])
-                    if (DiagnosticsCenter.Instance.Visible) DiagnosticsCenter.Instance.Hide();
-                    else DiagnosticsCenter.Instance.Show();
-
-                g_Gamepad.Update(dt);
-                gameWorld.Update(dt);
-                DiagnosticsCenter.Instance.Update(dt);
-         exit:   
             base.OnUpdateFrame(e);
         }
         
@@ -170,26 +102,17 @@ namespace DN
         {
             GL.Clear(ClearBufferMask.ColorBufferBit);
             float dt = (float)e.Time;
-            if (levelGenerator.Finished)
-            {
-                gameWorld.Draw(dt);
-                DiagnosticsCenter.Instance.Draw(dt);
+            g_Gamepad.Update(dt);
 
+            _stateManager.Draw(dt);
 
-            }
-            else
-            {
-                SpriteBatch.Instance.Begin();
-                levelGenerator.Draw(dt);
-                SpriteBatch.Instance.End();
-            }
             SwapBuffers();
             base.OnRenderFrame(e);
 
         }
         protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
         {
-            audioContext.Dispose();
+        //    audioContext.Dispose();
 
             base.OnClosing(e);
         }

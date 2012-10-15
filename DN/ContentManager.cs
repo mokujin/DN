@@ -43,9 +43,15 @@ namespace DN
         {
             _sounds.Add(asset, new AudioClip(file));
         }
+        public void UnloadTexture(string texture)
+        {
+            _textures[texture].Dispose();
+            _textures.Remove(texture);
+        }
+
         public Texture tex(string asset)
         {
-            return _textures[asset];
+             return _textures[asset];
         }
 
         public BitmapFont Font(string asset)
