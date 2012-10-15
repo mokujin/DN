@@ -47,6 +47,7 @@ namespace DN
 
         public Camera Camera { get; private set; }
         private float _scale = 1.0f;
+        private float _userScale = 0.0f;
         private float _alphaEffect = 0;
 
         ParallaxBackground background;
@@ -70,20 +71,6 @@ namespace DN
             Camera.ScaleTo(1f);
             Camera.MoveSpeed = 7;
             
-
-            /*
-            for (int i = 0; i < width; i++)
-            {
-                TileMap[0, i] = TileMap[width - 1, i] = CellType.Wall;
-            }
-            for (int j = 0; j < height; j++)
-            {
-                TileMap[j, 0] = TileMap[j, height - 1] = CellType.Wall;
-            }
-            */
-            //TileMap.PrintDebug();
-            // Console.ReadKey();
-
             background = new ParallaxBackground(this);
             BloodSystem = new BloodSystem(this);
             BloodSystem.Init();
@@ -113,14 +100,14 @@ namespace DN
         {
             BloodSystem.Update(dt);
 
-            Camera.MoveTo(Hero.Position);//Hero.Direction == Direction.Left ? new Vector2(Hero.Position.X - 100, Hero.Position.Y) : new Vector2(Hero.Position.X + 100, Hero.Position.Y));
+            Camera.MoveTo(Hero.Position);
 
             foreach (var gameObject in _gameObjects)
             {
                gameObject.Update(dt);
             }
-            //  Parallel.ForEach(_gameObjects, gameObject => gameObject.Update(dt));
             CheckCollisionsWithObjects();
+
             Vector2 vel = Hero.GetVelocity();
             if(vel.Y > 10)
             {
@@ -132,9 +119,10 @@ namespace DN
             {
                 _scale = 1f;
             }
-            Camera.ScaleTo(_scale);
 
+            Camera.ScaleTo(_scale + _userScale);
             Camera.Update(dt);
+
 
             UpdateObjectsEnqueues();
 
@@ -145,6 +133,16 @@ namespace DN
             {
                 _alphaEffect += dt;
             }
+
+            if(Game.g_Keyboard[Key.Plus])
+            {
+                _userScale += dt;
+            }
+            else if (Game.g_Keyboard[Key.Minus])
+            {
+                _userScale -= dt;
+            }
+
         }
         Color[] colors = { Color.Red, Color.Green, Color.Yellow, Color.Violet, Color.Pink, Color.White, Color.Black, Color.Blue, Color.Brown };
         private void VisualizeQuadTree()
@@ -161,7 +159,6 @@ namespace DN
             {
                 GameObject gameObject = _addNewObjectsQueue.Dequeue();
                 _gameObjects.Add(gameObject);
-              //  if(!gameObject.IgnoreCollisions)
                     _quadTree.Insert(gameObject);
             }
 
@@ -170,7 +167,6 @@ namespace DN
                 GameObject obj = _deleteObjectsQueue.Dequeue();
                 obj.Destroyed = true;
                 _gameObjects.Remove(obj);
-             //   obj.CollisionsOff();//.RemoveItem(obj);
             }
         }
 
@@ -244,7 +240,6 @@ namespace DN
 
         public void CheckCollisionsWithObjects()
         {
-           // Parallel.ForEach(_gameObjects, gO1 =>
             foreach (var gO1 in _gameObjects)
             {
                 {
@@ -258,7 +253,6 @@ namespace DN
                     }
                 }
             }
-             //  );
         }
 
         internal List<CollidedCell> GetCollisionsWithTiles(RectangleF rectangle)
@@ -274,13 +268,12 @@ namespace DN
 
             var tilesToCheck = TileMap.GetRectanglesAround(new Point(rectangle.X / 64,
                                                                      rectangle.Y / 64), CellType.Free);
-
             var list = new List<CollidedCell>();
+
             foreach (Rectangle rect in tilesToCheck)
-            {
                 if (rect.IntersectsWith(rectangle)) 
                     list.Add(new CollidedCell(rect, TileMap[rect.X / 64, rect.Y / 64]));
-            }
+
             return list;
         }
 
@@ -351,7 +344,6 @@ namespace DN
                     {
                         Camera.Rumble(0.2f, 8, 4);
                         Game.g_Gamepad.Vibrate(0.8f, 0.8f, 0.2f);
-                        //Hero.DustEffect.Trigger(
                     }
             }
         }

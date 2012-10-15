@@ -37,6 +37,7 @@ namespace DN.GameObjects
             if(gameObject is Hero)
             {
                 _heroWasCollided = true;
+                IgnoreCollisions = true;
             }
         }
 
@@ -52,7 +53,6 @@ namespace DN.GameObjects
             {
                 if (World.DistanceToObject(World.Hero, this) < 100)
                 {
-                   // IgnoreCollisions = false;
                     IgnoreWalls = true;
                     GravityAffected = false;
                 }
