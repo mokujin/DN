@@ -10,6 +10,8 @@ namespace DN.GameObjects.Items
 {
     public abstract class Item:CollidableGameObject
     {
+        private HDirection _lastGoodDirection;// it is good direction if != Direction.No
+
         public bool DoingAction
         {
             get { return PerfermingTimer.Running; }
@@ -18,16 +20,13 @@ namespace DN.GameObjects.Items
         {
             get { return !IntervalTimer.Running && !PerfermingTimer.Running; }
         }
-
+        
         private Creature _creature;
 
         public Creature Creature
         {
             get { return _creature; }
-            protected set
-            {
-                    _creature = value;
-            }
+            protected set {_creature = value;}
         }
 
         public float IntervalDuration {set { IntervalTimer.Duration = value; }}
@@ -69,8 +68,6 @@ namespace DN.GameObjects.Items
         public override void Destroy()
         {
             base.Destroy();
-           // if(Creature != null)
-           //     Creature.DropItem();
         }
 
         public virtual void DoAction()
@@ -85,18 +82,20 @@ namespace DN.GameObjects.Items
 
         }
 
-
         public override void Update(float dt)
         {
-            if(Destroyed)
-                throw new Exception("Destroyed item cannot be used");
-
 
 
             if (!DoingAction)
                 IntervalTimer.Update(dt);
             else
                 PerfermingTimer.Update(dt);
+
+            if (HDirection != HDirection.No)
+                _lastGoodDirection = HDirection;
+
+            if (HDirection == HDirection.No && VDirection == VDirection.No)
+                HDirection = _lastGoodDirection;
 
             base.Update(dt);
         }

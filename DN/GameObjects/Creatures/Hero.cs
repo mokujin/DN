@@ -36,7 +36,6 @@ namespace DN.GameObjects.Creatures
             Game.g_Keyboard.KeyDown += g_Keyboard_KeyDown;
             Game.g_Keyboard.KeyUp += g_Keyboard_KeyUp;
             Game.g_Keyboard.KeyRepeat = true;
-            Game.g_Gamepad.OnLeftStick += g_Gamepad_OnLeftStick;
 
             Inventory = new LettersInventory();
 
@@ -64,20 +63,7 @@ namespace DN.GameObjects.Creatures
             Health = 36;
 
             HDirection = HDirection.Right;
-
-            CollisionWithTiles += OnCollisionWithTiles;
         }
-
-        void g_Gamepad_OnLeftStick(object sender, GamepadState.ThumbstickState e, Vector2 delta)
-        {
-            //Move(e.Position, 10 * dt);
-        }
-
-        private void OnCollisionWithTiles(CollidableGameObject sender, CollidedCell collidedCell)
-        {
-
-        }
-
 
         private void g_Keyboard_KeyUp(object sender, KeyboardKeyEventArgs e)
         {
@@ -150,13 +136,11 @@ namespace DN.GameObjects.Creatures
         #endregion
         public override void Draw(float dt)
         {
-            //SpriteBatch.Instance.dr
             SpriteBatch.Instance.DrawTexture(_texture,
                                              Position,
                                              Rectangle.Empty,
                                              Invulnerable ? new Color4(255, 1, 1, RandomTool.RandByte(255)) : Color4.White);
             //SpriteBatch.Instance.OutlineRectangle(Bounds, Color.White); // debug draw
-
             DustEffect.Draw(dt);
         }
 
@@ -173,10 +157,37 @@ namespace DN.GameObjects.Creatures
 
         private void UpdateControlls(float dt)
         {
-            if (LeftKeyPressed())
-            {
-                Move(new Vector2(-1, 0), 10*dt);
+            if (UpKeyPressed())
+                VDirection = VDirection.Up;
+            else if (DownKeyPressed())
+                VDirection = VDirection.Down;
+            else
+                VDirection = VDirection.No;
+
+            if (RightKeyPressed())
+                HDirection = HDirection.Right;
+            else if (LeftKeyPressed())
                 HDirection = HDirection.Left;
+            else
+                HDirection = HDirection.No;
+
+            if (InHandItem != null)
+            {
+                InHandItem.HDirection = HDirection;
+                InHandItem.VDirection = VDirection;
+            }
+
+
+
+            Vector2 leftStickPos = Game.g_Gamepad.LeftStick.Position;
+
+            if (HDirection != HDirection.No)
+            {
+                if (leftStickPos.X != 0)
+                    Move(new Vector2(1, 0), dt*leftStickPos.X*10);
+                else
+                    Move(new Vector2((sbyte)HDirection, 0), 10*dt);
+
                 if (OnGround)
                 {
                     DustEffect.Direction = Vector2.UnitX;
@@ -185,113 +196,38 @@ namespace DN.GameObjects.Creatures
                     DustEffect.Trigger(dt);
                 }
             }
-            if (RightKeyPressed())
-            {
-                Move(new Vector2(1, 0), 10*dt);
-                HDirection = HDirection.Right;
-                if (OnGround)
-                {
-                    DustEffect.Direction = -Vector2.UnitX;
-                    float q = 1/(Velocity.Length*5f);
-                    DustEffect.TriggerInterval = q;
-                    DustEffect.Trigger(dt);
-                }
-            }
-            if (UpKeyPressed())
-            {
-                VDirection = VDirection.Up;
-            }
-            else if (DownKeyPressed())
-            {
-                VDirection = VDirection.Down;
-            }
-            else
-            {
-                VDirection = VDirection.No;
-            }
-
-
 
             if (OnLadder && !OnGround)
             {
-                if (Game.g_Gamepad.LeftStick.Position == Vector2.Zero)
-                {
-                    if (UpKeyPressed())
-                    {
-                        if (Velocity.Y >= 0 || ClimbLadder)
-                        {
-                            Move(new Vector2(0, -1), 100*dt);
-                            ClimbLadder = true;
-                        }
-                    }
-                    else if (DownKeyPressed())
-                    {
-                        if (ClimbLadder)
-                        {
-                            Move(new Vector2(0, 1), 100*dt);
-                        }
-                    }
+                if ((VDirection == VDirection.Up && Velocity.Y >= 0)
+                 || (Game.g_Gamepad.LeftStick.Position.Y < 0 && (Velocity.Y >= 0)))
+                    ClimbLadder = true;
 
-                    if (LeftKeyPressed() && ClimbLadder)
-                    {
-                        Move(new Vector2(-1, 0), 100*dt);
-                    }
-
-                    else if (RightKeyPressed() && ClimbLadder)
-                    {
-                        Move(new Vector2(1, 0), 100*dt);
-                    }
-                }
-                else
-                {
-                    if (Game.g_Gamepad.LeftStick.Position.Y < 0 && (Velocity.Y >= 0 || ClimbLadder))
-                    {
-                        ClimbLadder = true;
-                    }
-                    if (ClimbLadder)
-                        Move(Game.g_Gamepad.LeftStick.Position, 100*dt);
-                }
-            }
-
-            if (Game.g_Gamepad.LeftStick.Position != Vector2.Zero)
-            {
-                Vector2 pos = Game.g_Gamepad.LeftStick.Position;
-                if (pos.Y > 0.5f)
-                {
-                    VDirection = VDirection.Down;
-                }
-                else if(pos.Y < -0.5f)
-                {
-                    VDirection = VDirection.Up;
-                }
-                else
-                {
-                    VDirection = VDirection.No;
-                }
-
-             //   VDirection = (VDirection)(Game.g_Gamepad.LeftStick.Position.Y > 0 ? 1 : -1);
-                HDirection = (HDirection)(Game.g_Gamepad.LeftStick.Position.X > 0 ? 1 : -1);
+                if (ClimbLadder)
+                    Move(Game.g_Gamepad.LeftStick.Position == Vector2.Zero? 
+                              new Vector2((sbyte) HDirection, (sbyte) VDirection)
+                            : Game.g_Gamepad.LeftStick.Position, 100*dt);
             }
         }
 
         private static bool DownKeyPressed()
         {
-            return Game.g_Gamepad.DPad.Down || Game.g_Keyboard[Key.Down];
+            return Game.g_Gamepad.DPad.Down || Game.g_Keyboard[Key.Down] || Game.g_Gamepad.LeftStick.Position.Y > 0.3f;
         }
 
         private static bool UpKeyPressed()
         {
-            return Game.g_Gamepad.DPad.Up || Game.g_Keyboard[Key.Up];
+            return Game.g_Gamepad.DPad.Up || Game.g_Keyboard[Key.Up] || Game.g_Gamepad.LeftStick.Position.Y < -0.3f;
         }
 
         private static bool RightKeyPressed()
         {
-            return Game.g_Gamepad.DPad.Right || Game.g_Keyboard[Key.Right] || Game.g_Gamepad.LeftStick.Position.X > 0;
+            return Game.g_Gamepad.DPad.Right || Game.g_Keyboard[Key.Right] || Game.g_Gamepad.LeftStick.Position.X > 0.3f;
         }
 
         private static bool LeftKeyPressed()
         {
-            return Game.g_Gamepad.DPad.Left || Game.g_Keyboard[Key.Left] || Game.g_Gamepad.LeftStick.Position.X < 0;
+            return Game.g_Gamepad.DPad.Left || Game.g_Keyboard[Key.Left] || Game.g_Gamepad.LeftStick.Position.X < -0.3f;
         }
     }
 }

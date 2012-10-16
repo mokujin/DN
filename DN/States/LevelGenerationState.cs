@@ -3,20 +3,26 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using Blueberry;
 using Blueberry.Graphics;
 using DN.GameObjects.Creatures.Enemies;
 using DN.LevelGeneration;
+using OpenTK;
 using OpenTK.Input;
 
 namespace DN.States
 {
-    public class LevelGenerationState:GameState
+    public class LevelGenerationState : GameState
     {
         private LevelGenerator levelGenerator;
         private GameWorld _gameWorld;
+        private Camera _camera;
+        private Vector2 _nextCameraPosition;
 
         public LevelGenerationState(StateManager stateManager) : base(stateManager)
         {
+            _camera = new Camera(Game.g_screenSize, new Vector2(0, 0), true) {MoveSpeed = 6};
+            _nextCameraPosition = new Vector2(0, 0);
         }
 
         internal override void LoadContent()
@@ -38,13 +44,13 @@ namespace DN.States
         {
             _gameWorld = new GameWorld(100, 100);
             levelGenerator = new LevelGenerator
-            {
-                RoomsMaxWidth = 10,
-                RoomsMaxHeight = 15,
-                RoomCount = 0,
-                Scale = 0.5f,
-                WallSmoothing = 0.5f
-            };
+                                 {
+                                     RoomsMaxWidth = 10,
+                                     RoomsMaxHeight = 15,
+                                     RoomCount = 0,
+                                     Scale = 0.5f,
+                                     WallSmoothing = 0.5f
+                                 };
             levelGenerator.GenerationFinishedEvent += OnFinishGeneration;
             levelGenerator.Generate(_gameWorld);
 
@@ -55,11 +61,44 @@ namespace DN.States
         {
             if (!levelGenerator.Finished)
                 levelGenerator.Update(dt);
+
+            UpdateControlls();
+
+            _camera.MoveTo(_nextCameraPosition);
+            _camera.Update(dt);
+        }
+
+        private void UpdateControlls()
+        {
+            Vector2 dir = Vector2.Zero;
+
+            if (Game.g_Gamepad.LeftStick.Position != Vector2.Zero)
+            {
+                dir = Game.g_Gamepad.LeftStick.Position;
+            }
+            if (Game.g_Keyboard[Key.Left] || Game.g_Gamepad.DPad.Left)
+            {
+                dir.X = -1;
+            }
+            if (Game.g_Keyboard[Key.Right] || Game.g_Gamepad.DPad.Right)
+            {
+                dir.X = 1;
+            }
+            if (Game.g_Keyboard[Key.Down] || Game.g_Gamepad.DPad.Down)
+            {
+                dir.Y = 1;
+            }
+            if (Game.g_Keyboard[Key.Up] || Game.g_Gamepad.DPad.Up)
+            {
+                dir.Y = -1;
+            }
+
+            _nextCameraPosition += dir*15;
         }
 
         internal override void Draw(float dt)
         {
-            SpriteBatch.Instance.Begin();
+            SpriteBatch.Instance.Begin(_camera.GetViewMatrix());
             levelGenerator.Draw(dt);
             SpriteBatch.Instance.End();
         }
@@ -72,7 +111,8 @@ namespace DN.States
 
         private void GKeyboardOnKeyDown(object sender, KeyboardKeyEventArgs e)
         {
-            levelGenerator.Skip = true;
+            if(e.Key.HasFlag(Key.Enter))
+                levelGenerator.Skip = true;
         }
 
     }
