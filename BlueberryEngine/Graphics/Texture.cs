@@ -218,7 +218,7 @@ namespace Blueberry.Graphics
 
         public override string ToString()
         {
-            return String.Format("(id {1}) ({2}x{3})", ID, Size.Width, Size.Height);
+            return String.Format("(id {0}) ({1}x{2})", ID, Size.Width, Size.Height);
         }
 
         public void Bind(int unit)

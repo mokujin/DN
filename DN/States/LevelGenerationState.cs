@@ -62,13 +62,13 @@ namespace DN.States
             if (!levelGenerator.Finished)
                 levelGenerator.Update(dt);
 
-            UpdateControlls();
+            UpdateControlls(dt);
 
             _camera.MoveTo(_nextCameraPosition);
             _camera.Update(dt);
         }
 
-        private void UpdateControlls()
+        private void UpdateControlls(float dt)
         {
             Vector2 dir = Vector2.Zero;
 
@@ -93,13 +93,23 @@ namespace DN.States
                 dir.Y = -1;
             }
 
+            if (Game.g_Keyboard[Key.Plus])
+            {
+                _camera.ScaleTo(_camera.Scaling - dt);
+            }
+            if (Game.g_Keyboard[Key.Minus])
+            {
+                _camera.ScaleTo(_camera.Scaling + dt);
+            }
+
+
             _nextCameraPosition += dir*15;
         }
 
         internal override void Draw(float dt)
         {
             SpriteBatch.Instance.Begin(_camera.GetViewMatrix());
-            levelGenerator.Draw(dt);
+            levelGenerator.Draw(_camera.BoundingRectangle, dt);
             SpriteBatch.Instance.End();
         }
 

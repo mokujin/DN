@@ -142,14 +142,24 @@ namespace DN.LevelGeneration
         }
 
 
-        public void Draw(float dt)
+        public void Draw(Rectangle area, float dt)
         {
+            area.X /= 16;
+            area.Y /= 16;
+            area.Width /= 16;
+            area.Height /= 16;
+
+            area.Width += 2;
+            area.Height += 2;
+
             Texture texture = null;
+
             if((sbyte)Stage < (sbyte)Stage.Nature) 
                 CopyScaledMap();
-            for (int i = 0; i < TileMap.Width; i++)
+
+            for (int i = Math.Max(0, area.X); i <Math.Min(area.Right, TileMap.Width); i++)
             {
-                for (int j = 0; j < TileMap.Height; j++)
+                for (int j = Math.Max(0, area.Y); j <Math.Min(area.Bottom, TileMap.Height); j++)
                 {
                     texture = null;
                     switch (TileMap[i, j])
@@ -170,6 +180,7 @@ namespace DN.LevelGeneration
                                                      Color.White);
                 }
             }
+
             foreach (var miner in _miners)
             {
                 float w = 1;
@@ -182,11 +193,11 @@ namespace DN.LevelGeneration
                 }
 
                 SpriteBatch.Instance.DrawTexture(_minerTexture,
-                                 new RectangleF(miner.Cell.X * texture.Size.Width * w,
-                                                miner.Cell.Y * texture.Size.Height * h,
-                                                texture.Size.Width,
-                                                texture.Size.Height),
-                                 Color.White);
+                                                 new RectangleF(miner.Cell.X * _minerTexture.Size.Width * w,
+                                                                miner.Cell.Y * _minerTexture.Size.Height * h,
+                                                                _minerTexture.Size.Width,
+                                                                _minerTexture.Size.Height),
+                                                 Color.White);
             }
         }
 
