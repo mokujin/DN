@@ -95,15 +95,29 @@ namespace DN
         public void Draw(Rectangle region)
         {
             Size ts = _wallTile.Size;
-            for (int i = Math.Max(0, region.Left); i < Math.Min(region.Right, Width); i++)
+            int ifrom = Math.Max(0, region.Left);
+            int ito = Math.Min(region.Right, Width);
+            int jfrom = Math.Max(0, region.Top);
+            int jto = Math.Min(region.Bottom, Height);
+
+            for (int i = ifrom; i < ito; i++)
             {
-                for (int j = Math.Max(0, region.Top); j < Math.Min(region.Bottom, Height); j++)
+                for (int j = jfrom; j < jto; j++)
                 {
                     switch(_map[i,j])
                     {
                         case CellType.Wall:
                             SpriteBatch.Instance.DrawTexture(_wallTile, i * ts.Width, j * ts.Height, ts.Width, ts.Height, Rectangle.Empty, Color.White, 0, 0, 0);
                             break;
+                    }
+                }
+            }
+            for (int i = ifrom; i < ito; i++)
+            {
+                for (int j = jfrom; j < jto; j++)
+                {
+                    switch (_map[i, j])
+                    {
                         case CellType.Ladder:
                             SpriteBatch.Instance.DrawTexture(_stairTile, i * ts.Width, j * ts.Height, ts.Width, ts.Height, Rectangle.Empty, Color.White, 0, 0, 0);
                             break;

@@ -201,7 +201,7 @@ namespace DN.GameObjects.Creatures
                                              Position,
                                              Rectangle.Empty,
                                              Invulnerable ? new Color4(255, 1, 1, RandomTool.RandByte(255)) : Color4.White);*/
-            SpriteBatch.Instance.OutlineRectangle(Bounds, Color.White); // debug draw
+            //SpriteBatch.Instance.OutlineRectangle(Bounds, Color.White); // debug draw
             
             DustEffect.Draw(dt);
         }
