@@ -42,7 +42,7 @@ namespace DN.LevelGeneration
         /// <summary>
         /// percantage of chance to smooth walls, 0 - 100
         /// </summary>
-        public float WallSmoothing = 75;
+        public float WallSmoothing = 50;
         internal TileMap TileMap;
         internal ResourseMap ResourseMap;
         private List<Miner> _miners;

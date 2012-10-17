@@ -74,7 +74,7 @@ namespace DN.GameObjects.Items.Weapons
                 return;
             base.FinishAction();
 
-            Vector2 dir = Creature.GetVectorDirectionFromDirection();
+            Vector2 dir = new Vector2(HDir, VDir);
 
             CurrentProjective.Move(dir, ProjectiveSpeed, false);
             CurrentProjective.Move(new Vector2(0, -1), 2, false);// small hack

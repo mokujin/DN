@@ -30,14 +30,18 @@ namespace DN
     {
         #region GLOBAL
 
-       //  public static Size g_screenSize = new Size(1080, 1920);
-      //  public static Rectangle g_screenRect = new Rectangle(0, 0, 1080, 1920);
+        public static Size g_screenSize = new Size(1080, 1920);
+        public static Rectangle g_screenRect = new Rectangle(0, 0, 1080, 1920);
 
        // public static Size g_screenSize = new Size(1920, 1080);
     //    public static Rectangle g_screenRect = new Rectangle(0, 0, 1920, 1080);
 
-        public static Size g_screenSize = new Size(640, 480);
-       public static Rectangle g_screenRect = new Rectangle(0, 0, 640, 480);
+
+    //    public static Size g_screenSize = new Size(1360, 768);
+        //  public static Rectangle g_screenRect = new Rectangle(0, 0, 1360, 768);
+
+        // public static Size g_screenSize = new Size(640, 480);
+       //  public static Rectangle g_screenRect = new Rectangle(0, 0, 640, 480);
 
         public static KeyboardDevice g_Keyboard;
         public static MouseDevice g_Mouse;
@@ -47,10 +51,11 @@ namespace DN
         private StateManager _stateManager;
 
         public Game()
-            : base(g_screenSize.Width, g_screenSize.Height, GraphicsMode.Default, "Devil's nightmare")
+            : base(g_screenSize.Width, g_screenSize.Height, GraphicsMode.Default, "Devil's nightmare", GameWindowFlags.Fullscreen)
         {
             GraphicsDevice.Instance.Initialize(g_screenSize.Width, g_screenSize.Height);
-            VSync = VSyncMode.On;
+          
+            VSync = VSyncMode.Off;
 
         }
 
@@ -71,8 +76,6 @@ namespace DN
 
 
             Keyboard.KeyRepeat = false;
-
-
         }
 
 

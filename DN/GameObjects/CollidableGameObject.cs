@@ -208,7 +208,7 @@ namespace DN.GameObjects
             List<CollidedCell> tilesY = null;
             List<CollidedCell> tiles = null;
 
-            if (offset.X != 0)
+           // if (offset.X != 0)
             {
                 float oldOffset = offset.X;
                 if (offset.X < 1 && offset.X > 0)
@@ -241,7 +241,7 @@ namespace DN.GameObjects
                     offset.X = oldOffset;
             }
 
-            if (offset.Y != 0)
+            //if (offset.Y != 0)
             {
                 float oldOffset = offset.Y;
                 if (offset.Y < 1 && offset.Y > 0)
@@ -269,6 +269,20 @@ namespace DN.GameObjects
                         offset.Y = 0;
                         break;
                     }
+                    else if(ClimbLadder 
+                        && cell.CellType == CellType.Free
+                        && World.TileMap[cell.Rectangle.X / 64, (cell.Rectangle.Y / 64) + 1] == CellType.Ladder)
+                    {
+                        if (offset.Y < 0)
+                        {
+                        //    if(Position.Y < cell.Rectangle.Y)
+                         //       position.Y = cell.Rectangle.Y + cell.Rectangle.Height + Size.Height/2;
+                        //    cell.Direction = new Point(0, -1);
+                        //    offset.Y = 0;
+                        }
+
+                    }
+
                 if (offset.Y != 0)
                     offset.Y = oldOffset;
             }

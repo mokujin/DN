@@ -12,6 +12,7 @@ using DN.GameObjects.Creatures.Enemies;
 using DN.LevelGeneration;
 using OpenTK.Audio;
 using OpenTK.Input;
+using Blueberry;
 
 namespace DN.States
 {
@@ -38,7 +39,7 @@ namespace DN.States
             _gameWorld.InitGui();
             for (int i = 0; i < 0; i++)
             {
-                Enemy enemy = EnemiesFabric.CreateEnemy(_gameWorld, EnemyType.Bat);
+                Enemy enemy = EnemiesFabric.CreateEnemy(_gameWorld,RandomTool.RandBool()? EnemyType.Troll : EnemyType.Bat);
                 enemy.Cell = _gameWorld.GetRandomPoint();
             }
             _gameWorld.InitTextures();

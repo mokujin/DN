@@ -119,9 +119,9 @@ namespace DN.States
             StateManager.SetState(new PlayState(StateManager, _gameWorld));
         }
 
-        private void GKeyboardOnKeyDown(object sender, KeyboardKeyEventArgs e)
+        private void GKeyboardOnKeyDown( object sender, KeyboardKeyEventArgs e)
         {
-            if(e.Key.HasFlag(Key.Enter))
+            if(e.Key == Key.Enter)
                 levelGenerator.Skip = true;
         }
 

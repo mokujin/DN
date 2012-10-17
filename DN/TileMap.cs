@@ -84,7 +84,7 @@ namespace DN
             {
                 for (int j = Math.Max(0, p.Y - 1); j <= p.Y + 1; j++)
                 {
-                    if (_map[i, j] != cellType)
+                    //if (_map[i, j] != cellType)
                         rects.Add(GetRect(i, j));
                 }
             }
