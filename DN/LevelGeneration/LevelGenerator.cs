@@ -3,11 +3,37 @@ using System;
 using System.Drawing;
 using System.Linq;
 using Blueberry;
+using Blueberry.Graphics;
 
 namespace DN.LevelGeneration
 {
+    public enum Stage:sbyte
+    {
+        Nothing = -1,
+        Miners = 0,
+        Nature = 1,
+        Adventurer = 2,
+        WayChecker = 3,
+        Final = 4
+    }
+
+    public delegate void FinishGenerationEventHandler();
+
     public class LevelGenerator
     {
+
+
+        public Stage Stage { get;private set; }
+        public event FinishGenerationEventHandler GenerationFinishedEvent;
+        public bool Finished
+        {
+            get { return Stage == Stage.Final; }
+        }
+
+        public bool Skip = false;
+
+
+
         public int RoomCount;
         public int RoomsMaxWidth;
         public int RoomsMaxHeight;
@@ -25,6 +51,11 @@ namespace DN.LevelGeneration
         internal int Width;
         internal int Height;
 
+
+        private Texture _wallTexture = CM.I.tex("mini_wall");
+        private Texture _ladderTexture = CM.I.tex("mini_ladder");
+        private Texture _minerTexture = CM.I.tex("mini_miner");
+
         public LevelGenerator()
         {
             _miners = new List<Miner>();
@@ -41,48 +72,132 @@ namespace DN.LevelGeneration
                 Height = (int)Math.Round(TileMap.Height * Scale);
 
                 Map = new CellType[Width, Height];
-
+                Stage = Stage.Nothing;
                 _miners.Clear();
 
                 ResourseMap = new ResourseMap(Width, Height);
                 TileMap.FillWith(Map, Width, Height, CellType.Wall);
-
-
-                var m = new Miner(this, Width / 4, Height - 2);
-                m.Init();
-                _miners.Add(m);
-                m = new Miner(this, Width / 2, Height - 2);
-                _miners.Add(m);
-                m.Init();
-                UpdateMiners();
-
-                for (int i = 0; i < RoomCount; i++)
-                    AddRoomAtRandomPosition();
-
-                MakeConnection(new Point(Width / 4  - 1, Height - 2),
-                               new Point(Width / 2 + 1, Height  - 2));
-
-                CopyScaledMap();
-                MakeCorosion();
-
-                var p = GetFreeGroundCell();
-                var adv = new Adventurer(this, p.X, p.Y);
-                _miners.Add(adv);
-
-                UpdateMiners();
-             //   TileMap.PrintDebug();
-                _miners.Add(new WayChecker(this, p.X, p.Y));
-                UpdateMiners();
-              //  TileMap.PrintDebug();
             }
            catch (Exception e)
             {
-               // Console.WriteLine("generation");
                 Console.WriteLine(e.ToString());
-            //    PrintDebug();
                 TileMap.PrintDebug();
-              //  Console.ReadKey();
                 goto restart;
+            }
+        }
+
+        public void Update(float dt)
+        {
+            if(Finished)
+                return;
+            do
+            {
+                UpdateMiners();
+                if (_miners.Count == 0)
+                {
+                    Stage += 1;
+                    SetCurrentStage();
+                    if (Stage == Stage.Final)
+                    {
+                        GenerationFinishedEvent();
+                        break;
+                    }
+                }
+            } while (Skip || Stage == Stage.WayChecker);
+        }
+        private void SetCurrentStage()
+        {
+            Point p = Point.Empty;
+            switch (Stage)
+            {
+                case Stage.Miners:
+                    var m = new Miner(this, Width/4, Height - 2);
+                    m.Init();
+                    _miners.Add(m);
+                    m = new Miner(this, Width/2, Height - 2);
+                    _miners.Add(m);
+                    m.Init();
+                    break;
+                case Stage.Nature:
+
+                    for (int i = 0; i < RoomCount; i++)
+                        AddRoomAtRandomPosition();
+
+                    MakeConnection(new Point(Width/4 - 1, Height - 2),
+                                   new Point(Width/2 + 1, Height - 2));
+                    CopyScaledMap();
+                    MakeCorosion();
+                    break;
+                case Stage.Adventurer:
+                    p = GetFreeGroundCell();
+                    var adv = new Adventurer(this, p.X, p.Y);
+                    _miners.Add(adv);
+                    break;
+                case Stage.WayChecker:
+                    p = GetFreeGroundCell();
+                    Stage = Stage.WayChecker;
+                    _miners.Add(new WayChecker(this, p.X, p.Y));
+                    break;
+            }
+        }
+
+
+        public void Draw(Rectangle area, float dt)
+        {
+            area.X /= 16;
+            area.Y /= 16;
+            area.Width /= 16;
+            area.Height /= 16;
+
+            area.Width += 2;
+            area.Height += 2;
+
+            Texture texture = null;
+
+            if((sbyte)Stage < (sbyte)Stage.Nature) 
+                CopyScaledMap();
+
+            for (int i = Math.Max(0, area.X); i <Math.Min(area.Right, TileMap.Width); i++)
+            {
+                for (int j = Math.Max(0, area.Y); j <Math.Min(area.Bottom, TileMap.Height); j++)
+                {
+                    texture = null;
+                    switch (TileMap[i, j])
+                    {
+                        case CellType.Wall:
+                            texture = _wallTexture;
+                            break;
+                        case CellType.Ladder:
+                            texture = _ladderTexture;
+                            break;
+                    }
+                    if(texture != null)
+                    SpriteBatch.Instance.DrawTexture(texture,
+                                                     new RectangleF(i * texture.Size.Width,
+                                                                    j * texture.Size.Height,
+                                                                    texture.Size.Width,
+                                                                    texture.Size.Height),
+                                                     Color.White);
+                }
+            }
+
+            foreach (var miner in _miners)
+            {
+                float w = 1;
+                float h = 1;
+
+                if(Stage == Stage.Miners)
+                {
+                    w = (float)TileMap.Width / (float)Width;
+                    h = (float)TileMap.Height / (float)Height;
+                }
+
+                SpriteBatch.Instance.DrawTexture(_minerTexture,
+                                                 new RectangleF(miner.Cell.X * _minerTexture.Size.Width * w,
+                                                                miner.Cell.Y * _minerTexture.Size.Height * h,
+                                                                _minerTexture.Size.Width,
+                                                                _minerTexture.Size.Height),
+                                                 Color.White);
             }
         }
 
@@ -141,19 +256,16 @@ namespace DN.LevelGeneration
 
         private void UpdateMiners()
         {
-            while (_miners.Count > 0)
-            {
-                foreach (var miner in _miners)
-                    miner.Step();
+            foreach (var miner in _miners)
+                miner.Step();
 
-                for (int i = 0; i < _miners.Count; i++)
-                    if (_miners[i].Cell.Y <= 0)
-                    {
-                        _miners[i].Remove();
-                        _miners.Remove(_miners[i]);
-                        i--;
-                    }
-            }
+            for (int i = 0; i < _miners.Count; i++)
+                if (_miners[i].Cell.Y <= 0)
+                {
+                    _miners[i].Remove();
+                    _miners.Remove(_miners[i]);
+                    i--;
+                }
         }
 
         private void RemoveAloneCells()

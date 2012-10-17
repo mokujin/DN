@@ -172,8 +172,8 @@ namespace DN.GameObjects.Creatures
                     DropItem();
                 }
                 InHandItem.Position = this.Position;
-                InHandItem.HDirection = HDirection;
-                InHandItem.VDirection = VDirection;
+            //    InHandItem.HDirection = HDirection;
+            //    InHandItem.VDirection = VDirection;
                // InHandItem.Update(dt);
             }
         }

@@ -19,7 +19,26 @@ namespace DN.GameObjects.Items.Weapons.Projectives
             set;
         }
 
+
+        public override RectangleF Bounds
+        {
+            get
+            {
+                return new RectangleF(base.Bounds.X, base.Bounds.Y , 1,1);
+            }
+        }
+        public override RectangleF DrawingBounds
+        {
+            get
+            {
+                return base.Bounds;
+            }
+        }
+
+
         private float _angle = 0;
+        private Vector2 _oldPosition;
+
         public String Sprite;
 
         public Projective(GameWorld gameWorld)
@@ -33,6 +52,7 @@ namespace DN.GameObjects.Items.Weapons.Projectives
         }
         public override void Update(float dt)
         {
+            _oldPosition = Position;
             base.Update(dt);
             _angle = FunctionHelper.Vector2ToRadians(Velocity);
         }
@@ -65,9 +85,9 @@ namespace DN.GameObjects.Items.Weapons.Projectives
 
         public override void Draw(float dt)
         {
-            SpriteBatch.Instance.DrawTexture(CM.I.tex(Sprite), Bounds, RectangleF.Empty, Color4.White,
+            SpriteBatch.Instance.DrawTexture(CM.I.tex(Sprite), DrawingBounds, RectangleF.Empty, Color4.White,
                _angle, new Vector2(0.5f, 0.5f), VDir == 1, HDir == -1);
-           // SpriteBatch.Instance.OutlineRectangle(Bounds, Color.White); // debug draw
+      //      SpriteBatch.Instance.OutlineRectangle(Bounds, Color.Red, 4, 0, new Vector2(0.5f, 0.5f)); // debug draw
         }
 
     }

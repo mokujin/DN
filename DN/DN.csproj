@@ -94,6 +94,10 @@
     <Compile Include="PathFinding\Path.cs" />
     <Compile Include="PathFinding\WayPoint.cs" />
     <Compile Include="LevelGeneration\ResourseMap.cs" />
+    <Compile Include="States\GameState.cs" />
+    <Compile Include="States\LevelGenerationState.cs" />
+    <Compile Include="States\PlayState.cs" />
+    <Compile Include="States\StateManager.cs" />
     <Compile Include="TileMap.cs" />
     <Compile Include="LevelGeneration\Miner.cs" />
     <Compile Include="LevelGeneration\LevelGenerator.cs" />
@@ -173,6 +177,15 @@
     </Content>
     <Content Include="Content\Textures\Gui\heart.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Textures\LevelGeneration\mini_ladder.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Textures\LevelGeneration\mini_miner.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Textures\LevelGeneration\mini_wall.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Textures\stair_tile.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

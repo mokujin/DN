@@ -11,7 +11,8 @@ namespace DN.GameObjects
     public enum HDirection : sbyte
     {
         Left = -1,
-        Right = 1
+        Right = 1,
+        No = 0
     }
 
     public enum VDirection : sbyte
@@ -38,9 +39,6 @@ namespace DN.GameObjects
         public VDirection VDirection { get; set; }
 
         private float _x, _y;
-        
-
-
         public Vector2 Position
         {
             get { return new Vector2(_x, _y); }
@@ -67,6 +65,7 @@ namespace DN.GameObjects
         }
 
         private Size _size;
+
         public Size Size
         {
             get { return new Size(_size.Width, _size.Height); }
@@ -79,6 +78,11 @@ namespace DN.GameObjects
             {
                 return new Rectangle((int)Bounds.X, (int)Bounds.Y, (int)Bounds.Width, (int)Bounds.Height);
             }
+        }
+
+        public virtual RectangleF DrawingBounds
+        {
+            get { return Bounds;}
         }
 
         public virtual RectangleF Bounds
@@ -140,16 +144,9 @@ namespace DN.GameObjects
             return dir;
         }
 
-        protected virtual void CheckCollisions(ref Vector2 offset, ref Vector2 position)
-        {
-            if (IgnoreCollisions) return;
-         //   CheckCollisionsWithObjects(ref offset, ref position);
-        }
-
-
+        protected abstract void CheckCollisions(ref Vector2 offset, ref Vector2 position);
 
         public event PositionChangeHandler OnPositionChange;
-
         public event RemoveFromSceneHandler OnRemoveFromScene;
     }
 }

@@ -51,11 +51,11 @@ namespace DN.GameObjects.Items.Weapons
         {
             get
             {
-                return Creature != null
-                           ? new Vector2((sbyte) Creature.HDirection*(Size.Width + 32),
-                                            Creature.VDirection != 0?
-                                         (sbyte) Creature.VDirection*(Size.Height/2): 1)
-                           : new Vector2(0, 0);
+                if (Creature != null)
+                    return new Vector2(HDir != 0? HDir*(Size.Width + 32): 1, 
+                            VDir != 0? VDir*(Size.Height/2): 1);
+
+                return new Vector2(0, 0);
             }
         }
 
