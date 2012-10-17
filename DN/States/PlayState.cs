@@ -19,16 +19,14 @@ namespace DN.States
     public class PlayState:GameState
     {
         private GameWorld _gameWorld;
-       // AudioClip clip;
-        BitmapFont font;
+        AudioClip backgroundSound;
 
         public PlayState(StateManager stateManager, GameWorld gameWolrd) : base(stateManager)
         {
             _gameWorld = gameWolrd;
-            font = new BitmapFont(new Font("Consolas", 14));
-            
-       //     AudioClip clip = new AudioClip(Path.Combine("Content", "Sounds", "rainfall.ogg"));
-         //   clip.Play();
+
+            backgroundSound = new AudioClip(Path.Combine("Content", "Sounds", "rainfall.ogg"));
+            backgroundSound.Play();
         }
 
         internal override void Init()

@@ -1199,7 +1199,7 @@ namespace Blueberry.Graphics
             float tx2 = (float)(glyph.rect.X + glyph.rect.Width) / sheet.Width;
             float ty2 = (float)(glyph.rect.Y + glyph.rect.Height) / sheet.Height;
 
-            float dx = -xOrigin * glyph.rect.Width * scale;
+            float dx = -(xOrigin * (glyph.rect.Width + (font.IsMonospacingActive ? ((font.MonoSpaceWidth - glyph.rect.Width) / 2) : 0))) * scale;
             float dy = -yOrigin * glyph.rect.Height * scale;
             float sin = (float)Math.Sin(rotation);
             float cos = (float)Math.Cos(rotation);

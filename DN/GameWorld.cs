@@ -23,8 +23,6 @@ namespace DN
 {
     public class GameWorld
     {
-
-
         public int Width{get; private set;}
         public int Height{get; private set;}
         public TileMap TileMap { get; private set; }
@@ -70,7 +68,7 @@ namespace DN
             Camera = new Camera(Game.g_screenSize, new Point(Game.g_screenSize.Width / 2, Game.g_screenSize.Height / 2), true);
             Camera.ScaleTo(1f);
             Camera.MoveSpeed = 7;
-            
+
             background = new ParallaxBackground(this);
             BloodSystem = new BloodSystem(this);
             BloodSystem.Init();
