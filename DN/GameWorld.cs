@@ -351,7 +351,7 @@ namespace DN
                     {
                         Camera.Rumble(0.2f, 8, 4);
                         Game.g_Gamepad.Vibrate(0.8f, 0.8f, 0.2f);
-                        //Hero.DustEffect.Trigger(
+                        //Hero.DustEffect.Trigger(0.01f);
                     }
             }
         }

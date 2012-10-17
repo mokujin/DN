@@ -37,17 +37,16 @@ namespace DN.GameObjects.Creatures
             Game.g_Keyboard.KeyUp += g_Keyboard_KeyUp;
             Game.g_Keyboard.KeyRepeat = true;
             Game.g_Gamepad.OnLeftStick += g_Gamepad_OnLeftStick;
-
+            _font = CM.I.Font("consolas24");
+            _font.Options.Monospacing = Blueberry.Graphics.Fonts.FontMonospacing.Yes;
             Inventory = new LettersInventory();
 
-            Size = new Size(48, 40);
+            Size = new Size(36, 40);
             MaxVelocity = new Vector2(5,15);
             MaxLadderVelocity = new Vector2(3, 3.5f);
             LadderFriction = 40f;
             Friction = 5f;
             InvulnerabilityDuration = 1;
-
-
 
             SetItem(new Bow(gameWorld)
                         {
@@ -145,18 +144,65 @@ namespace DN.GameObjects.Creatures
         }
 
         #region Procedural animations
-        //Blueberry.Graphics.Fonts.BitmapFont _font = CM.I.Font("consolas32");
-
+        Blueberry.Graphics.Fonts.BitmapFont _font;
+        float leg_distance = 10;
+        bool phase = false;             // true - left leg rotating, right leg suffering;
+        float period = 0.2f;
+        float timer = 0;
+        
         #endregion
         public override void Draw(float dt)
         {
-            //SpriteBatch.Instance.dr
+            SpriteBatch.Instance.PrintSymbol(_font, 'H', this.Position, Color4.White, 0, 1, 1, 1);
+            SpriteBatch.Instance.PrintSymbol(_font, 'E', this.Position, Color4.White, 0, 1, 0, 1);
+            if ((LeftKeyPressed() || RightKeyPressed()) && OnGround)
+            {
+                timer += dt;
+                if (timer >= period)
+                {
+                    timer = 0;
+                    phase = !phase;
+
+                }
+                int direction = HDirection == GameObjects.HDirection.Right ? -1 : 1;
+                Vector2 posl, posr;
+                if (phase)
+                {
+                    posl = new Vector2(direction * leg_distance, 0);
+                    MathUtils.RotateVector2(ref posl, direction * timer * MathHelper.Pi / period);
+                    posl += this.Position;
+
+                    posr = new Vector2(-direction * leg_distance, 0);
+                    posr.X += direction * timer * leg_distance * 2 / period;
+                    posr += this.Position;
+                }
+                else
+                {
+                    posl = new Vector2(-direction * leg_distance, 0);
+                    posl.X += direction * timer * leg_distance * 2 / period;
+                    posl += this.Position;
+
+                    posr = new Vector2(direction * leg_distance, 0);
+                    MathUtils.RotateVector2(ref posr, direction * timer * MathHelper.Pi / period);
+                    posr += this.Position;
+
+                }
+                SpriteBatch.Instance.PrintSymbol(_font, 'R', posl, Color4.White, 0, 1, 1, 0);
+                SpriteBatch.Instance.PrintSymbol(_font, 'O', posr, Color4.White, 0, 1, 0, 0);
+            }
+            else
+            {
+                SpriteBatch.Instance.PrintSymbol(_font, 'R', this.Position, Color4.White, 0, 1, 1, 0);
+                SpriteBatch.Instance.PrintSymbol(_font, 'O', this.Position, Color4.White, 0, 1, 0, 0);
+            }
+
+            /*
             SpriteBatch.Instance.DrawTexture(_texture,
                                              Position,
                                              Rectangle.Empty,
-                                             Invulnerable ? new Color4(255, 1, 1, RandomTool.RandByte(255)) : Color4.White);
-            //SpriteBatch.Instance.OutlineRectangle(Bounds, Color.White); // debug draw
-
+                                             Invulnerable ? new Color4(255, 1, 1, RandomTool.RandByte(255)) : Color4.White);*/
+            SpriteBatch.Instance.OutlineRectangle(Bounds, Color.White); // debug draw
+            
             DustEffect.Draw(dt);
         }
 
