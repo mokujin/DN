@@ -29,15 +29,9 @@ namespace DN
     public class Game:GameWindow
     {
         #region GLOBAL
-
-       //  public static Size g_screenSize = new Size(1080, 1920);
-      //  public static Rectangle g_screenRect = new Rectangle(0, 0, 1080, 1920);
-
-       // public static Size g_screenSize = new Size(1920, 1080);
-    //    public static Rectangle g_screenRect = new Rectangle(0, 0, 1920, 1080);
-
-        public static Size g_screenSize = new Size(640, 480);
-       public static Rectangle g_screenRect = new Rectangle(0, 0, 640, 480);
+        
+        public static Size g_screenSize;
+        public static Rectangle g_screenRect;
 
         public static KeyboardDevice g_Keyboard;
         public static MouseDevice g_Mouse;
@@ -47,9 +41,12 @@ namespace DN
         private StateManager _stateManager;
         AudioContext audioContext;
 
-        public Game()
-            : base(g_screenSize.Width, g_screenSize.Height, GraphicsMode.Default, "Devil's nightmare")
+        public Game(Size screenSize, bool fullscreen)
+            : base(screenSize.Width, screenSize.Height, GraphicsMode.Default, "Devil's nightmare", fullscreen ? GameWindowFlags.Fullscreen : GameWindowFlags.Default)
         {
+            g_screenSize = screenSize;
+            g_screenRect = new Rectangle(0, 0, screenSize.Width, screenSize.Height);
+
             GraphicsDevice.Instance.Initialize(g_screenSize.Width, g_screenSize.Height);
             VSync = VSyncMode.On;
             audioContext = new AudioContext();
